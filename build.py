@@ -1,50 +1,35 @@
 from __future__ import annotations
 from typing import List, Dict
 from os.path import abspath, dirname, isdir, basename, join
-import shutil, os, glob
+import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown import markdown
 import sys
+
+"""
+This section is just about reading and interpreting the content
+"""
 
 class ContentNode:
     name: str
     children: List[ContentNode]
     content_html: str
     front: Dict[str, str]
-    out_fpath: str
 
 root_dir = abspath(sys.argv[1])
 assert isdir(root_dir)
 content_dir = join(root_dir, 'content')
-template_dir = join(root_dir, 'theme')
-dist_dir = join(root_dir, 'dist')
-
-if isdir(dist_dir):
-    shutil.rmtree(dist_dir)
-os.makedirs(dist_dir, exist_ok=True)
-
-env = Environment(
-    loader=FileSystemLoader(template_dir),
-    autoescape=select_autoescape()
-)
-page_template = env.get_template('page.jinja2')
 
 
-
-## maybe each article should be an object with html attached, and front matter
-## this way we can also access children
 tree: Dict[str, ContentNode] = dict()
 root = ContentNode()
 root.name = ''
 for (dirpath, dirnames, fnames) in os.walk(content_dir):
-    out_dir = dirpath.replace(content_dir, dist_dir)
-    os.makedirs(out_dir, exist_ok=True)
 
     ## ideally process the index page first (not sure if this is necessary?)
     index_index = fnames.index('index.md')
     fnames.insert(0, fnames.pop(index_index))
 
-    
     indexNode = ContentNode()
     indexNode.name = basename(dirpath)
     if dirpath == content_dir:
@@ -57,7 +42,6 @@ for (dirpath, dirnames, fnames) in os.walk(content_dir):
         name = fname.split('.')[0]
 
         in_fpath = join(dirpath, fname)
-        out_fpath = join(out_dir, fname.replace('.md', '.html'))
 
         with open(in_fpath) as fhandle:
             lines = fhandle.readlines()
@@ -81,23 +65,45 @@ for (dirpath, dirnames, fnames) in os.walk(content_dir):
             node.name = name
             indexNode.children.append(node)
         
-        node.out_fpath = out_fpath
         node.children = []
         node.front = fm_dict
         node.content_html = markdown(md_content)
 
         
+"""
+Here starts the section where we generate the output
+"""
+
+## TODO: preprocess adds archetype to frontmatter; build can use this to match template
+## can distinguish page template from section/fragment template
+        
+## ready templated
+template_dir = join(root_dir, 'theme')
+env = Environment(
+    loader=FileSystemLoader(template_dir),
+    autoescape=select_autoescape()
+)
+page_template = env.get_template('page.jinja2')
+
+## locate and clear target directory
+dist_dir = join(root_dir, 'dist')
+if isdir(dist_dir):
+    shutil.rmtree(dist_dir)
+os.makedirs(dist_dir, exist_ok=True)
 
 
-def build_node(node: ContentNode, root: ContentNode):
+def build_node(node: ContentNode, root: ContentNode, parent_path: str):
     html = page_template.render(node=node, root=root)
-    with open(node.out_fpath, 'w') as fhandle:
+    node_path = join(parent_path, node.name)
+    os.makedirs(node_path, exist_ok=True)
+    out_fpath = join(node_path, 'index.html')
+    with open(out_fpath, 'w') as fhandle:
         fhandle.write(html)
     for child in node.children:
-        build_node(child, root)
+        build_node(child, root, node_path)
 
 
-build_node(root, root)
+build_node(root, root, dist_dir)
 
 
 # ## copy images to dist 

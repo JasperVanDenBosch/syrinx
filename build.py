@@ -39,10 +39,11 @@ root.name = ''
 for (dirpath, dirnames, fnames) in os.walk(content_dir):
     out_dir = dirpath.replace(content_dir, dist_dir)
     os.makedirs(out_dir, exist_ok=True)
-    #raise ValueError
 
+    ## ideally process the index page first (not sure if this is necessary?)
     index_index = fnames.index('index.md')
     fnames.insert(0, fnames.pop(index_index))
+
     
     indexNode = ContentNode()
     indexNode.name = basename(dirpath)
@@ -88,22 +89,16 @@ for (dirpath, dirnames, fnames) in os.walk(content_dir):
         
 
 
-def build_node(node: ContentNode):
-    html = page_template.render(node=node)
+def build_node(node: ContentNode, root: ContentNode):
+    html = page_template.render(node=node, root=root)
     with open(node.out_fpath, 'w') as fhandle:
         fhandle.write(html)
     for child in node.children:
-        build_node(child)
+        build_node(child, root)
 
 
-build_node(root)
+build_node(root, root)
 
-""" 
-every page access to ; top level links (directory names)
-every page access to: its child nodes
-
-so its a tree object, or recursive nodes
-"""
 
 # ## copy images to dist 
 # for fpath in glob.glob('static/*.jpg'):

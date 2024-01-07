@@ -1,2 +1,3 @@
-# sitegen (syrinx)
+# Syrinx
+
 Simple static site generator in python

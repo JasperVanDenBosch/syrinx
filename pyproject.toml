@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "jinja2 >= 3.1",
     "markdown >= 3.5.1",
+    "pandas",
 ]
 
 [project.scripts]

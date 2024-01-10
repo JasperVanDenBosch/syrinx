@@ -15,9 +15,9 @@ def build(root: ContentNode, root_dir: str):
     ## can distinguish page template from section/fragment template
             
     ## ready templated
-    template_dir = join(root_dir, 'theme')
+    theme_dir = join(root_dir, 'theme')
     env = Environment(
-        loader=FileSystemLoader(template_dir),
+        loader=FileSystemLoader(theme_dir),
         autoescape=select_autoescape()
     )
     page_template = env.get_template('page.jinja2')
@@ -42,10 +42,10 @@ def build(root: ContentNode, root_dir: str):
 
     build_node(root, root, dist_dir)
 
+    dist_assets_dir = join(dist_dir, 'assets')
 
-# ## copy images to dist 
-# for fpath in glob.glob('static/*.jpg'):
-#     shutil.copy(fpath, 'dist/')
+    ## copy theme assets tree to dist 
+    shutil.copytree(join(theme_dir, 'assets'), dist_assets_dir)
 
-# ## copy css file
-# shutil.copy('styles/index.css', 'dist/styles.css')
+    ## copy assets tree to dist 
+    shutil.copytree(join(root_dir, 'assets'), dist_assets_dir, dirs_exist_ok=True)

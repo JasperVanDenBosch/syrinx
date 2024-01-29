@@ -39,7 +39,11 @@ def read(root_dir: str) -> ContentNode:
             parent.children.append(indexNode)
         tree[dirpath] = indexNode
         for fname in fnames:
-            name = fname.split('.')[0]
+            fparts = fname.split('.')
+            ext = fparts[-1]
+            if ext != 'md':
+                continue
+            name = fparts[0]
 
             in_fpath = join(dirpath, fname)
 

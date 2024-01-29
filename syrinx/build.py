@@ -6,6 +6,14 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
 
+
+def dir_exists_not_empty(path: str) -> bool:
+    if isdir(path):
+        if len(os.listdir(path)):
+            return True
+    return False
+
+
 def build(root: ContentNode, root_dir: str):
 
     assert isdir(root_dir)
@@ -45,7 +53,11 @@ def build(root: ContentNode, root_dir: str):
     dist_assets_dir = join(dist_dir, 'assets')
 
     ## copy theme assets tree to dist 
-    shutil.copytree(join(theme_dir, 'assets'), dist_assets_dir)
+    theme_assets_dir = join(theme_dir, 'assets')
+    if dir_exists_not_empty(theme_assets_dir):
+        shutil.copytree(theme_assets_dir, dist_assets_dir)
 
     ## copy assets tree to dist 
-    shutil.copytree(join(root_dir, 'assets'), dist_assets_dir, dirs_exist_ok=True)
+    content_assets_dir = join(root_dir, 'assets')
+    if dir_exists_not_empty(content_assets_dir):
+        shutil.copytree(content_assets_dir, dist_assets_dir, dirs_exist_ok=True)

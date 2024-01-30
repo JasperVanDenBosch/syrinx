@@ -11,7 +11,8 @@ This section is just about reading and interpreting the content
 
 class ContentNode:
     name: str
-    children: List[ContentNode]
+    sections: List[ContentNode]
+    folders: List[ContentNode]
     content_html: str
     front: Dict[str, str]
 
@@ -36,7 +37,7 @@ def read(root_dir: str) -> ContentNode:
             indexNode = root
         else:
             parent = tree[dirname(dirpath)]
-            parent.children.append(indexNode)
+            parent.folders.append(indexNode)
         tree[dirpath] = indexNode
         for fname in fnames:
             fparts = fname.split('.')
@@ -67,9 +68,10 @@ def read(root_dir: str) -> ContentNode:
             else:
                 node = ContentNode()
                 node.name = name
-                indexNode.children.append(node)
+                indexNode.sections.append(node)
             
-            node.children = []
+            node.sections = []
+            node.folders = []
             node.front = fm_dict
             node.content_html = markdown(md_content)
 

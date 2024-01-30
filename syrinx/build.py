@@ -28,7 +28,7 @@ def build(root: ContentNode, root_dir: str):
         loader=FileSystemLoader(theme_dir),
         autoescape=select_autoescape()
     )
-    page_template = env.get_template('page.jinja2')
+    page_template = env.get_template('defaults/index.jinja2')
 
     ## locate and clear target directory
     dist_dir = join(root_dir, 'dist')
@@ -38,13 +38,13 @@ def build(root: ContentNode, root_dir: str):
 
 
     def build_node(node: ContentNode, root: ContentNode, parent_path: str):
-        html = page_template.render(node=node, root=root)
+        html = page_template.render(index=node, root=root)
         node_path = join(parent_path, node.name)
         os.makedirs(node_path, exist_ok=True)
         out_fpath = join(node_path, 'index.html')
         with open(out_fpath, 'w') as fhandle:
             fhandle.write(html)
-        for child in node.children:
+        for child in node.folders:
             build_node(child, root, node_path)
 
 

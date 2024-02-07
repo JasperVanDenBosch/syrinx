@@ -82,7 +82,7 @@ def read(root_dir: str) -> ContentNode:
             node.folders = []
             node.front = fm_dict
             node.content_html = markdown(md_content)
-            node.sequenceNumber = fm_dict.get('SequenceNumber', 99999)
+            node.sequenceNumber = int(fm_dict.get('SequenceNumber', '99999'))
 
     reorder_children(root)
 

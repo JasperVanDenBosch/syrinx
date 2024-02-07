@@ -20,7 +20,6 @@ def build(root: ContentNode, root_dir: str):
 
 
     ## TODO: preprocess adds archetype to frontmatter; build can use this to match template
-    ## can distinguish page template from section/fragment template
             
     ## ready templated
     theme_dir = join(root_dir, 'theme')

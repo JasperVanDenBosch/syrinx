@@ -48,6 +48,9 @@ for fpath in data_files:
     ## get rid of whitespace in columns:
     df.columns = [col.strip().replace(' ', '_') for col in df.columns]
 
+    if 'SequenceNumber' not in df.columns:
+        df['SequenceNumber'] = list(range(len(df)))
+
     for label, row in df.iterrows():
         output = archetype.render(dict(row) | {df.index.name: label})
         with open(join(collection_dir, f'{label}.md'), 'w') as fhandle:

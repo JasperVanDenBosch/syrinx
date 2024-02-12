@@ -14,6 +14,7 @@ from glob import glob
 import sys
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pandas import read_csv
+from numpy import nan
 if TYPE_CHECKING:
     from jinja2 import Template
 
@@ -47,6 +48,13 @@ for fpath in data_files:
 
     ## get rid of whitespace in columns:
     df.columns = [col.strip().replace(' ', '_') for col in df.columns]
+
+    ## turns nans to None
+    df.replace([nan], [None], inplace=True)
+
+    ## add sequence number if not provided
+    if 'SequenceNumber' not in df.columns:
+        df['SequenceNumber'] = list(range(len(df)))
 
     for label, row in df.iterrows():
         output = archetype.render(dict(row) | {df.index.name: label})

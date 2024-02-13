@@ -11,52 +11,54 @@ from typing import TYPE_CHECKING, Dict
 from os.path import join, isdir, abspath, basename
 from os import makedirs
 from glob import glob
-import sys
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pandas import read_csv
 from numpy import nan
 if TYPE_CHECKING:
     from jinja2 import Template
 
-root_dir = abspath(sys.argv[1])
-assert isdir(root_dir)
 
-archetype_files = glob(join(root_dir, 'archetypes', '*.md'))
-archetypes: Dict[str, Template] = dict()
-env = Environment(
-    loader=FileSystemLoader(join(root_dir, 'archetypes')),
-    autoescape=select_autoescape()
-)
+def preprocess(root_dir: str) -> None:
 
-for fpath in archetype_files:
-    fname = basename(fpath)
-    archetype_name = fname.split('.')[0]
-    archetypes[archetype_name] = env.get_template(fname)
 
-data_files = glob(join(root_dir, 'data', '*.tsv'))
+    assert isdir(root_dir)
 
-for fpath in data_files:
-    archetype_name = basename(fpath).split('.')[0]
-    if archetype_name not in archetypes:
-        raise ValueError(f'No archetype for {archetype_name}')
-    archetype = archetypes[archetype_name]
+    archetype_files = glob(join(root_dir, 'archetypes', '*.md'))
+    archetypes: Dict[str, Template] = dict()
+    env = Environment(
+        loader=FileSystemLoader(join(root_dir, 'archetypes')),
+        autoescape=select_autoescape()
+    )
 
-    collection_dir = join(root_dir, 'content', archetype_name)
-    makedirs(collection_dir, exist_ok=True)
+    for fpath in archetype_files:
+        fname = basename(fpath)
+        archetype_name = fname.split('.')[0]
+        archetypes[archetype_name] = env.get_template(fname)
 
-    df = read_csv(fpath, sep='\t', index_col=0)
+    data_files = glob(join(root_dir, 'data', '*.tsv'))
 
-    ## get rid of whitespace in columns:
-    df.columns = [col.strip().replace(' ', '_') for col in df.columns]
+    for fpath in data_files:
+        archetype_name = basename(fpath).split('.')[0]
+        if archetype_name not in archetypes:
+            raise ValueError(f'No archetype for {archetype_name}')
+        archetype = archetypes[archetype_name]
 
-    ## turns nans to None
-    df.replace([nan], [None], inplace=True)
+        collection_dir = join(root_dir, 'content', archetype_name)
+        makedirs(collection_dir, exist_ok=True)
 
-    ## add sequence number if not provided
-    if 'SequenceNumber' not in df.columns:
-        df['SequenceNumber'] = list(range(len(df)))
+        df = read_csv(fpath, sep='\t', index_col=0)
 
-    for label, row in df.iterrows():
-        output = archetype.render(dict(row) | {df.index.name: label})
-        with open(join(collection_dir, f'{label}.md'), 'w') as fhandle:
-            fhandle.write(output)
+        ## get rid of whitespace in columns:
+        df.columns = [col.strip().replace(' ', '_') for col in df.columns]
+
+        ## turns nans to None
+        df.replace([nan], [None], inplace=True)
+
+        ## add sequence number if not provided
+        if 'SequenceNumber' not in df.columns:
+            df['SequenceNumber'] = list(range(len(df)))
+
+        for label, row in df.iterrows():
+            output = archetype.render(dict(row) | {df.index.name: label})
+            with open(join(collection_dir, f'{label}.md'), 'w') as fhandle:
+                fhandle.write(output)

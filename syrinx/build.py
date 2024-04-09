@@ -3,6 +3,7 @@ from typing import List, Dict, TYPE_CHECKING
 from os.path import abspath, dirname, isdir, basename, join
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from syrinx.postprocess import processor
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
 
@@ -12,7 +13,6 @@ def dir_exists_not_empty(path: str) -> bool:
         if len(os.listdir(path)):
             return True
     return False
-
 
 def build(root: ContentNode, root_dir: str):
 
@@ -34,6 +34,8 @@ def build(root: ContentNode, root_dir: str):
     if isdir(dist_dir):
         shutil.rmtree(dist_dir)
     os.makedirs(dist_dir, exist_ok=True)
+
+    ### wrap(xpath, newElementConfig)
 
 
     def build_node(node: ContentNode, root: ContentNode, parent_path: str):

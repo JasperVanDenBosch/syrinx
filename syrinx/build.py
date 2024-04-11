@@ -3,7 +3,6 @@ from typing import List, Dict, TYPE_CHECKING
 from os.path import abspath, dirname, isdir, basename, join
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from syrinx.postprocess import processor
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
 

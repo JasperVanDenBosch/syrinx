@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import List, Dict
-from os.path import abspath, dirname, isdir, basename, join
+from os.path import dirname, basename, join
 import os
+import tomllib
 from markdown import markdown
-import sys
 
 """
 This section is just about reading and interpreting the content
@@ -59,17 +59,11 @@ def read(root_dir: str) -> ContentNode:
             with open(in_fpath) as fhandle:
                 lines = fhandle.readlines()
 
-            markers = [l for (l, line) in enumerate(lines) if line.strip() == '---']
+            markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
             assert len(markers) == 2
-            fm_lines = [line.strip() for line in lines[1:markers[1]]]
-            fm_dict = dict()
-            for line in fm_lines:
-                parts = line.split(':')
-                key = parts[0]
-                val = line[(len(key)+1):].strip()
-                fm_dict[key] = val
-
-            md_content = ''.join(lines[markers[1]:])
+            fm_string = ''.join(lines[1:markers[1]])
+            fm_dict = tomllib.loads(fm_string)
+            md_content = ''.join(lines[markers[1]+1:])
 
             if name == 'index':
                 node = indexNode

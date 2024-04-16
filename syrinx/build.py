@@ -16,9 +16,6 @@ def dir_exists_not_empty(path: str) -> bool:
 def build(root: ContentNode, root_dir: str):
 
     assert isdir(root_dir)
-
-
-    ## TODO: preprocess adds archetype to frontmatter; build can use this to match template
             
     ## ready templated
     theme_dir = join(root_dir, 'theme')
@@ -33,9 +30,6 @@ def build(root: ContentNode, root_dir: str):
     if isdir(dist_dir):
         shutil.rmtree(dist_dir)
     os.makedirs(dist_dir, exist_ok=True)
-
-    ### wrap(xpath, newElementConfig)
-
 
     def build_node(node: ContentNode, root: ContentNode, parent_path: str):
         html = page_template.render(index=node, root=root)

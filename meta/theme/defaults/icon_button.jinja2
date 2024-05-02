@@ -1,0 +1,7 @@
+{% macro render(url, tooltip, icon) %}
+  {% if url|length > 5 %}
+    <sl-tooltip content="{{ tooltip }}">
+        <sl-icon-button library="fa" name="{{ icon }}" href="{{ url }}" target="_blank"></sl-icon-button>
+    </sl-tooltip>
+  {% endif %}
+{% endmacro %}

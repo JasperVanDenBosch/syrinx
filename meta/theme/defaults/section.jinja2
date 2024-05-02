@@ -1,0 +1,11 @@
+{% import 'defaults/icon_button.jinja2' as IconButton %}
+
+<sl-card id="{{ section.name }}">
+  
+  <div slot="header">
+    {{ section.front['Title'] }}
+  </div>
+
+  {{ section.content_html|safe }}
+
+</sl-card>

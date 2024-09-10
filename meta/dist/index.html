@@ -20,7 +20,25 @@
 
 
 <article>
-<h2>Hello Syrinx!</h2>
+<h1>Syrinx</h1>
+<p>Syrinx is a super simple python package for generating a static website</p>
+<ul>
+<li><a href="https://github.com/JasperVanDenBosch/syrinx">github</a></li>
+</ul>
+<h2>Example</h2>
+<p><code>pip install syrinx
+touch content/index.md
+syrinx .
+python -m http.server -d dist</code></p>
+<h2>Conventions</h2>
+<p>Organize your content with some standard structure and syrinx will interpret it.</p>
+<ol>
+<li>a <code>content/</code> directory with markdown file <code>index.md</code></li>
+<li><em>Toml</em> style frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by triple pluses <code>+++</code>. </li>
+<li>Templates are written in <em>jinja2</em> and go into the <code>theme/defaults/</code> directory.</li>
+<li>CSS, images and other assets go into <code>theme/assets/</code>.</li>
+<li>Syrinx can generate content (markdown) files from CSV tables in the <code>data/</code> directory, based on matching templates in the <code>archetypes/</code> directory. Columns become <em>frontmatter</em> attributes.</li>
+</ol>
 </article>
 
 <div class="section-grid" id=""> 

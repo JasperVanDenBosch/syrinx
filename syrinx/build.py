@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import List, Dict, TYPE_CHECKING
-from os.path import abspath, dirname, isdir, basename, join
+from typing import TYPE_CHECKING
+from os.path import isdir, join
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 if TYPE_CHECKING:
@@ -38,7 +38,7 @@ def build(root: ContentNode, root_dir: str):
         out_fpath = join(node_path, 'index.html')
         with open(out_fpath, 'w') as fhandle:
             fhandle.write(html)
-        for child in node.folders:
+        for child in node.branches:
             build_node(child, root, node_path)
 
 

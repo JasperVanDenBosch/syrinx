@@ -12,6 +12,10 @@ hr {
     display: none;
 }
 
+code {
+    white-space: pre;
+}
+
 /* temp style */
 #body-container {
     margin-top: 100px;

@@ -1,5 +1,7 @@
 # Syrinx
 
+[website](https://syrinx.site)
+
 Simple static site generator in python
 
 

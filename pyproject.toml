@@ -28,3 +28,6 @@ syrinx = "syrinx.cli:main"
 [project.urls]
 Homepage = "https://github.com/ilogue/syrinx"
 Issues = "https://github.com/ilogue/syrinx/issues"
+
+[tool.setuptools]
+packages = ["syrinx"]

@@ -32,12 +32,24 @@ syrinx .
 python -m http.server -d dist</code></p>
 <h2>Conventions</h2>
 <p>Organize your content with some standard structure and syrinx will interpret it.</p>
+<h3>Content</h3>
 <ol>
 <li>a <code>content/</code> directory with markdown file <code>index.md</code></li>
 <li><em>Toml</em> style frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by triple pluses <code>+++</code>. </li>
+</ol>
+<h3>Templating and style</h3>
+<ol>
 <li>Templates are written in <em>jinja2</em> and go into the <code>theme/defaults/</code> directory.</li>
 <li>CSS, images and other assets go into <code>theme/assets/</code>.</li>
-<li>Syrinx can generate content (markdown) files from CSV tables in the <code>data/</code> directory, based on matching templates in the <code>archetypes/</code> directory. Columns become <em>frontmatter</em> attributes.</li>
+</ol>
+<h3>Table Data</h3>
+<p>Syrinx can generate content (markdown) files from CSV tables in the <code>data/</code> directory.</p>
+<ol>
+<li>The archetype file used will be based on the filename of the data file.</li>
+<li>Each row is considered one record.</li>
+<li>The header (1st) row will be used as keys.</li>
+<li>The first column is used as name for the content item.</li>
+<li>Each column will be converted to a variable in the front matter </li>
 </ol>
 </article>
 

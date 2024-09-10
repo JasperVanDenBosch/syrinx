@@ -11,16 +11,16 @@ This section is just about reading and interpreting the content
 
 class ContentNode:
     name: str
-    sections: List[ContentNode]
-    folders: List[ContentNode]
+    leaves: List[ContentNode]
+    branches: List[ContentNode]
     content_html: str
     front: Dict[str, str]
     sequenceNumber: int
 
 def reorder_children(node: ContentNode):
-    node.sections = sorted(node.sections, key=lambda n: (n.sequenceNumber, n.name))
-    node.folders = sorted(node.folders, key=lambda n: (n.sequenceNumber, n.name))
-    for child in node.folders:
+    node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
+    node.branches = sorted(node.branches, key=lambda n: (n.sequenceNumber, n.name))
+    for child in node.branches:
         reorder_children(child)
 
 
@@ -45,7 +45,7 @@ def read(root_dir: str) -> ContentNode:
             indexNode = root
         else:
             parent = tree[dirname(dirpath)]
-            parent.folders.append(indexNode)
+            parent.branches.append(indexNode)
         tree[dirpath] = indexNode
         for fname in fnames:
             fparts = fname.split('.')
@@ -70,10 +70,10 @@ def read(root_dir: str) -> ContentNode:
             else:
                 node = ContentNode()
                 node.name = name
-                indexNode.sections.append(node)
+                indexNode.leaves.append(node)
             
-            node.sections = []
-            node.folders = []
+            node.leaves = []
+            node.branches = []
             node.front = fm_dict
             node.content_html = markdown(md_content)
             node.sequenceNumber = int(fm_dict.get('SequenceNumber', '99999'))

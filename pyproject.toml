@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "syrinx"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Jasper van den Bosch"},
 ]
@@ -31,3 +31,9 @@ Issues = "https://github.com/ilogue/syrinx/issues"
 
 [tool.setuptools]
 packages = ["syrinx"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
+python_files = "*.py"

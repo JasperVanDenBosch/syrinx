@@ -3,3 +3,4 @@ markdown
 pandas
 pytest
 lxml
+parameterized

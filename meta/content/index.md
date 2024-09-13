@@ -29,8 +29,9 @@ Organize your content with some standard structure and syrinx will interpret it.
 
 ### Templating and style
 
-1. Templates are written in *jinja2* and go into the `theme/defaults/` directory.
-2. CSS, images and other assets go into `theme/assets/`.
+1. Templates are written in *jinja2* and go into the `theme/templates/` directory.
+2. The default template used is `page.jinja2`. If a template is found matching the name of the node (e.g. `foo.jinja2`), or `root.jinja2` for the top-most page, this takes precedence.
+3. CSS, images and other assets go into `theme/assets/`.
 
 
 ### Table Data

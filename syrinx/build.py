@@ -1,10 +1,17 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from os.path import isdir, join
+from typing import TYPE_CHECKING, Callable
+from os.path import isdir, join, isfile
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
+
+
+def choose_template_file(node: ContentNode, isfile: Callable[[str], bool], dir: str) -> str:
+    name = node.name or 'root'
+    if isfile(join(dir, f'{name}.jinja2')):
+        return f'{name}.jinja2'
+    return 'page.jinja2'
 
 
 def dir_exists_not_empty(path: str) -> bool:
@@ -13,17 +20,17 @@ def dir_exists_not_empty(path: str) -> bool:
             return True
     return False
 
+
 def build(root: ContentNode, root_dir: str):
 
     assert isdir(root_dir)
             
-    ## ready templated
     theme_dir = join(root_dir, 'theme')
+    template_dir = join(theme_dir, 'templates')
     env = Environment(
-        loader=FileSystemLoader(theme_dir),
+        loader=FileSystemLoader(template_dir),
         autoescape=select_autoescape()
     )
-    page_template = env.get_template('defaults/index.jinja2')
 
     ## locate and clear target directory
     dist_dir = join(root_dir, 'dist')
@@ -32,6 +39,8 @@ def build(root: ContentNode, root_dir: str):
     os.makedirs(dist_dir, exist_ok=True)
 
     def build_node(node: ContentNode, root: ContentNode, parent_path: str):
+        fname_tem = choose_template_file(node, isfile, template_dir)
+        page_template = env.get_template(fname_tem)
         html = page_template.render(index=node, root=root)
         node_path = join(parent_path, node.name)
         os.makedirs(node_path, exist_ok=True)

@@ -39,7 +39,8 @@ python -m http.server -d dist</code></p>
 </ol>
 <h3>Templating and style</h3>
 <ol>
-<li>Templates are written in <em>jinja2</em> and go into the <code>theme/defaults/</code> directory.</li>
+<li>Templates are written in <em>jinja2</em> and go into the <code>theme/templates/</code> directory.</li>
+<li>The default template used is <code>page.jinja2</code>. If a template is found matching the name of the node (<code>foo.jinja2</code>), or <code>root.jinja2</code> for the top-most page, this takes precedence.</li>
 <li>CSS, images and other assets go into <code>theme/assets/</code>.</li>
 </ol>
 <h3>Table Data</h3>
@@ -52,11 +53,6 @@ python -m http.server -d dist</code></p>
 <li>Each column will be converted to a variable in the front matter </li>
 </ol>
 </article>
-
-<div class="section-grid" id=""> 
-
-</div>
-
 
 
 </div>

@@ -14,10 +14,7 @@ class ReadTests(TestCase):
         self.fail()
 
     def test_read_Fail_if_index_missing(self):
-        """
-        FrontMatter "BuildPage" attribute:
-        - if index.md present and has "BuildPage", use this
-        - if index.md present then set "BuildPage" to true
-        - if index.md absent then set "BuildPage" to false
+        """The root index.md is not optional,
+        raise an exception if it's missing.
         """
         self.fail()

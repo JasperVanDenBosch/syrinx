@@ -25,6 +25,8 @@ Organize your content with some standard structure and syrinx will interpret it.
 
 1. a `content/` directory with markdown file `index.md`
 2. *Toml* style frontmatter: Markdown files start with a standard header or *"frontmatter"* that is surrounded by triple pluses `+++`. 
+3. the root content directory should have an `index.md` file
+4. in other content directories, `index.md` is optional. Leaving it out signifies that you do not want a separate page build for this branch.
 
 
 ### Templating and style

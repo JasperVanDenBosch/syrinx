@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from os.path import dirname, basename, join
 from os import walk
 import tomllib
@@ -24,6 +24,17 @@ def reorder_children(node: ContentNode):
     node.branches = sorted(node.branches, key=lambda n: (n.sequenceNumber, n.name))
     for child in node.branches:
         reorder_children(child)
+
+
+def read_file(fpath: str) -> Tuple[Dict, str]:
+    with open(fpath) as fhandle:
+        lines = fhandle.readlines()
+    markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
+    assert len(markers) == 2
+    fm_string = ''.join(lines[1:markers[1]])
+    fm_dict = tomllib.loads(fm_string)
+    md_content = ''.join(lines[markers[1]+1:])
+    return fm_dict, md_content
 
 
 def read(root_dir: str) -> ContentNode:
@@ -57,16 +68,7 @@ def read(root_dir: str) -> ContentNode:
                 continue
             name = fparts[0]
 
-            in_fpath = join(dirpath, fname)
-
-            with open(in_fpath) as fhandle:
-                lines = fhandle.readlines()
-
-            markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
-            assert len(markers) == 2
-            fm_string = ''.join(lines[1:markers[1]])
-            fm_dict = tomllib.loads(fm_string)
-            md_content = ''.join(lines[markers[1]+1:])
+            fm_dict, md_content = read_file(join(dirpath, fname))
 
             if name == 'index':
                 node = indexNode

@@ -8,7 +8,7 @@ Each column will be converted to a variable in the front matter
 """
 from __future__ import annotations
 from typing import TYPE_CHECKING, Dict
-from os.path import join, isdir, abspath, basename
+from os.path import join, isdir, basename
 from os import makedirs
 from glob import glob
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
 
 def preprocess(root_dir: str) -> None:
-
 
     assert isdir(root_dir)
 
@@ -57,6 +56,8 @@ def preprocess(root_dir: str) -> None:
         ## add sequence number if not provided
         if 'SequenceNumber' not in df.columns:
             df['SequenceNumber'] = list(range(len(df)))
+
+        df['Archetype'] = [archetype_name]*len(df)
 
         for label, row in df.iterrows():
             output = archetype.render(dict(row) | {df.index.name: label})

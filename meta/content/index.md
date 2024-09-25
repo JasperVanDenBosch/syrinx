@@ -27,6 +27,9 @@ Organize your content with some standard structure and syrinx will interpret it.
 2. *Toml* style frontmatter: Markdown files start with a standard header or *"frontmatter"* that is surrounded by triple pluses `+++`. 
 3. the root content directory should have an `index.md` file
 4. in other content directories, `index.md` is optional. Leaving it out signifies that you do not want a separate page build for this branch.
+5. Special frontmatter entries:
+    - `SequenceNumber`: Used by templates to order child items in menu's and lists.
+    - `Archetype`: The name of the template used to import these table data
 
 
 ### Templating and style

@@ -36,11 +36,17 @@ python -m http.server -d dist</code></p>
 <ol>
 <li>a <code>content/</code> directory with markdown file <code>index.md</code></li>
 <li><em>Toml</em> style frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by triple pluses <code>+++</code>. </li>
+<li>in content directories other than root, <code>index.md</code> is optional. Leaving it out signifies that you do not want a separate page build for this branch.</li>
+<li>Special frontmatter entries:<ul>
+<li><code>SequenceNumber</code>: Used by templates to order child items in menu's and lists.</li>
+<li><code>Archetype</code>: The name of the template used to import these table data</li>
+</ul>
+</li>
 </ol>
 <h3>Templating and style</h3>
 <ol>
 <li>Templates are written in <em>jinja2</em> and go into the <code>theme/templates/</code> directory.</li>
-<li>The default template used is <code>page.jinja2</code>. If a template is found matching the name of the node (<code>foo.jinja2</code>), or <code>root.jinja2</code> for the top-most page, this takes precedence.</li>
+<li>The default template used is <code>page.jinja2</code>. If a template is found matching the name of the node (e.g. <code>foo.jinja2</code>), or <code>root.jinja2</code> for the top-most page, this takes precedence.</li>
 <li>CSS, images and other assets go into <code>theme/assets/</code>.</li>
 </ol>
 <h3>Table Data</h3>

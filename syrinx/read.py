@@ -4,7 +4,7 @@ from os.path import dirname, basename, join
 from os import walk
 import tomllib
 from markdown import markdown
-
+from sys import maxsize as SYS_MAX_SIZE
 from syrinx.exceptions import ContentError
 
 """
@@ -18,6 +18,13 @@ class ContentNode:
     content_html: str
     front: Dict[str, str]
     sequenceNumber: int
+    buildPage: bool
+
+    def __init__(self):
+        self.buildPage = False
+        self.leaves = []
+        self.branches = []
+        self.sequenceNumber = SYS_MAX_SIZE
 
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
@@ -39,9 +46,7 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
 
 def read(root_dir: str) -> ContentNode:
 
-    
     content_dir = join(root_dir, 'content')
-
 
     tree: Dict[str, ContentNode] = dict()
     root = ContentNode()
@@ -60,7 +65,8 @@ def read(root_dir: str) -> ContentNode:
         tree[dirpath] = indexNode
 
         ## ideally process the index page first (not sure if this is necessary?)
-        fnames.insert(0, fnames.pop(fnames.index('index.md')))
+        if 'index.md' in fnames:
+            fnames.insert(0, fnames.pop(fnames.index('index.md')))
         for fname in fnames:
             fparts = fname.split('.')
             ext = fparts[-1]
@@ -77,11 +83,11 @@ def read(root_dir: str) -> ContentNode:
                 node.name = name
                 indexNode.leaves.append(node)
             
-            node.leaves = []
-            node.branches = []
             node.front = fm_dict
             node.content_html = markdown(md_content)
-            node.sequenceNumber = int(fm_dict.get('SequenceNumber', '99999'))
+            if 'SequenceNumber' in fm_dict:
+                node.sequenceNumber = fm_dict['SequenceNumber']
+            node.buildPage = True
 
     reorder_children(root)
 

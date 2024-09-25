@@ -1,9 +1,11 @@
 from __future__ import annotations
 from typing import List, Dict
 from os.path import dirname, basename, join
-import os
+from os import walk
 import tomllib
 from markdown import markdown
+
+from syrinx.exceptions import ContentError
 
 """
 This section is just about reading and interpreting the content
@@ -33,20 +35,21 @@ def read(root_dir: str) -> ContentNode:
     tree: Dict[str, ContentNode] = dict()
     root = ContentNode()
     root.name = ''
-    for (dirpath, dirnames, fnames) in os.walk(content_dir):
-
-        ## ideally process the index page first (not sure if this is necessary?)
-        index_index = fnames.index('index.md')
-        fnames.insert(0, fnames.pop(index_index))
+    for (dirpath, _, fnames) in walk(content_dir):
 
         indexNode = ContentNode()
         indexNode.name = basename(dirpath)
         if dirpath == content_dir:
             indexNode = root
+            if 'index.md' not in fnames:
+                raise ContentError('root index file missing') 
         else:
             parent = tree[dirname(dirpath)]
             parent.branches.append(indexNode)
         tree[dirpath] = indexNode
+
+        ## ideally process the index page first (not sure if this is necessary?)
+        fnames.insert(0, fnames.pop(fnames.index('index.md')))
         for fname in fnames:
             fparts = fname.split('.')
             ext = fparts[-1]

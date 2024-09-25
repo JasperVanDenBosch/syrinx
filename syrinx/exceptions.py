@@ -1,0 +1,3 @@
+
+class ContentError(Exception):
+    pass

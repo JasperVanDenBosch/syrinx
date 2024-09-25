@@ -20,6 +20,27 @@ def dir_exists_not_empty(path: str) -> bool:
             return True
     return False
 
+def build_node(
+        node: ContentNode,
+        root: ContentNode,
+        parent_path: str,
+        template_dir: str,
+        env: Environment
+    ):
+    """Recursive function to render page, then move on to children
+    """
+    if node.buildPage:
+        fname_tem = choose_template_file(node, isfile, template_dir)
+        page_template = env.get_template(fname_tem)
+        html = page_template.render(index=node, root=root)
+        node_path = join(parent_path, node.name)
+        os.makedirs(node_path, exist_ok=True)
+        out_fpath = join(node_path, 'index.html')
+        with open(out_fpath, 'w') as fhandle:
+            fhandle.write(html)
+    for child in node.branches:
+        build_node(child, root, node_path, template_dir, env)
+
 
 def build(root: ContentNode, root_dir: str):
 
@@ -38,20 +59,7 @@ def build(root: ContentNode, root_dir: str):
         shutil.rmtree(dist_dir)
     os.makedirs(dist_dir, exist_ok=True)
 
-    def build_node(node: ContentNode, root: ContentNode, parent_path: str):
-        fname_tem = choose_template_file(node, isfile, template_dir)
-        page_template = env.get_template(fname_tem)
-        html = page_template.render(index=node, root=root)
-        node_path = join(parent_path, node.name)
-        os.makedirs(node_path, exist_ok=True)
-        out_fpath = join(node_path, 'index.html')
-        with open(out_fpath, 'w') as fhandle:
-            fhandle.write(html)
-        for child in node.branches:
-            build_node(child, root, node_path)
-
-
-    build_node(root, root, dist_dir)
+    build_node(root, root, dist_dir, template_dir, env)
 
     dist_assets_dir = join(dist_dir, 'assets')
 

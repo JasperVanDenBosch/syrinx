@@ -1,17 +1,24 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Optional
 from os.path import isdir, join, isfile
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from syrinx.exceptions import ThemeError
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
 
 
-def choose_template_file(node: ContentNode, isfile: Callable[[str], bool], dir: str) -> str:
+def choose_template_file(
+            node: ContentNode,
+            isfile: Callable[[str], bool],
+            dir: str
+        ) -> str:
     name = node.name or 'root'
-    if isfile(join(dir, f'{name}.jinja2')):
-        return f'{name}.jinja2'
-    return 'page.jinja2'
+    for tem_name in (name, 'page'):
+        if isfile(join(dir, f'{tem_name}.jinja2')):
+            return f'{tem_name}.jinja2'
+    else:
+        raise ThemeError(f'Missing template for "{node.name}"')
 
 
 def dir_exists_not_empty(path: str) -> bool:
@@ -19,6 +26,7 @@ def dir_exists_not_empty(path: str) -> bool:
         if len(os.listdir(path)):
             return True
     return False
+
 
 def build_node(
         node: ContentNode,

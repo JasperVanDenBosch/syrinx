@@ -3,12 +3,14 @@ from unittest.mock import Mock, patch
 
 class BuildNodeTests(TestCase):
 
+    @patch('syrinx.build.isfile')
     @patch('syrinx.build.open')
-    def test_follows_buildPage(self, open):
+    def test_follows_buildPage(self, open, isfile):
         from syrinx.build import build_node
         node = Mock()
         root = Mock()
         env = Mock()
+        isfile.return_value = True
         node.name = 'foo'
         node.branches = []
         node.buildPage = False

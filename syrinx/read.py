@@ -1,9 +1,11 @@
 from __future__ import annotations
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from os.path import dirname, basename, join
-import os
+from os import walk
 import tomllib
 from markdown import markdown
+from sys import maxsize as SYS_MAX_SIZE
+from syrinx.exceptions import ContentError
 
 """
 This section is just about reading and interpreting the content
@@ -16,6 +18,13 @@ class ContentNode:
     content_html: str
     front: Dict[str, str]
     sequenceNumber: int
+    buildPage: bool
+
+    def __init__(self):
+        self.buildPage = False
+        self.leaves = []
+        self.branches = []
+        self.sequenceNumber = SYS_MAX_SIZE
 
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
@@ -24,29 +33,40 @@ def reorder_children(node: ContentNode):
         reorder_children(child)
 
 
+def read_file(fpath: str) -> Tuple[Dict, str]:
+    with open(fpath) as fhandle:
+        lines = fhandle.readlines()
+    markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
+    assert len(markers) == 2
+    fm_string = ''.join(lines[1:markers[1]])
+    fm_dict = tomllib.loads(fm_string)
+    md_content = ''.join(lines[markers[1]+1:])
+    return fm_dict, md_content
+
+
 def read(root_dir: str) -> ContentNode:
 
-    
     content_dir = join(root_dir, 'content')
-
 
     tree: Dict[str, ContentNode] = dict()
     root = ContentNode()
     root.name = ''
-    for (dirpath, dirnames, fnames) in os.walk(content_dir):
-
-        ## ideally process the index page first (not sure if this is necessary?)
-        index_index = fnames.index('index.md')
-        fnames.insert(0, fnames.pop(index_index))
+    for (dirpath, _, fnames) in walk(content_dir):
 
         indexNode = ContentNode()
         indexNode.name = basename(dirpath)
         if dirpath == content_dir:
             indexNode = root
+            if 'index.md' not in fnames:
+                raise ContentError('root index file missing') 
         else:
             parent = tree[dirname(dirpath)]
             parent.branches.append(indexNode)
         tree[dirpath] = indexNode
+
+        ## ideally process the index page first (not sure if this is necessary?)
+        if 'index.md' in fnames:
+            fnames.insert(0, fnames.pop(fnames.index('index.md')))
         for fname in fnames:
             fparts = fname.split('.')
             ext = fparts[-1]
@@ -54,16 +74,7 @@ def read(root_dir: str) -> ContentNode:
                 continue
             name = fparts[0]
 
-            in_fpath = join(dirpath, fname)
-
-            with open(in_fpath) as fhandle:
-                lines = fhandle.readlines()
-
-            markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
-            assert len(markers) == 2
-            fm_string = ''.join(lines[1:markers[1]])
-            fm_dict = tomllib.loads(fm_string)
-            md_content = ''.join(lines[markers[1]+1:])
+            fm_dict, md_content = read_file(join(dirpath, fname))
 
             if name == 'index':
                 node = indexNode
@@ -72,11 +83,11 @@ def read(root_dir: str) -> ContentNode:
                 node.name = name
                 indexNode.leaves.append(node)
             
-            node.leaves = []
-            node.branches = []
             node.front = fm_dict
             node.content_html = markdown(md_content)
-            node.sequenceNumber = int(fm_dict.get('SequenceNumber', '99999'))
+            if 'SequenceNumber' in fm_dict:
+                node.sequenceNumber = fm_dict['SequenceNumber']
+            node.buildPage = True
 
     reorder_children(root)
 

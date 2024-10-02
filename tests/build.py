@@ -33,3 +33,15 @@ class BuildTests(TestCase):
             choose_template_file(node, isfile, '/t'),
             expected
         )
+
+    def test_choose_template_file_none(self):
+        """If no template is available, throw exception
+        """
+        from syrinx.build import choose_template_file
+        from syrinx.exceptions import ThemeError
+        node = Mock()
+        isfile = Mock()
+        node.name = 'foo'
+        isfile.side_effect = lambda p: False
+        with self.assertRaisesRegex(ThemeError, 'Missing template for "foo"'):
+            choose_template_file(node, isfile, '/t')

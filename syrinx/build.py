@@ -1,17 +1,24 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Optional
 from os.path import isdir, join, isfile
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from syrinx.exceptions import ThemeError
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
 
 
-def choose_template_file(node: ContentNode, isfile: Callable[[str], bool], dir: str) -> str:
+def choose_template_file(
+            node: ContentNode,
+            isfile: Callable[[str], bool],
+            dir: str
+        ) -> str:
     name = node.name or 'root'
-    if isfile(join(dir, f'{name}.jinja2')):
-        return f'{name}.jinja2'
-    return 'page.jinja2'
+    for tem_name in (name, 'page'):
+        if isfile(join(dir, f'{tem_name}.jinja2')):
+            return f'{tem_name}.jinja2'
+    else:
+        raise ThemeError(f'Missing template for "{node.name}"')
 
 
 def dir_exists_not_empty(path: str) -> bool:
@@ -19,6 +26,28 @@ def dir_exists_not_empty(path: str) -> bool:
         if len(os.listdir(path)):
             return True
     return False
+
+
+def build_node(
+        node: ContentNode,
+        root: ContentNode,
+        parent_path: str,
+        template_dir: str,
+        env: Environment
+    ):
+    """Recursive function to render page, then move on to children
+    """
+    if node.buildPage:
+        fname_tem = choose_template_file(node, isfile, template_dir)
+        page_template = env.get_template(fname_tem)
+        html = page_template.render(index=node, root=root)
+        node_path = join(parent_path, node.name)
+        os.makedirs(node_path, exist_ok=True)
+        out_fpath = join(node_path, 'index.html')
+        with open(out_fpath, 'w') as fhandle:
+            fhandle.write(html)
+    for child in node.branches:
+        build_node(child, root, node_path, template_dir, env)
 
 
 def build(root: ContentNode, root_dir: str):
@@ -38,20 +67,7 @@ def build(root: ContentNode, root_dir: str):
         shutil.rmtree(dist_dir)
     os.makedirs(dist_dir, exist_ok=True)
 
-    def build_node(node: ContentNode, root: ContentNode, parent_path: str):
-        fname_tem = choose_template_file(node, isfile, template_dir)
-        page_template = env.get_template(fname_tem)
-        html = page_template.render(index=node, root=root)
-        node_path = join(parent_path, node.name)
-        os.makedirs(node_path, exist_ok=True)
-        out_fpath = join(node_path, 'index.html')
-        with open(out_fpath, 'w') as fhandle:
-            fhandle.write(html)
-        for child in node.branches:
-            build_node(child, root, node_path)
-
-
-    build_node(root, root, dist_dir)
+    build_node(root, root, dist_dir, template_dir, env)
 
     dist_assets_dir = join(dist_dir, 'assets')
 

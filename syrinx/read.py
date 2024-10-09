@@ -26,6 +26,10 @@ class ContentNode:
         self.branches = []
         self.sequenceNumber = SYS_MAX_SIZE
 
+    @property
+    def title(self) -> str:
+        return self.name.replace('_', ' ').title()
+
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
     node.branches = sorted(node.branches, key=lambda n: (n.sequenceNumber, n.name))

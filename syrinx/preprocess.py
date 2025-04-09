@@ -9,7 +9,7 @@ Each column will be converted to a variable in the front matter
 from __future__ import annotations
 from typing import TYPE_CHECKING, Dict
 from os.path import join, isdir, basename
-from os import makedirs
+from os import makedirs, remove
 from glob import glob
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pandas import read_csv
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from jinja2 import Template
 
 
-def preprocess(root_dir: str) -> None:
+def preprocess(root_dir: str, clean: bool = False) -> None:
 
     assert isdir(root_dir)
 
@@ -44,6 +44,10 @@ def preprocess(root_dir: str) -> None:
 
         collection_dir = join(root_dir, 'content', archetype_name)
         makedirs(collection_dir, exist_ok=True)
+
+        if clean:
+            stale_content = glob("*.md", root_dir=collection_dir)
+            [remove(join(collection_dir, filename)) for filename in stale_content if "index" not in filename]
 
         df = read_csv(fpath, sep='\t', index_col=0)
 

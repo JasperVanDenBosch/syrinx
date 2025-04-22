@@ -1,0 +1,48 @@
+name: Test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Python Version
+      run: python --version
+    - name: Python Version
+      run: python --version
+    - name: Update Pip
+      run: python -m pip install --upgrade pip
+    - name: Install Build and Test Dependencies
+      run: pip install -r tests/requirements.txt
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Build package
+      run: python -m build --sdist
+    - name: Install Syrinx
+      run: pip install dist/*
+    - name: Check package compliance
+      run: |
+        pip install -q twine
+        twine check dist/*
+    - name: Unit tests
+      run: pytest
+    - name: Store artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: source #name: source-${{ matrix.os }}-${{ matrix.python-version }}
+        path: dist/*
+        if-no-files-found: error
+        retention-days: 1

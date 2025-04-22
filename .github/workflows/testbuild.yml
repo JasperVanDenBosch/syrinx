@@ -29,18 +29,16 @@ jobs:
       run: pip install build setuptools
     - name: Install dependencies
       run: pip install -r requirements.txt
-    - name: Install Syrinx
-      run: pip install .
-    - name: Install test dependencies
-      run: pip install -r tests/requirements.txt
-    - name: Unit tests
-      run: pytest
     - name: Build package
       run: python -m build --sdist
+    - name: Install Syrinx
+      run: pip install dist/*
     - name: Check package compliance
       run: |
         pip install -q twine
         twine check dist/*
+    - name: Unit tests
+      run: pytest
     - name: Store artifact
       uses: actions/upload-artifact@v4
       with:

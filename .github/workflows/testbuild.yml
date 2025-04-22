@@ -11,7 +11,7 @@ permissions:
 jobs:
 
   tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
       with:
@@ -31,3 +31,16 @@ jobs:
       run: pip install -r tests/requirements.txt
     - name: Unit tests
       run: pytest
+    - name: Build package
+      run: python -m build --sdist
+    - name: Check package compliance
+      run: |
+        pip install -q twine
+        twine check dist/*
+    - name: Store artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: source #name: source-${{ matrix.os }}-${{ matrix.python-version }}
+        path: dist/*
+        if-no-files-found: error
+        retention-days: 1

@@ -26,10 +26,12 @@
 <li><a href="https://github.com/JasperVanDenBosch/syrinx">github</a></li>
 </ul>
 <h2>Example</h2>
-<p><code>pip install syrinx
+<p><code>bash
+pip install syrinx
 touch content/index.md
 syrinx .
 python -m http.server -d dist</code></p>
+<p>Use <code>syrinx . --dev</code> to run a development server with live reloading. You can also use <code>syrinx . --port 8000</code> to specify a different port for the development server (8000 is the default).</p>
 <h2>Conventions</h2>
 <p>Organize your content with some standard structure and syrinx will interpret it.</p>
 <h3>Content</h3>

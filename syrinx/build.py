@@ -50,7 +50,7 @@ def build_node(
         build_node(child, root, node_path, template_dir, env)
 
 
-def build(root: ContentNode, root_dir: str):
+def build(root: ContentNode, root_dir: str, environment: str):
 
     assert isdir(root_dir)
             

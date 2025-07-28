@@ -8,10 +8,11 @@ import argparse
 def get_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("root_dir", type=str, help="Location of root directory to build from")
-    parser.add_argument("-c", "--clean", action="store_true", 
-                        help="Remove existing dynamic content files")
-
+    parser.add_argument('root_dir', type=str, help='Location of root directory to build from')
+    parser.add_argument('-c', '--clean', action='store_true', 
+                        help='Remove existing dynamic content files')
+    parser.add_argument('-e', '--environment', default='default', 
+                        help='Define build environment for customization, e.g. "production"')
     return parser.parse_args()
 
 def main():
@@ -21,5 +22,5 @@ def main():
     assert isdir(root_dir)
     preprocess(root_dir, clean=args.clean)
     root = read(root_dir)
-    build(root, root_dir)
+    build(root, root_dir, args.environment)
     print('done.')

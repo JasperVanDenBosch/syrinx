@@ -3,6 +3,8 @@
 
 # Syrinx
 
+> *Spreadsheet to website*
+
 Syrinx is a super simple python package for generating a static website
 
 * [github](https://github.com/JasperVanDenBosch/syrinx)

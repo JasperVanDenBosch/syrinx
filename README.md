@@ -1,5 +1,7 @@
 # Syrinx
 
+> *Spreadsheet to website*
+
 [website](https://syrinx.site)
 
 Simple static site generator in python

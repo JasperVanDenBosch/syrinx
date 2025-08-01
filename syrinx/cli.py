@@ -29,6 +29,7 @@ def main():
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
     preprocess(root_dir, clean=args.clean)
-    root = read(root_dir, None)
+    
+    root = read(root_dir, BuildMetaInfo(args.environment))
     build(root, root_dir)
     print('done.')

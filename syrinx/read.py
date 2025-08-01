@@ -1,15 +1,18 @@
 from __future__ import annotations
-from typing import List, Dict, Tuple
+from typing import TYPE_CHECKING, List, Dict, Tuple
 from os.path import dirname, basename, join
 from os import walk
 import tomllib
 from markdown import markdown
 from sys import maxsize as SYS_MAX_SIZE
 from syrinx.exceptions import ContentError
+if TYPE_CHECKING:
+    from syrinx.cli import BuildMetaInfo
 
 """
 This section is just about reading and interpreting the content
 """
+
 
 class ContentNode:
     name: str
@@ -19,6 +22,7 @@ class ContentNode:
     front: Dict[str, str]
     sequenceNumber: int
     buildPage: bool
+    meta: BuildMetaInfo
 
     def __init__(self):
         self.buildPage = False
@@ -48,17 +52,19 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
     return fm_dict, md_content
 
 
-def read(root_dir: str) -> ContentNode:
+def read(root_dir: str, meta: BuildMetaInfo) -> ContentNode:
 
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()
     root = ContentNode()
     root.name = ''
+    root.meta = meta
     for (dirpath, _, fnames) in walk(content_dir):
 
         indexNode = ContentNode()
         indexNode.name = basename(dirpath)
+        indexNode.meta = meta
         if dirpath == content_dir:
             indexNode = root
             if 'index.md' not in fnames:
@@ -85,6 +91,7 @@ def read(root_dir: str) -> ContentNode:
             else:
                 node = ContentNode()
                 node.name = name
+                node.meta = meta
                 indexNode.leaves.append(node)
             
             node.front = fm_dict

@@ -3,6 +3,14 @@ from syrinx.read import read
 from syrinx.preprocess import preprocess
 from os.path import abspath, isdir
 import argparse
+from datetime import datetime, UTC
+
+
+class BuildMetaInfo:
+
+    def __init__(self, environment: str) -> None:
+        self.environment = environment
+        self.timestamp = datetime.now(tz=UTC)
 
 
 def get_args():
@@ -21,6 +29,6 @@ def main():
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
     preprocess(root_dir, clean=args.clean)
-    root = read(root_dir)
-    build(root, root_dir, args.environment)
+    root = read(root_dir, None)
+    build(root, root_dir)
     print('done.')

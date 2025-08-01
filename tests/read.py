@@ -1,5 +1,8 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, Mock
+from datetime import datetime
 
 
 class ReadTests(TestCase):
@@ -14,8 +17,9 @@ class ReadTests(TestCase):
             ('/pth/content', None, ['index.md']),
             ('/pth/content/lorem', None, ['ipsum.md', 'index.md']),
         ]
+        meta = Mock()
         from syrinx.read import read
-        root = read('/pth')
+        root = read('/pth', meta)
         self.assertTrue(root.branches[0].buildPage)
 
     @patch('syrinx.read.walk')
@@ -28,8 +32,9 @@ class ReadTests(TestCase):
             ('/pth/content', None, ['index.md']),
             ('/pth/content/foo', None, ['bar.md']),
         ]
+        meta = Mock()
         from syrinx.read import read
-        root = read('/pth')
+        root = read('/pth', meta)
         self.assertFalse(root.branches[0].buildPage)
 
     @patch('syrinx.read.walk')
@@ -38,7 +43,29 @@ class ReadTests(TestCase):
         raise an exception if it's missing.
         """
         walk.return_value = [('/pth/content', None, ['other.md'])]
+        meta = Mock()
         from syrinx.read import read
         from syrinx.exceptions import ContentError
         with self.assertRaisesRegex(ContentError, 'root index file missing'):
-            read('/pth')
+            read('/pth', meta)
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_adds_build_info(self, read_file, walk):
+        """
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['bar.md']),
+        ]
+
+        from syrinx.read import read
+        meta = Mock()
+        meta.environment = 'foo'
+        meta.timestamp = dt = datetime.now()
+        root = read('/pth', meta)
+        self.assertEqual(root.meta.environment, 'foo')
+        self.assertEqual(root.meta.timestamp, dt)
+        self.assertEqual(root.branches[0].meta.environment, 'foo')
+        self.assertEqual(root.branches[0].meta.timestamp, dt)

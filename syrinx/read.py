@@ -33,7 +33,10 @@ class ContentNode:
 
     @property
     def title(self) -> str:
-        return self.name.replace('_', ' ').title()
+        if 'Title' in self.front:
+            return self.front['Title']
+        else:
+            return self.name.replace('_', ' ').title()
 
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))

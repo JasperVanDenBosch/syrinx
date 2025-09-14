@@ -10,13 +10,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict
 from os.path import join, isdir, basename
 from os import makedirs, remove
+import logging
 from glob import glob
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pandas import read_csv
 from numpy import nan
 if TYPE_CHECKING:
     from jinja2 import Template
-
+logger = logging.getLogger(__name__)
 
 def preprocess(root_dir: str, clean: bool = False) -> None:
 
@@ -33,6 +34,7 @@ def preprocess(root_dir: str, clean: bool = False) -> None:
         fname = basename(fpath)
         archetype_name = fname.split('.')[0]
         archetypes[archetype_name] = env.get_template(fname)
+
 
     data_files = glob(join(root_dir, 'data', '*.tsv'))
 
@@ -62,6 +64,8 @@ def preprocess(root_dir: str, clean: bool = False) -> None:
             df['SequenceNumber'] = list(range(len(df)))
 
         df['Archetype'] = [archetype_name]*len(df)
+
+        logger.info(f'Preprocessing {archetype_name}')
 
         for label, row in df.iterrows():
             output = archetype.render(dict(row) | {df.index.name: label})

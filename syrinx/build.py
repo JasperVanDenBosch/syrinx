@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 from os.path import isdir, join, isfile
 import shutil, os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -38,11 +38,11 @@ def build_node(
     """Recursive function to render page, then move on to children
     """
     node_path = join(parent_path, node.name)
+    os.makedirs(node_path, exist_ok=True)
     if node.buildPage:
         fname_tem = choose_template_file(node, isfile, template_dir)
         page_template = env.get_template(fname_tem)
         html = page_template.render(index=node, root=root)
-        os.makedirs(node_path, exist_ok=True)
         out_fpath = join(node_path, 'index.html')
         with open(out_fpath, 'w') as fhandle:
             fhandle.write(html)

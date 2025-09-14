@@ -3,12 +3,13 @@ from typing import TYPE_CHECKING, List, Dict, Tuple
 from os.path import dirname, basename, join
 from os import walk
 import tomllib
+import logging
 from markdown import markdown
 from sys import maxsize as SYS_MAX_SIZE
 from syrinx.exceptions import ContentError
 if TYPE_CHECKING:
     from syrinx.cli import BuildMetaInfo
-
+logger = logging.getLogger(__name__)
 """
 This section is just about reading and interpreting the content
 """
@@ -32,7 +33,10 @@ class ContentNode:
 
     @property
     def title(self) -> str:
-        return self.name.replace('_', ' ').title()
+        if 'Title' in self.front:
+            return self.front['Title']
+        else:
+            return self.name.replace('_', ' ').title()
 
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
@@ -99,6 +103,8 @@ def read(root_dir: str, meta: BuildMetaInfo) -> ContentNode:
             if 'SequenceNumber' in fm_dict:
                 node.sequenceNumber = fm_dict['SequenceNumber']
             node.buildPage = True
+            rel_path = join(dirpath.replace(content_dir, ""), fname)
+            logger.info(f'Read {rel_path}')
 
     reorder_children(root)
 

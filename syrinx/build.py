@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 from os.path import isdir, join, isfile
-import shutil, os
+import shutil, os, logging
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from syrinx.exceptions import ThemeError
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
-
+logger = logging.getLogger(__name__)
 
 def choose_template_file(
             node: ContentNode,
@@ -46,6 +46,9 @@ def build_node(
         out_fpath = join(node_path, 'index.html')
         with open(out_fpath, 'w') as fhandle:
             fhandle.write(html)
+        rel_path = out_fpath.replace(out_fpath.split('dist/')[0], '')
+        logger.info(f'Built {rel_path}')
+
     for child in node.branches:
         build_node(child, root, node_path, template_dir, env)
 

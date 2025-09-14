@@ -37,11 +37,11 @@ def build_node(
     ):
     """Recursive function to render page, then move on to children
     """
+    node_path = join(parent_path, node.name)
     if node.buildPage:
         fname_tem = choose_template_file(node, isfile, template_dir)
         page_template = env.get_template(fname_tem)
         html = page_template.render(index=node, root=root)
-        node_path = join(parent_path, node.name)
         os.makedirs(node_path, exist_ok=True)
         out_fpath = join(node_path, 'index.html')
         with open(out_fpath, 'w') as fhandle:

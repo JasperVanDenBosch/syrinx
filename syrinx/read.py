@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Dict, Tuple
+from typing import TYPE_CHECKING, List, Dict, Tuple, Optional
 from os.path import dirname, basename, join
 from os import walk
 import tomllib
@@ -19,8 +19,9 @@ This section is just about reading and interpreting the content
 
 class BuildMetaInfo:
 
-    def __init__(self, environment: str) -> None:
-        self.environment = environment
+    def __init__(self, config: SyrinxConfiguration) -> None:
+        self.environment = config.environment
+        self.domain = config.domain
         self.timestamp = datetime.now(tz=UTC)
         self.syrinx_version = version('syrinx')
 
@@ -33,6 +34,7 @@ class ContentNode:
     front: Dict[str, str]
     sequenceNumber: int
     buildPage: bool
+    path: str
     meta: BuildMetaInfo
 
     def __init__(self):
@@ -47,6 +49,16 @@ class ContentNode:
             return self.front['Title']
         else:
             return self.name.replace('_', ' ').title()
+        
+    @property
+    def address(self) -> Optional[str]:
+        if self.meta.domain is not None:
+            return f'https://{self.meta.domain}{self.path}/'
+
+    @property
+    def lastModified(self) -> Optional[str]:
+        return self.front.get('LastModified')
+
 
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
@@ -68,7 +80,7 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
 
 def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
-    meta = BuildMetaInfo(config.environment)
+    meta = BuildMetaInfo(config)
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()
@@ -98,14 +110,16 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
             if ext != 'md':
                 continue
             name = fparts[0]
-
+            
             fm_dict, md_content = read_file(join(dirpath, fname))
 
             if name == 'index':
                 node = indexNode
+                node.path = dirpath.replace(content_dir, '')
             else:
                 node = ContentNode()
                 node.name = name
+                node.path = join(dirpath.replace(content_dir, ''), node.name)
                 node.meta = meta
                 indexNode.leaves.append(node)
             

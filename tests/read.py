@@ -1,7 +1,6 @@
 from __future__ import annotations
 from unittest import TestCase
 from unittest.mock import patch, Mock
-from datetime import datetime
 
 
 class ReadTests(TestCase):
@@ -68,3 +67,23 @@ class ReadTests(TestCase):
         self.assertEqual(root.meta.timestamp, datetime.now())
         self.assertEqual(root.branches[0].meta.environment, 'foo')
         self.assertEqual(root.branches[0].meta.timestamp, datetime.now())
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_address(self, read_file, walk):
+        """
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['index.md', 'boz.md']),
+            ('/pth/content/foo/bar', None, ['index.md']),
+        ]
+        from syrinx.read import read
+        config = Mock()
+        config.domain = 'loop.xyz'
+        root = read('/pth', config)
+        self.assertEqual(root.address, 'https://loop.xyz/')
+        self.assertEqual(root.branches[0].address, 'https://loop.xyz/foo/')
+        self.assertEqual(root.branches[0].branches[0].address,
+            'https://loop.xyz/foo/bar/')

@@ -36,8 +36,6 @@ class ConfigTests(TestCase):
             environment = "staging"
         """
         args = Namespace()
-        args.domain = None
-        args.verbose = None
         config = configure(args)
         self.assertEqual(config.domain, 'some.where.bla')
         self.assertTrue(config.verbose)
@@ -68,4 +66,8 @@ class ConfigTests(TestCase):
         """
         from syrinx.config import SyrinxConfiguration
         config = SyrinxConfiguration()
-        self.assertEqual(str(config), '')
+        config.domain = 'some.where.bla'
+        config.environment = 'default'
+        config.verbose = False
+        self.assertEqual(str(config), 
+            '\tdomain = "some.where.bla"\n\tenvironment = "default"\n\tverbose = False')

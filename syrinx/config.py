@@ -11,6 +11,15 @@ class SyrinxConfiguration:
     verbose: bool
     environment: str
 
+    def __str__(self) -> str:
+        lines = []
+        for key in ('domain', 'environment', 'verbose'):
+            val = getattr(self, key)
+            if isinstance(val, str):
+                val = f'"{val}"'
+            lines.append(f'\t{key} = {val}')
+        return '\n'.join(lines)
+
 
 def configure(args: Namespace) -> SyrinxConfiguration:
     config = SyrinxConfiguration()
@@ -34,4 +43,8 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                     config.verbose = val.lower() == 'true'
                 if key == 'environment':
                     config.environment = val
+
+    for key in ('domain', 'verbose', 'environment'):
+        if hasattr(args, key):
+            setattr(config, key, getattr(args, key))
     return config

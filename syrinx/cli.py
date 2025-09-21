@@ -5,16 +5,6 @@ from syrinx.config import configure
 from os.path import abspath, isdir
 from argparse import ArgumentParser, SUPPRESS
 import logging
-from datetime import datetime, UTC
-from importlib.metadata import version
-
-
-class BuildMetaInfo:
-
-    def __init__(self, environment: str) -> None:
-        self.environment = environment
-        self.timestamp = datetime.now(tz=UTC)
-        self.syrinx_version = version('syrinx')
 
 
 def get_args():
@@ -43,7 +33,7 @@ def main():
     assert isdir(root_dir)
     preprocess(root_dir, config)
     
-    root = read(root_dir, BuildMetaInfo(config.environment))
+    root = read(root_dir, config)
     build(root, root_dir, config)
     print('done.')
 

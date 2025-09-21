@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 from unittest import TestCase
 from unittest.mock import patch, Mock
 from datetime import datetime
@@ -17,9 +16,9 @@ class ReadTests(TestCase):
             ('/pth/content', None, ['index.md']),
             ('/pth/content/lorem', None, ['ipsum.md', 'index.md']),
         ]
-        meta = Mock()
+        config = Mock()
         from syrinx.read import read
-        root = read('/pth', meta)
+        root = read('/pth', config)
         self.assertTrue(root.branches[0].buildPage)
 
     @patch('syrinx.read.walk')
@@ -32,9 +31,9 @@ class ReadTests(TestCase):
             ('/pth/content', None, ['index.md']),
             ('/pth/content/foo', None, ['bar.md']),
         ]
-        meta = Mock()
+        config = Mock()
         from syrinx.read import read
-        root = read('/pth', meta)
+        root = read('/pth', config)
         self.assertFalse(root.branches[0].buildPage)
 
     @patch('syrinx.read.walk')
@@ -43,15 +42,16 @@ class ReadTests(TestCase):
         raise an exception if it's missing.
         """
         walk.return_value = [('/pth/content', None, ['other.md'])]
-        meta = Mock()
+        config = Mock()
         from syrinx.read import read
         from syrinx.exceptions import ContentError
         with self.assertRaisesRegex(ContentError, 'root index file missing'):
-            read('/pth', meta)
+            read('/pth', config)
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    def test_read_adds_build_info(self, read_file, walk):
+    @patch('syrinx.read.datetime')
+    def test_read_adds_build_info(self, datetime, read_file, walk):
         """
         """
         read_file.return_value = dict(), ''
@@ -61,11 +61,10 @@ class ReadTests(TestCase):
         ]
 
         from syrinx.read import read
-        meta = Mock()
-        meta.environment = 'foo'
-        meta.timestamp = dt = datetime.now()
-        root = read('/pth', meta)
+        config = Mock()
+        config.environment = 'foo'
+        root = read('/pth', config)
         self.assertEqual(root.meta.environment, 'foo')
-        self.assertEqual(root.meta.timestamp, dt)
+        self.assertEqual(root.meta.timestamp, datetime.now())
         self.assertEqual(root.branches[0].meta.environment, 'foo')
-        self.assertEqual(root.branches[0].meta.timestamp, dt)
+        self.assertEqual(root.branches[0].meta.timestamp, datetime.now())

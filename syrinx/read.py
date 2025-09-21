@@ -7,12 +7,22 @@ import logging
 from markdown import markdown
 from sys import maxsize as SYS_MAX_SIZE
 from syrinx.exceptions import ContentError
+from datetime import datetime, UTC
+from importlib.metadata import version
 if TYPE_CHECKING:
-    from syrinx.cli import BuildMetaInfo
+    from syrinx.config import SyrinxConfiguration
 logger = logging.getLogger(__name__)
 """
 This section is just about reading and interpreting the content
 """
+
+
+class BuildMetaInfo:
+
+    def __init__(self, environment: str) -> None:
+        self.environment = environment
+        self.timestamp = datetime.now(tz=UTC)
+        self.syrinx_version = version('syrinx')
 
 
 class ContentNode:
@@ -56,8 +66,9 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
     return fm_dict, md_content
 
 
-def read(root_dir: str, meta: BuildMetaInfo) -> ContentNode:
+def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
+    meta = BuildMetaInfo(config.environment)
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()

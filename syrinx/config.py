@@ -7,22 +7,26 @@ if TYPE_CHECKING:
 
 
 class SyrinxConfiguration:
+    clean: bool
     domain: Optional[str]
-    verbose: bool
     environment: str
+    verbose: bool
 
     def __str__(self) -> str:
         lines = []
-        for key in ('domain', 'environment', 'verbose'):
+        for key in ('clean', 'domain', 'environment', 'verbose'):
             val = getattr(self, key)
             if isinstance(val, str):
                 val = f'"{val}"'
+            if isinstance(val, bool):
+                val = str(val).lower()
             lines.append(f'\t{key} = {val}')
         return '\n'.join(lines)
 
 
 def configure(args: Namespace) -> SyrinxConfiguration:
     config = SyrinxConfiguration()
+    config.clean = True
     config.domain = None
     config.verbose = False
     config.environment = 'default'
@@ -37,6 +41,8 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                     continue
                 key, val, *_ = [p.strip() for p in line.split('=')]
                 val = val.strip('"')
+                if key == 'clean':
+                    config.clean = val.lower() == 'true'
                 if key == 'domain':
                     config.domain = val
                 if key == 'verbose':
@@ -44,7 +50,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                 if key == 'environment':
                     config.environment = val
 
-    for key in ('domain', 'verbose', 'environment'):
+    for key in ('clean', 'domain', 'verbose', 'environment'):
         if hasattr(args, key):
             setattr(config, key, getattr(args, key))
     return config

@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from syrinx.exceptions import ThemeError
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
+    from syrinx.config import SyrinxConfiguration
 logger = logging.getLogger(__name__)
 
 def choose_template_file(
@@ -53,7 +54,7 @@ def build_node(
         build_node(child, root, node_path, template_dir, env)
 
 
-def build(root: ContentNode, root_dir: str):
+def build(root: ContentNode, root_dir: str, config: SyrinxConfiguration):
 
     assert isdir(root_dir)
             

@@ -36,12 +36,14 @@ def main():
 
     if config.verbose:
         logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.info('Configuration:\n'+str(config))
 
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
-    preprocess(root_dir, clean=args.clean)
+    preprocess(root_dir, config)
     
-    root = read(root_dir, BuildMetaInfo(args.environment))
-    build(root, root_dir)
+    root = read(root_dir, BuildMetaInfo(config.environment))
+    build(root, root_dir, config)
     print('done.')
 

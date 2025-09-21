@@ -23,6 +23,7 @@ class ConfigTests(TestCase):
         config = configure(args)
         self.assertIsNone(config.domain)
         self.assertFalse(config.verbose)
+        self.assertTrue(config.clean)
         self.assertEqual(config.environment, 'default')
 
     @patch('syrinx.config.isfile')
@@ -34,11 +35,13 @@ class ConfigTests(TestCase):
             domain = "some.where.bla"
             verbose = true
             environment = "staging"
+            clean = false
         """
         args = Namespace()
         config = configure(args)
         self.assertEqual(config.domain, 'some.where.bla')
         self.assertTrue(config.verbose)
+        self.assertFalse(config.clean)
         self.assertEqual(config.environment, 'staging')
 
     @patch('syrinx.config.isfile')
@@ -47,6 +50,7 @@ class ConfigTests(TestCase):
         from syrinx.config import configure
         isfile.return_value = True
         mocked_open().read.return_value = """
+            clean = false
             domain = "some.where.bla"
             verbose = true
             environment = "staging"
@@ -55,10 +59,12 @@ class ConfigTests(TestCase):
         args.domain = 'not.there.bla'
         args.verbose = False
         args.environment = 'production'
+        args.clean = True
         config = configure(args)
         self.assertEqual(config.domain, 'not.there.bla')
         self.assertFalse(config.verbose)
         self.assertEqual(config.environment, 'production')
+        self.assertTrue(config.clean)
 
     def test_configuration_stringifiable(self):
         """SyrinxConfiguration objects should convert to readable 
@@ -69,5 +75,6 @@ class ConfigTests(TestCase):
         config.domain = 'some.where.bla'
         config.environment = 'default'
         config.verbose = False
+        config.clean = True
         self.assertEqual(str(config), 
-            '\tdomain = "some.where.bla"\n\tenvironment = "default"\n\tverbose = False')
+            '\tclean = true\n\tdomain = "some.where.bla"\n\tenvironment = "default"\n\tverbose = false')

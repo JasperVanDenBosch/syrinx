@@ -11,9 +11,10 @@ class ConfigTests(TestCase):
     if no config file,
     have sensible defaults
     """
+    
 
     @patch('syrinx.config.isfile')
-    @patch('syrinx.config.open')
+    @patch('syrinx.config.open', new_callable=mock_open)
     def test_defaults(self, _, isfile):
         from syrinx.config import configure
         isfile.return_value = False
@@ -25,12 +26,11 @@ class ConfigTests(TestCase):
         self.assertEqual(config.environment, 'default')
 
     @patch('syrinx.config.isfile')
-    @patch('syrinx.config.open')
-    def test_file(self, open, isfile):
+    @patch('syrinx.config.open', new_callable=mock_open)
+    def test_file(self, mocked_open, isfile):
         from syrinx.config import configure
         isfile.return_value = True
-        fhandle = open.return_value.__enter__.return_value
-        fhandle.read.return_value = """
+        mocked_open().read.return_value = """
             domain = "some.where.bla"
             verbose = true
             environment = "staging"
@@ -44,12 +44,11 @@ class ConfigTests(TestCase):
         self.assertEqual(config.environment, 'staging')
 
     @patch('syrinx.config.isfile')
-    @patch('syrinx.config.open')
-    def test_cli(self, open, isfile):
+    @patch('syrinx.config.open', new_callable=mock_open)
+    def test_cli(self, mocked_open, isfile):
         from syrinx.config import configure
         isfile.return_value = True
-        fhandle = open.return_value.__enter__.return_value
-        fhandle.read.return_value = """
+        mocked_open().read.return_value = """
             domain = "some.where.bla"
             verbose = true
             environment = "staging"

@@ -49,3 +49,9 @@ Syrinx can generate content (markdown) files from CSV tables in the `data/` dire
 3. The header (1st) row will be used as keys.
 4. The first column is used as name for the content item.
 5. Each column will be converted to a variable in the front matter 
+
+### Configuration
+
+You can configure syrinx behavior with a `syrinx.cfg` file in the project root directory, 
+or use commandline arguments (which will override any settings in the configuration file).
+For options, run `syrinx -h`.

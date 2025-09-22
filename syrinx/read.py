@@ -36,6 +36,7 @@ class ContentNode:
     path: str
     meta: BuildMetaInfo
     config: SyrinxConfiguration
+    isLeaf: bool
 
     def __init__(self, meta: BuildMetaInfo, config: SyrinxConfiguration):
         self.buildPage = False
@@ -44,6 +45,7 @@ class ContentNode:
         self.sequenceNumber = SYS_MAX_SIZE
         self.meta = meta
         self.config = config
+        self.isLeaf = False
 
     @property
     def title(self) -> str:
@@ -55,12 +57,22 @@ class ContentNode:
     @property
     def address(self) -> Optional[str]:
         """Full, canonical URL of this node
+
+        Returns None if no domain configured. Applies one of two styles
+        based on the *urlformat* config directive.
         """
+        is_directory = any(self.branches) or any(self.leaves)
         if self.config.domain is not None:
-            if self.config.urlformat == 'clean':
-                return f'https://{self.config.domain}{self.path}'
-            else:
-                return f'https://{self.config.domain}{self.path}/'
+            trail = ''
+            if len(self.path):
+                if self.isLeaf:
+                    trail = f'/{self.name}'
+                    if self.config.urlformat == 'filesystem':
+                        trail += '.html'
+                elif is_directory or self.config.urlformat == 'filesystem':
+                    trail = '/'
+                    
+            return f'https://{self.config.domain}{self.path}{trail}'
 
     @property
     def lastModified(self) -> Optional[str]:
@@ -121,12 +133,12 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
             if name == 'index':
                 node = indexNode
-                node.path = dirpath.replace(content_dir, '')
             else:
                 node = ContentNode(meta, config)
                 node.name = name
-                node.path = join(dirpath.replace(content_dir, ''), node.name)
+                node.isLeaf = True
                 indexNode.leaves.append(node)
+            node.path = dirpath.replace(content_dir, '')
             
             node.front = fm_dict
             node.content_html = markdown(md_content)

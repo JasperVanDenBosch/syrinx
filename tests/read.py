@@ -121,7 +121,7 @@ class ReadTests(TestCase):
         self.assertEqual(root.branches[1].address, 'https://loop.xyz/foo/')
         # leaves dont get a trailing slash:
         self.assertEqual(root.branches[0].leaves[0].address,
-                         'https://loop.xyz/foo/boz')
+                         'https://loop.xyz/bar/boz')
         # branches without sub-branches don't get a slash
-        self.assertEqual(root.branches[0].branches[0].address,
+        self.assertEqual(root.branches[1].branches[0].address,
                          'https://loop.xyz/foo/bar')

@@ -4,6 +4,7 @@ from os.path import isdir, join, isfile
 import shutil, os, logging
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from syrinx.exceptions import ThemeError
+from syrinx.sitemap import collect_urls, generate_sitemap
 if TYPE_CHECKING:
     from syrinx.read import ContentNode
     from syrinx.config import SyrinxConfiguration
@@ -84,3 +85,9 @@ def build(root: ContentNode, root_dir: str, config: SyrinxConfiguration):
     content_assets_dir = join(root_dir, 'assets')
     if dir_exists_not_empty(content_assets_dir):
         shutil.copytree(content_assets_dir, dist_assets_dir, dirs_exist_ok=True)
+
+    sitemap_fpath = join(dist_dir, 'sitemap.xml')
+    urls = collect_urls(root)
+    if urls:
+        with open(sitemap_fpath, 'w') as fhandle:
+            fhandle.write(generate_sitemap(urls))

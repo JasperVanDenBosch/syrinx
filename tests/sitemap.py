@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Optional
 from unittest import TestCase
 from unittest.mock import Mock
-from datetime import datetime
+from datetime import datetime, UTC
 
 
 class SitemapTests(TestCase):
@@ -20,6 +20,29 @@ class SitemapTests(TestCase):
         urls = collect_urls(root)
         self.assertEqual(len(urls), 21)
         self.assertEqual(urls[0], ('', ))
+
+    def test_generate(self):
+        """Should generate the string content of an xml sitemap
+        from the list of url, datetime tuples passed.
+        """
+        self.maxDiff = 900
+        from syrinx.sitemap import generate_sitemap
+        output = generate_sitemap(
+            [
+                ('https://meadows-research.com/signin', datetime(2025, 9, 22, tzinfo=UTC)),
+                ('https://syrinx.site/docs#bla', datetime(2025, 9, 23, tzinfo=UTC))
+            ]
+        )
+        
+        self.assertEqual(
+            output,
+            """
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+                <url><loc>https://meadows-research.com/signin</loc><lastmod>2025-09-22T00:00:00+00:00</lastmod></url>
+                <url><loc>https://syrinx.site/docs#bla</loc><lastmod>2025-09-23T00:00:00+00:00</lastmod></url>
+            </urlset>
+            """.replace('            ', '').strip()
+        )
 
     def makeNode(self, build: bool, url: Optional[str], dt: Optional[datetime]):
         node = Mock()

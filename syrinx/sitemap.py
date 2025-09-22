@@ -6,18 +6,6 @@ if TYPE_CHECKING:
     ListOfUrls = List[Tuple[str, datetime]]
 
 
-"""
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{% for url in urls %}
-    <url>
-        <loc>{{ url[0] }}</loc>
-        <lastmod>{{ url[1] }}</lastmod>
-    </url>
-{% endfor %}
-</urlset>
-"""
-
-
 def collect_urls(node: ContentNode) -> ListOfUrls:
     urls = []
     if node.buildPage and node.address and node.lastModified:
@@ -32,7 +20,11 @@ def collect_urls(node: ContentNode) -> ListOfUrls:
     return urls
 
 
-def generate_sitemap(root: ContentNode, add: ListOfUrls) -> str:
-    urls = collect_urls(root) + add
-    ## FORGET JINJA, DO WITH REGULAR STR
-    return ''
+def generate_sitemap(urls: ListOfUrls) -> str:
+    """Sitemap content string from list of url, datetime tuples
+    """
+    s = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for (url, dt) in urls:
+        s += f'    <url><loc>{url}</loc><lastmod>{dt.isoformat()}</lastmod></url>\n'
+    s += '</urlset>'
+    return s

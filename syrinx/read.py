@@ -52,6 +52,8 @@ class ContentNode:
         
     @property
     def address(self) -> Optional[str]:
+        """Full, canonical URL of this node
+        """
         if self.meta.domain is not None:
             return f'https://{self.meta.domain}{self.path}/'
 

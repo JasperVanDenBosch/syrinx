@@ -49,7 +49,7 @@ class ReadTests(TestCase):
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    @patch('syrinx.read.datetime')
+    @patch('syrinx.node.datetime')
     def test_read_adds_build_info(self, datetime, read_file, walk):
         """
         """

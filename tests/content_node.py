@@ -5,7 +5,7 @@ class ContentNodeTests(TestCase):
 
     def test_follows_buildPage(self):
         from syrinx.read import ContentNode
-        node = ContentNode()
+        node = ContentNode(None, None)
         node.name = 'foo_bar'
         node.front = dict()
         self.assertEqual(node.title, 'Foo Bar')

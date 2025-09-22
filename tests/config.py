@@ -25,6 +25,7 @@ class ConfigTests(TestCase):
         self.assertFalse(config.verbose)
         self.assertTrue(config.clean)
         self.assertEqual(config.environment, 'default')
+        self.assertEqual(config.urlformat, 'filesystem')
 
     @patch('syrinx.config.isfile')
     @patch('syrinx.config.open', new_callable=mock_open)
@@ -36,6 +37,7 @@ class ConfigTests(TestCase):
             verbose = true
             environment = "staging"
             clean = false
+            urlformat = "clean"
         """
         args = Namespace()
         config = configure(args)
@@ -43,6 +45,7 @@ class ConfigTests(TestCase):
         self.assertTrue(config.verbose)
         self.assertFalse(config.clean)
         self.assertEqual(config.environment, 'staging')
+        self.assertEqual(config.urlformat, 'clean')
 
     @patch('syrinx.config.isfile')
     @patch('syrinx.config.open', new_callable=mock_open)
@@ -54,17 +57,20 @@ class ConfigTests(TestCase):
             domain = "some.where.bla"
             verbose = true
             environment = "staging"
+            urlformat = "clean"
         """
         args = Namespace()
         args.domain = 'not.there.bla'
         args.verbose = False
         args.environment = 'production'
         args.clean = True
+        args.urlformat = 'clean'
         config = configure(args)
         self.assertEqual(config.domain, 'not.there.bla')
         self.assertFalse(config.verbose)
         self.assertEqual(config.environment, 'production')
         self.assertTrue(config.clean)
+        self.assertEqual(config.urlformat, 'clean')
 
     def test_configuration_stringifiable(self):
         """SyrinxConfiguration objects should convert to readable 
@@ -76,5 +82,11 @@ class ConfigTests(TestCase):
         config.environment = 'default'
         config.verbose = False
         config.clean = True
+        config.urlformat = 'filesystem'
         self.assertEqual(str(config), 
-            '\tclean = true\n\tdomain = "some.where.bla"\n\tenvironment = "default"\n\tverbose = false')
+            '\tclean = true\n'
+            '\tdomain = "some.where.bla"\n'
+            '\tenvironment = "default"\n'
+            '\tverbose = false\n'
+            '\turlformat = "filesystem"'
+        )

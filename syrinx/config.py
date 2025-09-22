@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from os.path import isfile, join, abspath
 if TYPE_CHECKING:
     from argparse import Namespace
@@ -11,10 +11,11 @@ class SyrinxConfiguration:
     domain: Optional[str]
     environment: str
     verbose: bool
+    urlformat: str
 
     def __str__(self) -> str:
         lines = []
-        for key in ('clean', 'domain', 'environment', 'verbose'):
+        for key in ('clean', 'domain', 'environment', 'verbose', 'urlformat'):
             val = getattr(self, key)
             if isinstance(val, str):
                 val = f'"{val}"'
@@ -30,6 +31,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     config.domain = None
     config.verbose = False
     config.environment = 'default'
+    config.urlformat = 'filesystem'
     root_dir = getattr(args, 'root_dir', '.')
     cfg_fpath = join(abspath(root_dir), 'syrinx.cfg')
     if isfile(cfg_fpath):
@@ -49,8 +51,10 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                     config.verbose = val.lower() == 'true'
                 if key == 'environment':
                     config.environment = val
+                if key == 'urlformat':
+                    config.urlformat = val
 
-    for key in ('clean', 'domain', 'verbose', 'environment'):
+    for key in ('clean', 'domain', 'verbose', 'environment', 'urlformat'):
         if hasattr(args, key):
             setattr(config, key, getattr(args, key))
     return config

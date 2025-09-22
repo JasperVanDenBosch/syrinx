@@ -21,7 +21,6 @@ class BuildMetaInfo:
 
     def __init__(self, config: SyrinxConfiguration) -> None:
         self.environment = config.environment
-        self.domain = config.domain
         self.timestamp = datetime.now(tz=UTC)
         self.syrinx_version = version('syrinx')
 
@@ -36,12 +35,15 @@ class ContentNode:
     buildPage: bool
     path: str
     meta: BuildMetaInfo
+    config: SyrinxConfiguration
 
-    def __init__(self):
+    def __init__(self, meta: BuildMetaInfo, config: SyrinxConfiguration):
         self.buildPage = False
         self.leaves = []
         self.branches = []
         self.sequenceNumber = SYS_MAX_SIZE
+        self.meta = meta
+        self.config = config
 
     @property
     def title(self) -> str:
@@ -54,8 +56,11 @@ class ContentNode:
     def address(self) -> Optional[str]:
         """Full, canonical URL of this node
         """
-        if self.meta.domain is not None:
-            return f'https://{self.meta.domain}{self.path}/'
+        if self.config.domain is not None:
+            if self.config.urlformat == 'clean':
+                return f'https://{self.config.domain}{self.path}'
+            else:
+                return f'https://{self.config.domain}{self.path}/'
 
     @property
     def lastModified(self) -> Optional[str]:
@@ -86,14 +91,13 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()
-    root = ContentNode()
+    root = ContentNode(meta, config)
     root.name = ''
     root.meta = meta
     for (dirpath, _, fnames) in walk(content_dir):
 
-        indexNode = ContentNode()
+        indexNode = ContentNode(meta, config)
         indexNode.name = basename(dirpath)
-        indexNode.meta = meta
         if dirpath == content_dir:
             indexNode = root
             if 'index.md' not in fnames:
@@ -119,10 +123,9 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
                 node = indexNode
                 node.path = dirpath.replace(content_dir, '')
             else:
-                node = ContentNode()
+                node = ContentNode(meta, config)
                 node.name = name
                 node.path = join(dirpath.replace(content_dir, ''), node.name)
-                node.meta = meta
                 indexNode.leaves.append(node)
             
             node.front = fm_dict

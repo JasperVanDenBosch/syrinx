@@ -70,8 +70,11 @@ class ReadTests(TestCase):
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    def test_read_address(self, read_file, walk):
-        """
+    def test_read_address_filesystem(self, read_file, walk):
+        """With the "filesystem" style, terminal branches have trailing slashes,
+        and leaves have file extensions.
+
+        This style typically works out-of-the-box with web server software.
         """
         read_file.return_value = dict(), ''
         walk.return_value = [
@@ -82,8 +85,43 @@ class ReadTests(TestCase):
         from syrinx.read import read
         config = Mock()
         config.domain = 'loop.xyz'
+        config.urlformat = 'filesystem'
         root = read('/pth', config)
-        self.assertEqual(root.address, 'https://loop.xyz/')
+        self.assertEqual(root.address, 'https://loop.xyz')
         self.assertEqual(root.branches[0].address, 'https://loop.xyz/foo/')
+        self.assertEqual(root.branches[0].leaves[0].address,
+                         'https://loop.xyz/foo/boz.html')
         self.assertEqual(root.branches[0].branches[0].address,
             'https://loop.xyz/foo/bar/')
+        
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_address_clean(self, read_file, walk):
+        """With the "clean" style, terminal branches and leaves
+        do not have trailing slashes or file extensions
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/bar', None, ['index.md', 'boz.md']),
+            ('/pth/content/foo', None, ['index.md']),
+            ('/pth/content/foo/bar', None, ['index.md']),
+        ]
+        from syrinx.read import read
+        config = Mock()
+        config.domain = 'loop.xyz'
+        config.urlformat = 'clean'
+        root = read('/pth', config)
+        self.assertEqual(root.address, 'https://loop.xyz')
+        # this page has sub-branches, i.e. is a directory, 
+        # so comes with trailing slash:
+        self.assertEqual(root.branches[0].address, 'https://loop.xyz/bar/')
+        # this page has leaves, i.e. is a directory, 
+        # so comes with trailing slash:
+        self.assertEqual(root.branches[1].address, 'https://loop.xyz/foo/')
+        # leaves dont get a trailing slash:
+        self.assertEqual(root.branches[0].leaves[0].address,
+                         'https://loop.xyz/foo/boz')
+        # branches without sub-branches don't get a slash
+        self.assertEqual(root.branches[0].branches[0].address,
+                         'https://loop.xyz/foo/bar')

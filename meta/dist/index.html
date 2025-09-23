@@ -4,9 +4,10 @@
     <meta charset=utf-8>
     <meta http-equiv=x-ua-compatible content="ie=edge">
     <meta name=viewport content="width=device-width,initial-scale=1">
-    <meta syrinx-environment="production" syrinx-timestamp="2025-09-23T12:16:33.853873+00:00" />
+    <meta syrinx-environment="production" syrinx-timestamp="2025-09-23T13:42:30.646485+00:00" />
     
     <link rel="canonical" href="https://syrinx.site">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/shoelace-autoloader.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono">
@@ -45,6 +46,7 @@ python -m http.server -d dist</code></p>
 <li>Special frontmatter entries:<ul>
 <li><code>SequenceNumber</code>: Used by templates to order child items in menu's and lists.</li>
 <li><code>Archetype</code>: The name of the template used to import these table data</li>
+<li><code>LastModified</code>: Date and time when the content was last changed. The item will only be included in the sitemap if the file has this attribute.</li>
 </ul>
 </li>
 </ol>
@@ -72,7 +74,7 @@ For options, run <code>syrinx -h</code>.</p>
 
 </div>
 </div><footer>
-    <span id="copyright-reference">&copy; 2024 syrinx developers</span>
+    <span id="copyright-reference">&copy; 2025 syrinx developers</span>
 </footer>
 
 

@@ -2,7 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Tuple
 from os.path import dirname, basename, join
 from os import walk
-import tomllib
+from tomllib import loads as read_toml
+from yaml import safe_load as read_yaml
 import logging
 from markdown import markdown
 from syrinx.exceptions import ContentError
@@ -23,13 +24,32 @@ def reorder_children(node: ContentNode):
 
 
 def read_file(fpath: str) -> Tuple[Dict, str]:
+    """Read a single markdown content file and 
+    return frontmatter as dictionary and contents as string.
+
+    Can read either toml or yaml-style frontmatter
+
+    Args:
+        fpath (str): Full path to markdown file
+
+    Returns:
+        Tuple[Dict, str]: Dictionary with frontmatter attributes, and 
+            string with main contents
+    """
     with open(fpath) as fhandle:
         lines = fhandle.readlines()
-    markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
-    assert len(markers) == 2
-    fm_string = ''.join(lines[1:markers[1]])
-    fm_dict = tomllib.loads(fm_string)
-    md_content = ''.join(lines[markers[1]+1:])
+    formats = [('+++', read_toml), ('---', read_yaml)]
+    for marker, parser in formats:
+        marker_lines = [l for (l, line) in enumerate(lines) if line.strip() == marker]
+        if len(marker_lines) == 2:
+            fm_string = ''.join(lines[1:marker_lines[1]])
+            fm_dict = parser(fm_string)
+            md_content = ''.join(lines[marker_lines[1]+1:])
+            break
+    else:
+        fm_dict = dict()
+        md_content = ''.join(lines)
+        logger.warning(f'No frontmatter found in {fpath}')
     return fm_dict, md_content
 
 

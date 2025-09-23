@@ -1,4 +1,5 @@
 +++
+LastModified = 2025-09-23T10:00:00+00:00
 +++
 
 # Syrinx
@@ -31,6 +32,7 @@ Organize your content with some standard structure and syrinx will interpret it.
 4. Special frontmatter entries:
     - `SequenceNumber`: Used by templates to order child items in menu's and lists.
     - `Archetype`: The name of the template used to import these table data
+    - `LastModified`: Date and time when the content was last changed. The item will only be included in the sitemap if the file has this attribute.
 
 
 ### Templating and style

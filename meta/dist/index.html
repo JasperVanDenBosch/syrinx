@@ -4,7 +4,7 @@
     <meta charset=utf-8>
     <meta http-equiv=x-ua-compatible content="ie=edge">
     <meta name=viewport content="width=device-width,initial-scale=1">
-    <meta syrinx-environment="production" syrinx-timestamp="2025-09-23T13:42:30.646485+00:00" />
+    <meta syrinx-environment="production" syrinx-timestamp="2025-09-23T13:51:34.622371+00:00" />
     
     <link rel="canonical" href="https://syrinx.site">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -41,7 +41,7 @@ python -m http.server -d dist</code></p>
 <h3>Content</h3>
 <ol>
 <li>a <code>content/</code> directory with markdown file <code>index.md</code></li>
-<li><em>Toml</em> style frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by triple pluses <code>+++</code>. </li>
+<li>Frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by either dashes <code>---</code> for YAML or pluses <code>+++</code> for TOML. </li>
 <li>in content directories other than root, <code>index.md</code> is optional. Leaving it out signifies that you do not want a separate page build for this branch.</li>
 <li>Special frontmatter entries:<ul>
 <li><code>SequenceNumber</code>: Used by templates to order child items in menu's and lists.</li>

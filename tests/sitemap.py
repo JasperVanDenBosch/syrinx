@@ -14,12 +14,35 @@ class SitemapTests(TestCase):
         Should skip nodes that are not build, or lack a valid url or last modified.
         """
         from syrinx.sitemap import collect_urls
-        root = self.makeNode(True, None, None)
-        root.branches = []
-        root.leaves = []
+        dt1 = datetime(2025, 9, 23, 10)
+        dt2 = datetime(2025, 9, 23, 12)
+        dt3 = datetime(2025, 9, 23, 14)
+        aaa = self.makeNode(False, None, dt3)
+        aab = self.makeNode(True, 'foo.bar/a/a/b/', dt2)
+        aac = self.makeNode(True, None, dt1)
+        aad = self.makeNode(True, 'foo.bar/a/a/c.html', None)
+        aa = self.makeNode(True, 'foo.bar/a/a/', dt2)
+        aa.branches = [aaa, aab]
+        aa.leaves = [aac, aad]
+        ab = self.makeNode(False, 'foo.bar/a/b', dt3)
+        a = self.makeNode(True, 'foo.bar/a/', dt1)
+        a.branches = [aa, ab]
+        b = self.makeNode(True, 'foo.bar/b', dt2)
+        root = self.makeNode(True, 'foo.bar', dt1)
+        root.branches = [a]
+        root.leaves = [b]
         urls = collect_urls(root)
-        self.assertEqual(len(urls), 21)
-        self.assertEqual(urls[0], ('', ))
+        self.assertEqual(len(urls), 5)
+        self.assertEqual(
+            urls,
+            [
+                ('foo.bar', dt1),
+                ('foo.bar/b', dt2),
+                ('foo.bar/a/', dt1),
+                ('foo.bar/a/a/', dt2),
+                ('foo.bar/a/a/b/', dt2),
+            ]
+        )
 
     def test_generate(self):
         """Should generate the string content of an xml sitemap
@@ -37,6 +60,7 @@ class SitemapTests(TestCase):
         self.assertEqual(
             output,
             """
+            <?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
                 <url><loc>https://meadows-research.com/signin</loc><lastmod>2025-09-22T00:00:00+00:00</lastmod></url>
                 <url><loc>https://syrinx.site/docs#bla</loc><lastmod>2025-09-23T00:00:00+00:00</lastmod></url>

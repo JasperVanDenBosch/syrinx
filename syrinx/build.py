@@ -91,3 +91,4 @@ def build(root: ContentNode, root_dir: str, config: SyrinxConfiguration):
     if urls:
         with open(sitemap_fpath, 'w') as fhandle:
             fhandle.write(generate_sitemap(urls))
+        logger.info(f'Created sitemap.xml')

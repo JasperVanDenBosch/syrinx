@@ -1,42 +1,20 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Dict, Tuple
+from typing import TYPE_CHECKING, Dict, Tuple
 from os.path import dirname, basename, join
 from os import walk
-import tomllib
+from tomllib import loads as read_toml
+from yaml import safe_load as read_yaml
 import logging
 from markdown import markdown
-from sys import maxsize as SYS_MAX_SIZE
 from syrinx.exceptions import ContentError
+from syrinx.node import ContentNode, BuildMetaInfo
 if TYPE_CHECKING:
-    from syrinx.cli import BuildMetaInfo
+    from syrinx.config import SyrinxConfiguration
 logger = logging.getLogger(__name__)
 """
 This section is just about reading and interpreting the content
 """
 
-
-class ContentNode:
-    name: str
-    leaves: List[ContentNode]
-    branches: List[ContentNode]
-    content_html: str
-    front: Dict[str, str]
-    sequenceNumber: int
-    buildPage: bool
-    meta: BuildMetaInfo
-
-    def __init__(self):
-        self.buildPage = False
-        self.leaves = []
-        self.branches = []
-        self.sequenceNumber = SYS_MAX_SIZE
-
-    @property
-    def title(self) -> str:
-        if 'Title' in self.front:
-            return self.front['Title']
-        else:
-            return self.name.replace('_', ' ').title()
 
 def reorder_children(node: ContentNode):
     node.leaves = sorted(node.leaves, key=lambda n: (n.sequenceNumber, n.name))
@@ -46,29 +24,48 @@ def reorder_children(node: ContentNode):
 
 
 def read_file(fpath: str) -> Tuple[Dict, str]:
+    """Read a single markdown content file and 
+    return frontmatter as dictionary and contents as string.
+
+    Can read either toml or yaml-style frontmatter
+
+    Args:
+        fpath (str): Full path to markdown file
+
+    Returns:
+        Tuple[Dict, str]: Dictionary with frontmatter attributes, and 
+            string with main contents
+    """
     with open(fpath) as fhandle:
         lines = fhandle.readlines()
-    markers = [l for (l, line) in enumerate(lines) if line.strip() == '+++']
-    assert len(markers) == 2
-    fm_string = ''.join(lines[1:markers[1]])
-    fm_dict = tomllib.loads(fm_string)
-    md_content = ''.join(lines[markers[1]+1:])
+    formats = [('+++', read_toml), ('---', read_yaml)]
+    for marker, parser in formats:
+        marker_lines = [l for (l, line) in enumerate(lines) if line.strip() == marker]
+        if len(marker_lines) == 2:
+            fm_string = ''.join(lines[1:marker_lines[1]])
+            fm_dict = parser(fm_string)
+            md_content = ''.join(lines[marker_lines[1]+1:])
+            break
+    else:
+        fm_dict = dict()
+        md_content = ''.join(lines)
+        logger.warning(f'No frontmatter found in {fpath}')
     return fm_dict, md_content
 
 
-def read(root_dir: str, meta: BuildMetaInfo) -> ContentNode:
+def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
+    meta = BuildMetaInfo(config)
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()
-    root = ContentNode()
+    root = ContentNode(meta, config)
     root.name = ''
     root.meta = meta
     for (dirpath, _, fnames) in walk(content_dir):
 
-        indexNode = ContentNode()
+        indexNode = ContentNode(meta, config)
         indexNode.name = basename(dirpath)
-        indexNode.meta = meta
         if dirpath == content_dir:
             indexNode = root
             if 'index.md' not in fnames:
@@ -87,16 +84,17 @@ def read(root_dir: str, meta: BuildMetaInfo) -> ContentNode:
             if ext != 'md':
                 continue
             name = fparts[0]
-
+            
             fm_dict, md_content = read_file(join(dirpath, fname))
 
             if name == 'index':
                 node = indexNode
             else:
-                node = ContentNode()
+                node = ContentNode(meta, config)
                 node.name = name
-                node.meta = meta
+                node.isLeaf = True
                 indexNode.leaves.append(node)
+            node.path = dirpath.replace(content_dir, '')
             
             node.front = fm_dict
             node.content_html = markdown(md_content)

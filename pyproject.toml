@@ -4,9 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "syrinx"
-version = "0.0.12"
+version = "0.0.13"
 authors = [
-  { name="Jasper van den Bosch"},
+  {name="Jasper van den Bosch"},
+  {name="Dan Brady"},
 ]
 license = "MIT"
 license-files = ["LICENSE", "AUTHORS"]
@@ -20,6 +21,7 @@ classifiers = [
 dependencies = [
     "jinja2 >= 3.1",
     "markdown >= 3.5.1",
+    "PyYAML~=6.0.2",
     "pandas",
 ]
 

@@ -17,9 +17,10 @@ from pandas import read_csv
 from numpy import nan
 if TYPE_CHECKING:
     from jinja2 import Template
+    from syrinx.config import SyrinxConfiguration
 logger = logging.getLogger(__name__)
 
-def preprocess(root_dir: str, clean: bool = False) -> None:
+def preprocess(root_dir: str, config: SyrinxConfiguration) -> None:
 
     assert isdir(root_dir)
 
@@ -47,7 +48,7 @@ def preprocess(root_dir: str, clean: bool = False) -> None:
         collection_dir = join(root_dir, 'content', archetype_name)
         makedirs(collection_dir, exist_ok=True)
 
-        if clean:
+        if config.clean:
             stale_content = glob("*.md", root_dir=collection_dir)
             [remove(join(collection_dir, filename)) for filename in stale_content if "index" not in filename]
 

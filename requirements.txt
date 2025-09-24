@@ -2,3 +2,4 @@ jinja2
 markdown
 pandas
 lxml
+PyYAML~=6.0.2

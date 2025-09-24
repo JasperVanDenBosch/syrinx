@@ -1,43 +1,39 @@
 from syrinx.build import build
 from syrinx.read import read
 from syrinx.preprocess import preprocess
+from syrinx.config import configure
 from os.path import abspath, isdir
-import argparse
+from argparse import ArgumentParser, SUPPRESS
 import logging
-from datetime import datetime, UTC
-from importlib.metadata import version
-
-
-class BuildMetaInfo:
-
-    def __init__(self, environment: str) -> None:
-        self.environment = environment
-        self.timestamp = datetime.now(tz=UTC)
-        self.syrinx_version = version('syrinx')
 
 
 def get_args():
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
 
     parser.add_argument('root_dir', type=str, help='Location of root directory to build from')
-    parser.add_argument('-c', '--clean', action='store_true', 
+    parser.add_argument('-c', '--clean', default=SUPPRESS, action='store_true',
                         help='Remove existing dynamic content files')
-    parser.add_argument('-e', '--environment', default='default', 
+    parser.add_argument('-e', '--environment', default=SUPPRESS, 
                         help='Define build environment for customization, e.g. "production"')
-    parser.add_argument('-v', '--verbose', action='store_true', 
+    parser.add_argument('-v', '--verbose', default=SUPPRESS, action='store_true', 
                         help='Print log messages during build')
     return parser.parse_args()
 
 def main():
     args = get_args()
-    if args.verbose:
+
+    config = configure(args)
+
+    if config.verbose:
         logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.info('Configuration:\n'+str(config))
 
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
-    preprocess(root_dir, clean=args.clean)
+    preprocess(root_dir, config)
     
-    root = read(root_dir, BuildMetaInfo(args.environment))
-    build(root, root_dir)
+    root = read(root_dir, config)
+    build(root, root_dir, config)
     print('done.')
 

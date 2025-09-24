@@ -1,4 +1,5 @@
 +++
+LastModified = 2025-09-24T14:18:00+00:00
 +++
 
 # Syrinx
@@ -26,11 +27,12 @@ Organize your content with some standard structure and syrinx will interpret it.
 ### Content
 
 1. a `content/` directory with markdown file `index.md`
-2. *Toml* style frontmatter: Markdown files start with a standard header or *"frontmatter"* that is surrounded by triple pluses `+++`. 
+2. Frontmatter: Markdown files start with a standard header or *"frontmatter"* that is surrounded by either dashes `---` for YAML or pluses `+++` for TOML. 
 3. in content directories other than root, `index.md` is optional. Leaving it out signifies that you do not want a separate page build for this branch.
 4. Special frontmatter entries:
     - `SequenceNumber`: Used by templates to order child items in menu's and lists.
     - `Archetype`: The name of the template used to import these table data
+    - `LastModified`: Date and time when the content was last changed. The item will only be included in the sitemap if the file has this attribute.
 
 
 ### Templating and style
@@ -49,3 +51,9 @@ Syrinx can generate content (markdown) files from CSV tables in the `data/` dire
 3. The header (1st) row will be used as keys.
 4. The first column is used as name for the content item.
 5. Each column will be converted to a variable in the front matter 
+
+### Configuration
+
+You can configure syrinx behavior with a `syrinx.cfg` file in the project root directory, 
+or use commandline arguments (which will override any settings in the configuration file).
+For options, run `syrinx -h`.

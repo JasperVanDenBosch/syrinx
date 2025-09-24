@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset=utf-8>
-    <meta http-equiv=x-ua-compatible content="ie=edge">
-    <meta name=viewport content="width=device-width,initial-scale=1">
-    <meta syrinx-environment="production" syrinx-timestamp="2025-08-01T17:24:11.158947+00:00" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta syrinx-environment="production" syrinx-timestamp="2025-09-24T14:19:01.419278+00:00" />
     
+    <link rel="canonical" href="https://syrinx.site">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/shoelace-autoloader.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono">
@@ -39,11 +40,12 @@ python -m http.server -d dist</code></p>
 <h3>Content</h3>
 <ol>
 <li>a <code>content/</code> directory with markdown file <code>index.md</code></li>
-<li><em>Toml</em> style frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by triple pluses <code>+++</code>. </li>
+<li>Frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by either dashes <code>---</code> for YAML or pluses <code>+++</code> for TOML. </li>
 <li>in content directories other than root, <code>index.md</code> is optional. Leaving it out signifies that you do not want a separate page build for this branch.</li>
 <li>Special frontmatter entries:<ul>
 <li><code>SequenceNumber</code>: Used by templates to order child items in menu's and lists.</li>
 <li><code>Archetype</code>: The name of the template used to import these table data</li>
+<li><code>LastModified</code>: Date and time when the content was last changed. The item will only be included in the sitemap if the file has this attribute.</li>
 </ul>
 </li>
 </ol>
@@ -62,12 +64,16 @@ python -m http.server -d dist</code></p>
 <li>The first column is used as name for the content item.</li>
 <li>Each column will be converted to a variable in the front matter </li>
 </ol>
+<h3>Configuration</h3>
+<p>You can configure syrinx behavior with a <code>syrinx.cfg</code> file in the project root directory, 
+or use commandline arguments (which will override any settings in the configuration file).
+For options, run <code>syrinx -h</code>.</p>
 </article>
 
 
 </div>
 </div><footer>
-    <span id="copyright-reference">&copy; 2024 syrinx developers</span>
+    <span id="copyright-reference">&copy; 2025 syrinx developers</span>
 </footer>
 
 

@@ -67,3 +67,15 @@ class ContentNode:
     @property
     def lastModified(self) -> Optional[str]:
         return self.front.get('LastModified')
+    
+    @property
+    def includeInSitemap(self) -> bool:
+        if not self.buildPage:
+            return False
+        if self.address is None:
+            return False
+        default = {'opt-in': False, 'opt-out': True}[self.config.sitemap]
+        iis = self.front.get('IncludeInSitemap', default)
+        if not isinstance(iis, bool):
+            raise ValueError('IncludeInSitemap config entry must be boolean')
+        return iis

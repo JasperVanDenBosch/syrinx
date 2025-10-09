@@ -45,14 +45,16 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                 val = val.strip('"')
                 if key == 'clean':
                     config.clean = val.lower() == 'true'
-                if key == 'domain':
+                elif key == 'domain':
                     config.domain = val
-                if key == 'verbose':
+                elif key == 'verbose':
                     config.verbose = val.lower() == 'true'
-                if key == 'environment':
+                elif key == 'environment':
                     config.environment = val
-                if key == 'urlformat':
+                elif key == 'urlformat':
                     config.urlformat = val
+                else:
+                    raise ValueError(f'Unknown configuration entry: {key}')
 
     for key in ('clean', 'domain', 'verbose', 'environment', 'urlformat'):
         if hasattr(args, key):

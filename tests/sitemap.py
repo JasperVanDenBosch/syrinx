@@ -19,7 +19,7 @@ class SitemapTests(TestCase):
         dt3 = datetime(2025, 9, 23, 14)
         aaa = self.makeNode(False, None, dt3)
         aab = self.makeNode(True, 'foo.bar/a/a/b/', dt2)
-        aac = self.makeNode(True, None, dt1)
+        aac = self.makeNode(False, None, dt1)
         aad = self.makeNode(True, 'foo.bar/a/a/c.html', None)
         aa = self.makeNode(True, 'foo.bar/a/a/', dt2)
         aa.branches = [aaa, aab]
@@ -32,7 +32,7 @@ class SitemapTests(TestCase):
         root.branches = [a]
         root.leaves = [b]
         urls = collect_urls(root)
-        self.assertEqual(len(urls), 5)
+        self.assertEqual(len(urls), 6)
         self.assertEqual(
             urls,
             [
@@ -40,6 +40,7 @@ class SitemapTests(TestCase):
                 ('foo.bar/b', dt2),
                 ('foo.bar/a/', dt1),
                 ('foo.bar/a/a/', dt2),
+                ('foo.bar/a/a/c.html', None),
                 ('foo.bar/a/a/b/', dt2),
             ]
         )
@@ -53,7 +54,7 @@ class SitemapTests(TestCase):
         output = generate_sitemap(
             [
                 ('https://meadows-research.com/signin', datetime(2025, 9, 22, tzinfo=UTC)),
-                ('https://syrinx.site/docs#bla', datetime(2025, 9, 23, tzinfo=UTC))
+                ('https://syrinx.site/docs#bla', None)
             ]
         )
         
@@ -63,14 +64,14 @@ class SitemapTests(TestCase):
             <?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
                 <url><loc>https://meadows-research.com/signin</loc><lastmod>2025-09-22T00:00:00+00:00</lastmod></url>
-                <url><loc>https://syrinx.site/docs#bla</loc><lastmod>2025-09-23T00:00:00+00:00</lastmod></url>
+                <url><loc>https://syrinx.site/docs#bla</loc></url>
             </urlset>
             """.replace('            ', '').strip()
         )
 
-    def makeNode(self, build: bool, url: Optional[str], dt: Optional[datetime]):
+    def makeNode(self, include: bool, url: Optional[str], dt: Optional[datetime]):
         node = Mock()
-        node.buildPage = build
+        node.includeInSitemap = include
         node.lastModified = dt
         node.address = url
         node.branches = []

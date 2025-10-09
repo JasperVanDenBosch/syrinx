@@ -1,5 +1,6 @@
 +++
 LastModified = 2025-09-24T14:18:00+00:00
+Description = "Simple, python-powered static site generator"
 +++
 
 # Syrinx

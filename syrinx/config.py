@@ -10,12 +10,15 @@ class SyrinxConfiguration:
     clean: bool
     domain: Optional[str]
     environment: str
-    verbose: bool
+    sitemap: str
     urlformat: str
+    verbose: bool
 
     def __str__(self) -> str:
         lines = []
-        for key in ('clean', 'domain', 'environment', 'verbose', 'urlformat'):
+        KEYS = ('clean', 'domain', 'environment', 
+                'sitemap', 'urlformat', 'verbose')
+        for key in KEYS:
             val = getattr(self, key)
             if isinstance(val, str):
                 val = f'"{val}"'
@@ -29,9 +32,10 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     config = SyrinxConfiguration()
     config.clean = True
     config.domain = None
-    config.verbose = False
     config.environment = 'default'
+    config.sitemap = 'opt-out'
     config.urlformat = 'filesystem'
+    config.verbose = False
     root_dir = getattr(args, 'root_dir', '.')
     cfg_fpath = join(abspath(root_dir), 'syrinx.cfg')
     if isfile(cfg_fpath):
@@ -47,12 +51,17 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                     config.clean = val.lower() == 'true'
                 elif key == 'domain':
                     config.domain = val
-                elif key == 'verbose':
-                    config.verbose = val.lower() == 'true'
                 elif key == 'environment':
                     config.environment = val
+                elif key == 'sitemap':
+                    if val not in ('opt-in', 'opt-out'):
+                        raise ValueError('Configuration option "sitemap" must'
+                                         ' be one of "opt-in", "opt-out".')
+                    config.sitemap = val
                 elif key == 'urlformat':
                     config.urlformat = val
+                elif key == 'verbose':
+                    config.verbose = val.lower() == 'true'
                 else:
                     raise ValueError(f'Unknown configuration entry: {key}')
 

@@ -25,6 +25,7 @@ class ConfigTests(TestCase):
         self.assertFalse(config.verbose)
         self.assertTrue(config.clean)
         self.assertEqual(config.environment, 'default')
+        self.assertEqual(config.sitemap, 'opt-out')
         self.assertEqual(config.urlformat, 'filesystem')
 
     @patch('syrinx.config.isfile')
@@ -82,11 +83,13 @@ class ConfigTests(TestCase):
         config.environment = 'default'
         config.verbose = False
         config.clean = True
+        config.sitemap = 'opt-out'
         config.urlformat = 'filesystem'
         self.assertEqual(str(config), 
             '\tclean = true\n'
             '\tdomain = "some.where.bla"\n'
             '\tenvironment = "default"\n'
-            '\tverbose = false\n'
-            '\turlformat = "filesystem"'
+            '\tsitemap = "opt-out"\n'
+            '\turlformat = "filesystem"\n'
+            '\tverbose = false'
         )

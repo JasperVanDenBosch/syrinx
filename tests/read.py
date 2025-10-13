@@ -36,6 +36,21 @@ class ReadTests(TestCase):
         self.assertFalse(root.branches[0].buildPage)
 
     @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_BuildPage_leaf(self, read_file, walk):
+        """Set "BuildPage" to false for leaves
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/lorem', None, ['ipsum.md', 'index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertFalse(root.branches[0].leaves[0].buildPage)
+
+    @patch('syrinx.read.walk')
     def test_read_Fail_if_index_missing(self, walk):
         """The root index.md is not optional,
         raise an exception if it's missing.

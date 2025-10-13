@@ -89,6 +89,7 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
             if name == 'index':
                 node = indexNode
+                node.buildPage = True
             else:
                 node = ContentNode(meta, config)
                 node.name = name
@@ -100,7 +101,6 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
             node.content_html = markdown(md_content)
             if 'SequenceNumber' in fm_dict:
                 node.sequenceNumber = fm_dict['SequenceNumber']
-            node.buildPage = True
             rel_path = join(dirpath.replace(content_dir, ""), fname)
             logger.info(f'Read {rel_path}')
 

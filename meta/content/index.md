@@ -1,5 +1,5 @@
 +++
-LastModified = 2025-09-24T14:18:00+00:00
+Description = "Simple, python-powered static site generator"
 +++
 
 # Syrinx
@@ -32,7 +32,7 @@ Organize your content with some standard structure and syrinx will interpret it.
 4. Special frontmatter entries:
     - `SequenceNumber`: Used by templates to order child items in menu's and lists.
     - `Archetype`: The name of the template used to import these table data
-    - `LastModified`: Date and time when the content was last changed. The item will only be included in the sitemap if the file has this attribute.
+    - `LastModified`: Date and time when the content was last changed. If listed, this will be used in the sitemap as `<lastmod>` element.
 
 
 ### Templating and style

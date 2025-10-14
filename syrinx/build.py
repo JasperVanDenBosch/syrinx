@@ -46,7 +46,7 @@ def build_node(
         fname_tem = choose_template_file(node, isfile, template_dir)
         page_template = env.get_template(fname_tem)
         html = page_template.render(index=node, root=root)
-        out_fpath = join(node_path, 'index.html')
+        out_fpath = join(node_path, f'{node.name}.html' if node.isLeaf else 'index.html')
         with open(out_fpath, 'w') as fhandle:
             fhandle.write(html)
         rel_path = out_fpath.replace(out_fpath.split('dist/')[0], '')

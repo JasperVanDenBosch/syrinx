@@ -109,7 +109,7 @@ class ReadTests(TestCase):
         """
         read_file.return_value = dict(), ''
         walk.return_value = [
-            ('/pth/content', None, ['index.md']),
+            ('/pth/content', None, ['index.md', 'tam.md']),
             ('/pth/content/foo', None, ['index.md', 'boz.md']),
             ('/pth/content/foo/bar', None, ['index.md']),
         ]
@@ -124,6 +124,7 @@ class ReadTests(TestCase):
                          'https://loop.xyz/foo/boz.html')
         self.assertEqual(root.branches[0].branches[0].address,
             'https://loop.xyz/foo/bar/')
+        self.assertEqual(root.leaves[0].address, 'https://loop.xyz/tam.html')
         
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
@@ -133,7 +134,7 @@ class ReadTests(TestCase):
         """
         read_file.return_value = dict(), ''
         walk.return_value = [
-            ('/pth/content', None, ['index.md']),
+            ('/pth/content', None, ['index.md', 'tam.md']),
             ('/pth/content/bar', None, ['index.md', 'boz.md']),
             ('/pth/content/foo', None, ['index.md']),
             ('/pth/content/foo/bar', None, ['index.md']),
@@ -156,3 +157,34 @@ class ReadTests(TestCase):
         # branches without sub-branches don't get a slash
         self.assertEqual(root.branches[1].branches[0].address,
                          'https://loop.xyz/foo/bar')
+        # root leaf: no trailing slash
+        self.assertEqual(root.leaves[0].address, 'https://loop.xyz/tam')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_address_mkdocs(self, read_file, walk):
+        """With the "mkdocs" style, all non-root urls have a 
+        trailing slash.
+        See https://github.com/mkdocs/mkdocs/issues/4040
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md', 'tam.md']),
+            ('/pth/content/bar', None, ['index.md', 'boz.md']),
+            ('/pth/content/foo', None, ['index.md']),
+            ('/pth/content/foo/bar', None, ['index.md']),
+        ]
+        from syrinx.read import read
+        config = Mock()
+        config.domain = 'loop.xyz'
+        config.urlformat = 'mkdocs'
+        root = read('/pth', config)
+        self.assertEqual(root.address, 'https://loop.xyz')
+        # everything else comes with trailing slash:
+        self.assertEqual(root.leaves[0].address, 'https://loop.xyz/tam/')
+        self.assertEqual(root.branches[0].address, 'https://loop.xyz/bar/')
+        self.assertEqual(root.branches[1].address, 'https://loop.xyz/foo/')
+        self.assertEqual(root.branches[0].leaves[0].address,
+                         'https://loop.xyz/bar/boz/')
+        self.assertEqual(root.branches[1].branches[0].address,
+                         'https://loop.xyz/foo/bar/')

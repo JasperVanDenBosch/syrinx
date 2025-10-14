@@ -10,13 +10,14 @@ class SyrinxConfiguration:
     clean: bool
     domain: Optional[str]
     environment: str
+    leaf_pages: bool
     sitemap: str
     urlformat: str
     verbose: bool
 
     def __str__(self) -> str:
         lines = []
-        KEYS = ('clean', 'domain', 'environment', 
+        KEYS = ('clean', 'domain', 'environment', 'leaf_pages', 
                 'sitemap', 'urlformat', 'verbose')
         for key in KEYS:
             val = getattr(self, key)
@@ -33,6 +34,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     config.clean = True
     config.domain = None
     config.environment = 'default'
+    config.leaf_pages = False
     config.sitemap = 'opt-out'
     config.urlformat = 'filesystem'
     config.verbose = False
@@ -53,6 +55,8 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                     config.domain = val
                 elif key == 'environment':
                     config.environment = val
+                elif key == 'leaf_pages':
+                    config.leaf_pages = val.lower() == 'true'
                 elif key == 'sitemap':
                     if val not in ('opt-in', 'opt-out'):
                         raise ValueError('Configuration option "sitemap" must'
@@ -65,7 +69,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
                 else:
                     raise ValueError(f'Unknown configuration entry: {key}')
 
-    for key in ('clean', 'domain', 'verbose', 'environment', 'urlformat'):
+    for key in ('clean', 'domain', 'verbose', 'environment', 'leaf_pages', 'urlformat'):
         if hasattr(args, key):
             setattr(config, key, getattr(args, key))
     return config

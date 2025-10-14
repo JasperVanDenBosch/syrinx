@@ -15,6 +15,8 @@ def get_args():
                         help='Remove existing dynamic content files')
     parser.add_argument('-e', '--environment', default=SUPPRESS, 
                         help='Define build environment for customization, e.g. "production"')
+    parser.add_argument('--leaf-pages', default=SUPPRESS, action='store_true',
+                        help='Build pages for "leaf" (non-index) content nodes')
     parser.add_argument('-v', '--verbose', default=SUPPRESS, action='store_true', 
                         help='Print log messages during build')
     return parser.parse_args()

@@ -48,21 +48,24 @@ class ContentNode:
     def address(self) -> Optional[str]:
         """Full, canonical URL of this node
 
-        Returns None if no domain configured. Applies one of two styles
+        Returns None if no domain configured. Applies one of three styles
         based on the *urlformat* config directive.
         """
+        if self.config.domain is None:
+            ## can't make an address if we don't know the domain
+            return
         is_directory = any(self.branches) or any(self.leaves)
-        if self.config.domain is not None:
-            trail = ''
-            if len(self.path):
-                if self.isLeaf:
-                    trail = f'/{self.name}'
-                    if self.config.urlformat == 'filesystem':
-                        trail += '.html'
-                elif is_directory or self.config.urlformat == 'filesystem':
-                    trail = '/'
-                    
-            return f'https://{self.config.domain}{self.path}{trail}'
+        trail = ''
+        if len(self.name):
+            if self.isLeaf:
+                trail = f'/{self.name}'
+                if self.config.urlformat == 'filesystem':
+                    trail += '.html'
+                elif self.config.urlformat == 'mkdocs':
+                    trail += '/'
+            elif is_directory or self.config.urlformat != 'clean':
+                trail = '/'
+        return f'https://{self.config.domain}{self.path}{trail}'
 
     @property
     def lastModified(self) -> Optional[str]:

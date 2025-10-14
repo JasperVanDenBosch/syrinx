@@ -16,7 +16,8 @@ def choose_template_file(
             dir: str
         ) -> str:
     name = node.name or 'root'
-    for tem_name in (name, 'page'):
+    template_names = (name, 'leaf', 'page') if node.isLeaf else (name, 'page')
+    for tem_name in template_names:
         if isfile(join(dir, f'{tem_name}.jinja2')):
             return f'{tem_name}.jinja2'
     else:
@@ -45,13 +46,13 @@ def build_node(
         fname_tem = choose_template_file(node, isfile, template_dir)
         page_template = env.get_template(fname_tem)
         html = page_template.render(index=node, root=root)
-        out_fpath = join(node_path, 'index.html')
+        out_fpath = join(node_path, f'{node.name}.html' if node.isLeaf else 'index.html')
         with open(out_fpath, 'w') as fhandle:
             fhandle.write(html)
         rel_path = out_fpath.replace(out_fpath.split('dist/')[0], '')
         logger.info(f'Built {rel_path}')
 
-    for child in node.branches:
+    for child in node.branches+node.leaves:
         build_node(child, root, node_path, template_dir, env)
 
 

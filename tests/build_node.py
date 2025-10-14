@@ -13,6 +13,7 @@ class BuildNodeTests(TestCase):
         isfile.return_value = True
         node.name = 'foo'
         node.branches = []
+        node.leaves = []
         node.buildPage = False
         build_node(node, root, '', '', env)
         self.assertFalse(env.get_template().render.called)

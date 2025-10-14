@@ -94,6 +94,7 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
                 node = ContentNode(meta, config)
                 node.name = name
                 node.isLeaf = True
+                node.buildPage = True if config.leaf_pages else False
                 indexNode.leaves.append(node)
             node.path = dirpath.replace(content_dir, '')
             

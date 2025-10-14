@@ -34,6 +34,7 @@ class ContentNodeTests(TestCase):
         config.domain = url
         meta = Mock()
         node = ContentNode(meta, config)
+        node.name = 'b'
         node.front = dict()
         node.buildPage = bld
         node.path = ''

@@ -56,16 +56,15 @@ class ContentNode:
             return
         is_directory = any(self.branches) or any(self.leaves)
         trail = ''
-        if len(self.path):
+        if len(self.name):
             if self.isLeaf:
                 trail = f'/{self.name}'
                 if self.config.urlformat == 'filesystem':
                     trail += '.html'
-                # elif self.config.urlformat == 'mkdocs':
-                #     trail += '/'
-            elif is_directory or self.config.urlformat == 'filesystem':
+                elif self.config.urlformat == 'mkdocs':
+                    trail += '/'
+            elif is_directory or self.config.urlformat != 'clean':
                 trail = '/'
-                
         return f'https://{self.config.domain}{self.path}{trail}'
 
     @property

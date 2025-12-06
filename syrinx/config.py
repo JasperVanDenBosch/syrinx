@@ -88,6 +88,6 @@ def configure(args: Namespace) -> SyrinxConfiguration:
             setattr(config, key, getattr(args, key))
 
     config.branches = read_branches(root_dir)
-    config.branches.update()
+    config.branches.update(config.meta)
     config.meta = BuildMetaInfo(config)
     return config

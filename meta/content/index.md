@@ -3,7 +3,7 @@ Description = "Simple, python-powered static site generator"
 LastModifiedBranch = "sitemap-inclusion-options"
 +++
 
-# Syrinx
+# Syrinx 
 
 > *Spreadsheet to website*
 

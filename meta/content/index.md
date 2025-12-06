@@ -1,5 +1,6 @@
 +++
 Description = "Simple, python-powered static site generator"
+LastModBranch = "sitemap-inclusion-options"
 +++
 
 # Syrinx

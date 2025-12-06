@@ -80,7 +80,7 @@ class ReadTests(TestCase):
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    @patch('syrinx.node.datetime')
+    @patch('syrinx.config.datetime')
     def test_read_adds_build_info(self, datetime, read_file, walk):
         """
         """
@@ -91,8 +91,10 @@ class ReadTests(TestCase):
         ]
 
         from syrinx.read import read
+        from syrinx.config import BuildMetaInfo
         config = Mock()
         config.environment = 'foo'
+        config.meta = BuildMetaInfo(config)
         root = read('/pth', config)
         self.assertEqual(root.meta.environment, 'foo')
         self.assertEqual(root.meta.timestamp, datetime.now())

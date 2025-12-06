@@ -1,18 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Dict, Optional
 from sys import maxsize as SYS_MAX_SIZE
-from datetime import datetime, UTC
-from importlib.metadata import version
 if TYPE_CHECKING:
-    from syrinx.config import SyrinxConfiguration
-
-
-class BuildMetaInfo:
-
-    def __init__(self, config: SyrinxConfiguration) -> None:
-        self.environment = config.environment
-        self.timestamp = datetime.now(tz=UTC)
-        self.syrinx_version = version('syrinx')
+    from syrinx.config import SyrinxConfiguration, BuildMetaInfo
 
 
 class ContentNode:

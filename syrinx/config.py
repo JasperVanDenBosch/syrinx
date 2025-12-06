@@ -27,6 +27,7 @@ class SyrinxConfiguration:
     urlformat: str
     verbose: bool
     branches: Branches
+    meta: BuildMetaInfo
 
     def __str__(self) -> str:
         lines = []
@@ -88,4 +89,5 @@ def configure(args: Namespace) -> SyrinxConfiguration:
 
     config.branches = read_branches(root_dir)
     config.branches.update()
+    config.meta = BuildMetaInfo(config)
     return config

@@ -7,7 +7,7 @@ from yaml import safe_load as read_yaml
 import logging
 from markdown import markdown
 from syrinx.exceptions import ContentError
-from syrinx.node import ContentNode, BuildMetaInfo
+from syrinx.node import ContentNode
 if TYPE_CHECKING:
     from syrinx.config import SyrinxConfiguration
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
 
 def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
-    meta = BuildMetaInfo(config)
+    meta = config.meta
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()

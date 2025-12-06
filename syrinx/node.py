@@ -68,6 +68,8 @@ class ContentNode:
         # If not present, check for LastModifiedBranch entry
         if 'LastModifiedBranch' in self.front:
             branch_name = self.front['LastModifiedBranch']
+            # warn if modified, but on new branch
+            self.config.branches.warnIfModifiedNodeHasOutdatedBranch(self, branch_name)
             # Return datetime object directly from branches
             return self.config.branches.get_lastmodified(branch_name)
 

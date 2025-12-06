@@ -1,8 +1,20 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from os.path import isfile, join, abspath
+from datetime import datetime, UTC
+from importlib.metadata import version
+from syrinx.branches import read_branches
 if TYPE_CHECKING:
     from argparse import Namespace
+    from syrinx.branches import Branches
+
+
+class BuildMetaInfo:
+
+    def __init__(self, config: SyrinxConfiguration) -> None:
+        self.environment = config.environment
+        self.timestamp = datetime.now(tz=UTC)
+        self.syrinx_version = version('syrinx')
 
 
 
@@ -14,6 +26,7 @@ class SyrinxConfiguration:
     sitemap: str
     urlformat: str
     verbose: bool
+    branches: Branches
 
     def __str__(self) -> str:
         lines = []
@@ -72,4 +85,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     for key in ('clean', 'domain', 'verbose', 'environment', 'leaf_pages', 'urlformat'):
         if hasattr(args, key):
             setattr(config, key, getattr(args, key))
+
+    config.branches = read_branches(root_dir)
+    config.branches.update()
     return config

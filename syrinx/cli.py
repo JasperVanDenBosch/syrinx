@@ -26,11 +26,6 @@ def main():
 
     config = configure(args)
 
-    if config.verbose:
-        logging.basicConfig(level=logging.INFO)
-        logger = logging.getLogger(__name__)
-        logger.info('Configuration:\n'+str(config))
-
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
     preprocess(root_dir, config)

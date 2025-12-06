@@ -1,7 +1,7 @@
 from __future__ import annotations
 from unittest import TestCase
-from unittest.mock import patch, mock_open, MagicMock
-from datetime import datetime
+from unittest.mock import patch, mock_open, MagicMock, Mock
+from datetime import datetime, timezone
 import tempfile
 import os
 
@@ -135,3 +135,162 @@ dev = 2025-12-01T14:15:30+00:00"""
             self.assertIn('feature-branch', branches_obj.inner)
             self.assertEqual(branches_obj.inner['main'], original_branches['main'])
             self.assertEqual(branches_obj.inner['feature-branch'], original_branches['feature-branch'])
+
+
+class BranchesUpdateTests(TestCase):
+    """Test the Branches.update() method"""
+
+    @patch('syrinx.branches.write_branches')
+    @patch('syrinx.branches.Repo')
+    def test_update_not_git_repo(self, mock_repo, mock_write):
+        """Test update when not in a git repository"""
+        from syrinx.branches import Branches
+        from git import InvalidGitRepositoryError
+        
+        # Mock Repo to raise InvalidGitRepositoryError
+        mock_repo.side_effect = InvalidGitRepositoryError
+        
+        branches = Branches({})
+        mock_meta = Mock()
+        mock_meta.timestamp = datetime(2025, 12, 6, 12, 0, 0, tzinfo=timezone.utc)
+        
+        # Update should do nothing when not in a git repo
+        branches.update(mock_meta, '/some/root/dir')
+        
+        # Verify write_branches was NOT called
+        mock_write.assert_not_called()
+        
+        # Verify inner dict is unchanged
+        self.assertEqual(len(branches.inner), 0)
+
+    @patch('syrinx.branches.write_branches')
+    @patch('syrinx.branches.Repo')
+    def test_update_detached_head(self, mock_repo, mock_write):
+        """Test update when HEAD is detached"""
+        from syrinx.branches import Branches
+        
+        # Mock a detached HEAD state
+        mock_repo_instance = Mock()
+        mock_repo_instance.head.is_detached = True
+        mock_repo.return_value = mock_repo_instance
+        
+        branches = Branches({})
+        mock_meta = Mock()
+        mock_meta.timestamp = datetime(2025, 12, 6, 12, 0, 0, tzinfo=timezone.utc)
+        
+        # Update should do nothing when HEAD is detached
+        branches.update(mock_meta, '/some/root/dir')
+        
+        # Verify write_branches was NOT called
+        mock_write.assert_not_called()
+        
+        # Verify inner dict is unchanged
+        self.assertEqual(len(branches.inner), 0)
+
+    @patch('syrinx.branches.write_branches')
+    @patch('syrinx.branches.Repo')
+    def test_update_valid_branch_new(self, mock_repo, mock_write):
+        """Test update when on a valid branch that doesn't exist in dict yet"""
+        from syrinx.branches import Branches
+        
+        # Mock a valid branch
+        mock_repo_instance = Mock()
+        mock_repo_instance.head.is_detached = False
+        mock_repo_instance.active_branch.name = 'feature-xyz'
+        mock_repo.return_value = mock_repo_instance
+        
+        branches = Branches({'main': datetime(2025, 10, 13, 17, 45, 0)})
+        mock_meta = Mock()
+        test_timestamp = datetime(2025, 12, 6, 12, 0, 0, tzinfo=timezone.utc)
+        mock_meta.timestamp = test_timestamp
+        
+        # Update should add the new branch
+        branches.update(mock_meta, '/some/root/dir')
+        
+        # Verify the branch was added
+        self.assertEqual(len(branches.inner), 2)
+        self.assertIn('feature-xyz', branches.inner)
+        self.assertEqual(branches.inner['feature-xyz'], test_timestamp)
+        
+        # Verify write_branches was called
+        mock_write.assert_called_once_with(branches.inner, '/some/root/dir')
+
+    @patch('syrinx.branches.write_branches')
+    @patch('syrinx.branches.Repo')
+    def test_update_valid_branch_existing(self, mock_repo, mock_write):
+        """Test update when on a valid branch that already exists in dict"""
+        from syrinx.branches import Branches
+        
+        # Mock a valid branch
+        mock_repo_instance = Mock()
+        mock_repo_instance.head.is_detached = False
+        mock_repo_instance.active_branch.name = 'main'
+        mock_repo.return_value = mock_repo_instance
+        
+        old_timestamp = datetime(2025, 10, 13, 17, 45, 0)
+        branches = Branches({'main': old_timestamp, 'dev': datetime(2025, 11, 1, 10, 0, 0)})
+        mock_meta = Mock()
+        new_timestamp = datetime(2025, 12, 6, 12, 0, 0, tzinfo=timezone.utc)
+        mock_meta.timestamp = new_timestamp
+        
+        # Update should update the existing branch
+        branches.update(mock_meta, '/some/root/dir')
+        
+        # Verify the branch was updated (not added)
+        self.assertEqual(len(branches.inner), 2)
+        self.assertIn('main', branches.inner)
+        self.assertEqual(branches.inner['main'], new_timestamp)
+        self.assertNotEqual(branches.inner['main'], old_timestamp)
+        
+        # Verify write_branches was called
+        mock_write.assert_called_once_with(branches.inner, '/some/root/dir')
+
+    @patch('syrinx.branches.write_branches')
+    @patch('syrinx.branches.Repo')
+    def test_update_valid_branch_empty_dict(self, mock_repo, mock_write):
+        """Test update when on a valid branch and inner dict is initially empty"""
+        from syrinx.branches import Branches
+        
+        # Mock a valid branch
+        mock_repo_instance = Mock()
+        mock_repo_instance.head.is_detached = False
+        mock_repo_instance.active_branch.name = 'main'
+        mock_repo.return_value = mock_repo_instance
+        
+        branches = Branches({})
+        mock_meta = Mock()
+        test_timestamp = datetime(2025, 12, 6, 12, 0, 0, tzinfo=timezone.utc)
+        mock_meta.timestamp = test_timestamp
+        
+        # Update should add the branch to empty dict
+        branches.update(mock_meta, '/some/root/dir')
+        
+        # Verify the branch was added
+        self.assertEqual(len(branches.inner), 1)
+        self.assertIn('main', branches.inner)
+        self.assertEqual(branches.inner['main'], test_timestamp)
+        
+        # Verify write_branches was called
+        mock_write.assert_called_once_with(branches.inner, '/some/root/dir')
+
+    @patch('syrinx.branches.write_branches')
+    @patch('syrinx.branches.Repo')
+    def test_update_repo_error(self, mock_repo, mock_write):
+        """Test update when Repo raises ValueError or TypeError"""
+        from syrinx.branches import Branches
+        
+        # Mock Repo to raise ValueError
+        mock_repo.side_effect = ValueError("Invalid repo")
+        
+        branches = Branches({'main': datetime(2025, 10, 13, 17, 45, 0)})
+        mock_meta = Mock()
+        mock_meta.timestamp = datetime(2025, 12, 6, 12, 0, 0, tzinfo=timezone.utc)
+        
+        # Update should handle the error gracefully
+        branches.update(mock_meta, '/some/root/dir')
+        
+        # Verify write_branches was NOT called
+        mock_write.assert_not_called()
+        
+        # Verify inner dict is unchanged
+        self.assertEqual(len(branches.inner), 1)

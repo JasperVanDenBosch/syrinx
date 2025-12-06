@@ -3,3 +3,4 @@ markdown
 pandas
 lxml
 PyYAML~=6.0.2
+gitpython

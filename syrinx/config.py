@@ -1,4 +1,5 @@
 from __future__ import annotations
+import logging
 from typing import Optional, TYPE_CHECKING
 from os.path import isfile, join, abspath
 from datetime import datetime, UTC
@@ -52,6 +53,9 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     config.sitemap = 'opt-out'
     config.urlformat = 'filesystem'
     config.verbose = False
+
+
+
     root_dir = getattr(args, 'root_dir', '.')
     cfg_fpath = join(abspath(root_dir), 'syrinx.cfg')
     if isfile(cfg_fpath):
@@ -87,7 +91,12 @@ def configure(args: Namespace) -> SyrinxConfiguration:
         if hasattr(args, key):
             setattr(config, key, getattr(args, key))
 
+    if config.verbose:
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.info('Configuration:\n'+str(config))
+
+    config.meta = BuildMetaInfo(config) ## but no logging?
     config.branches = read_branches(root_dir)
-    config.branches.update(config.meta)
-    config.meta = BuildMetaInfo(config)
+    config.branches.update(config.meta, root_dir)
     return config

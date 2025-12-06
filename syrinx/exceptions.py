@@ -5,3 +5,7 @@ class ContentError(Exception):
 
 class ThemeError(Exception):
     pass
+
+
+class UnknownBranchError(Exception):
+    pass

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Dict, Optional
 from sys import maxsize as SYS_MAX_SIZE
+from datetime import datetime
 if TYPE_CHECKING:
     from syrinx.config import SyrinxConfiguration, BuildMetaInfo
 
@@ -58,8 +59,19 @@ class ContentNode:
         return f'https://{self.config.domain}{self.path}{trail}'
 
     @property
-    def lastModified(self) -> Optional[str]:
-        return self.front.get('LastModified')
+    def lastModified(self) -> Optional[datetime]:
+        # First check for direct LastModified entry
+        if 'LastModified' in self.front:
+            # Convert string datetime to datetime object
+            return datetime.fromisoformat(self.front['LastModified'])
+        
+        # If not present, check for LastModifiedBranch entry
+        if 'LastModifiedBranch' in self.front:
+            branch_name = self.front['LastModifiedBranch']
+            # Return datetime object directly from branches
+            return self.config.branches.get_lastmodified(branch_name)
+
+        return None
     
     @property
     def includeInSitemap(self) -> bool:

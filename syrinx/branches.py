@@ -4,6 +4,7 @@ from os.path import isfile, join, abspath
 from datetime import datetime
 import logging
 from git import Repo, InvalidGitRepositoryError
+from syrinx.exceptions import UnknownBranchError
 if TYPE_CHECKING:
     from syrinx.config import BuildMetaInfo
 logger = logging.getLogger(__name__)
@@ -59,6 +60,26 @@ class Branches:
     
     def __init__(self, inner: Dict[str, datetime]) -> None:
         self.inner = inner
+
+    def get_lastmodified(self, branch_name: str) -> datetime:
+        """Get the last modified datetime for a specific branch.
+        
+        Args:
+            branch_name: The name of the branch to look up
+            
+        Returns:
+            The datetime object associated with the branch
+            
+        Raises:
+            UnknownBranchError: If the branch is not found in self.inner
+        """
+        if branch_name not in self.inner:
+            raise UnknownBranchError(
+                f"Branch '{branch_name}' not found in branches data. "
+                f"This may indicate that the branches.toml file is missing "
+                f"or the branch entry is missing from the file."
+            )
+        return self.inner[branch_name]
 
     def update(self, meta: BuildMetaInfo, root_dir: str) -> None:
         """Update branch information with current build metadata.

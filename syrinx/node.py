@@ -38,6 +38,7 @@ class ContentNode:
         self.front = {}
         self.config = config
         self.isLeaf = False
+        self.source_path = ''
 
     def setContent(self, fpath: str, front: Dict[str, str], html: str) -> None:
         self.fpath = fpath
@@ -62,7 +63,9 @@ class ContentNode:
         
     @property
     def buildPage(self) -> bool:
-        if self.isLeaf and not self.config.leaf_pages :
+        if self.isLeaf and not self.config.leaf_pages:
+            return False
+        elif not self.source_path:
             return False
         else:
             return True

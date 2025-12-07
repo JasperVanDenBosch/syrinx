@@ -35,6 +35,7 @@ class ContentNodeTests(TestCase):
         config.domain = url
         config.leaf_pages = False
         node = ContentNode(config)
+        node.source_path = 'a'
         node.name = 'b'
         node.front = dict()
         node.isLeaf = not bld

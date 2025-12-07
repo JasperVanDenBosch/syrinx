@@ -46,13 +46,14 @@ class ReadTests(TestCase):
             ('/pth/content/lorem', None, ['ipsum.md', 'index.md']),
         ]
         config = Mock()
+        config.leaf_pages = False
         from syrinx.read import read
         root = read('/pth', config)
         self.assertFalse(root.branches[0].leaves[0].buildPage)
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    def test_read_BuildPage_leaf(self, read_file, walk):
+    def test_read_BuildPage_leaf_w_leaf_pages(self, read_file, walk):
         """Set "BuildPage" to true for leaves if `config.leaf_pages == True`
         """
         read_file.return_value = dict(), ''

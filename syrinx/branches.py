@@ -97,6 +97,9 @@ class Branches:
             meta: BuildMetaInfo object containing timestamp and other build metadata
             root_dir: The root directory where branches.toml will be written
         """
+        # Convert root_dir to absolute path
+        root_dir = abspath(root_dir)
+        
         try:
             # Try to get the current branch name
             repo = Repo(root_dir, search_parent_directories=True)
@@ -106,10 +109,12 @@ class Branches:
             branch_name = repo.active_branch.name
             
             # Cache changed files (both staged and unstaged, plus untracked)
+            # Convert all paths to absolute paths
             try:
-                self.changed_files = set(repo.untracked_files)
-                self.changed_files.update(item.a_path for item in repo.index.diff(None) if item.a_path)
-                self.changed_files.update(item.a_path for item in repo.index.diff('HEAD') if item.a_path)
+                repo_root = abspath(repo.working_dir)
+                self.changed_files = set(join(repo_root, f) for f in repo.untracked_files)
+                self.changed_files.update(join(repo_root, item.a_path) for item in repo.index.diff(None) if item.a_path)
+                self.changed_files.update(join(repo_root, item.a_path) for item in repo.index.diff('HEAD') if item.a_path)
             except (AttributeError, TypeError):
                 # Unable to get changed files (e.g., in tests with mocked repo)
                 self.changed_files = set()
@@ -147,12 +152,8 @@ class Branches:
         if branch == self.active:
             return
         
-        # Construct full path: source_path is relative to content directory
-        # Build absolute path: root_dir/content/source_path
-        # Remove leading slash from source_path if present for proper joining
         source_path_clean = node.source_path.lstrip('/')
-        file_path = join(node.meta.root_dir, 'content', source_path_clean)
-        print(f'{file_path} {self.changed_files}')
+        file_path = abspath(join(node.meta.root_dir, 'content', source_path_clean))
         
         # Check if the file is in the cached changed files
         if file_path in self.changed_files:

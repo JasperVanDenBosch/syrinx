@@ -1,9 +1,23 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Dict, Optional
 from sys import maxsize as SYS_MAX_SIZE
+from os.path import dirname, basename
 from datetime import datetime
 if TYPE_CHECKING:
     from syrinx.config import SyrinxConfiguration, BuildMetaInfo
+
+
+def makeBranchNode(config: SyrinxConfiguration, name: str) -> ContentNode:
+    node = ContentNode(config)
+    node.name = name
+    node.isLeaf = False
+    return node
+
+
+def makeLeafNode(config: SyrinxConfiguration) -> ContentNode:
+    node = ContentNode(config)
+    node.isLeaf = True
+    return node
 
 
 class ContentNode:
@@ -12,18 +26,28 @@ class ContentNode:
     branches: List[ContentNode]
     content_html: str
     front: Dict[str, str]
-    buildPage: bool
     path: str
+    source_path: str
     config: SyrinxConfiguration
     isLeaf: bool
+    fpath: str
 
     def __init__(self, config: SyrinxConfiguration):
-        self.buildPage = False
         self.leaves = []
         self.branches = []
         self.front = {}
         self.config = config
         self.isLeaf = False
+
+    def setContent(self, fpath: str, front: Dict[str, str], html: str) -> None:
+        self.fpath = fpath
+        self.front = front
+        self.content_html = html
+        self.source_path = fpath
+        self.path = dirname(fpath)
+        if self.isLeaf:
+            fparts = basename(fpath).split('.')
+            self.name = fparts[0]
 
     @property
     def meta(self) -> BuildMetaInfo:
@@ -35,6 +59,13 @@ class ContentNode:
             return self.front['SequenceNumber']
         else:
             return SYS_MAX_SIZE
+        
+    @property
+    def buildPage(self) -> bool:
+        if self.isLeaf and not self.config.leaf_pages :
+            return False
+        else:
+            return True
 
     @property
     def title(self) -> str:

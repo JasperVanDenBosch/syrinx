@@ -7,7 +7,7 @@ from yaml import safe_load as read_yaml
 import logging
 from markdown import markdown
 from syrinx.exceptions import ContentError
-from syrinx.node import ContentNode
+from syrinx.node import ContentNode, makeBranchNode, makeLeafNode
 if TYPE_CHECKING:
     from syrinx.config import SyrinxConfiguration
 logger = logging.getLogger(__name__)
@@ -58,12 +58,10 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()
-    root = ContentNode(config)
-    root.name = ''
+    root = makeBranchNode(config, '')
     for (dirpath, _, fnames) in walk(content_dir):
 
-        indexNode = ContentNode(config)
-        indexNode.name = basename(dirpath)
+        indexNode = makeBranchNode(config, basename(dirpath))
         if dirpath == content_dir:
             indexNode = root
             if 'index.md' not in fnames:
@@ -76,30 +74,22 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
         ## ideally process the index page first (not sure if this is necessary?)
         if 'index.md' in fnames:
             fnames.insert(0, fnames.pop(fnames.index('index.md')))
-        for fname in fnames:
-            fparts = fname.split('.')
-            ext = fparts[-1]
-            if ext != 'md':
-                continue
-            name = fparts[0]
-            
-            fm_dict, md_content = read_file(join(dirpath, fname))
 
-            if name == 'index':
+        for fname in fnames:
+            if not fname.endswith('.md'):
+                continue
+
+            fpath = join(dirpath, fname)
+            fm_dict, md_content = read_file(fpath)
+
+            if fname == 'index.md':
                 node = indexNode
-                node.buildPage = True
             else:
-                node = ContentNode(config)
-                node.name = name
-                node.isLeaf = True
-                node.buildPage = True if config.leaf_pages else False
+                node = makeLeafNode(config)
                 indexNode.leaves.append(node)
-            node.path = dirpath.replace(content_dir, '')
-            
-            node.front = fm_dict
-            node.content_html = markdown(md_content)
-            rel_path = join(dirpath.replace(content_dir, ""), fname)
-            logger.info(f'Read {rel_path}')
+
+            node.setContent(fpath.replace(content_dir, ''), fm_dict, markdown(md_content))
+            logger.info(f'Read {node.source_path}')
 
     reorder_children(root)
 

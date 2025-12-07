@@ -33,10 +33,11 @@ class ContentNodeTests(TestCase):
         config = Mock()
         config.sitemap = cfg
         config.domain = url
+        config.leaf_pages = False
         node = ContentNode(config)
         node.name = 'b'
         node.front = dict()
-        node.buildPage = bld
+        node.isLeaf = not bld
         node.path = ''
         if fm is not None:
             node.front['IncludeInSitemap'] = fm

@@ -46,6 +46,8 @@ class ContentNode:
         self.content_html = html
         self.source_path = fpath
         self.path = dirname(fpath)
+        if self.path == '/':
+            self.path = ''
         if self.isLeaf:
             fparts = basename(fpath).split('.')
             self.name = fparts[0]

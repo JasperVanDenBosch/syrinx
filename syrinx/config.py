@@ -12,10 +12,11 @@ if TYPE_CHECKING:
 
 class BuildMetaInfo:
 
-    def __init__(self, config: SyrinxConfiguration) -> None:
+    def __init__(self, config: SyrinxConfiguration, root_dir: str) -> None:
         self.environment = config.environment
         self.timestamp = datetime.now(tz=UTC)
         self.syrinx_version = version('syrinx')
+        self.root_dir = root_dir
 
 
 
@@ -96,7 +97,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
         logger = logging.getLogger(__name__)
         logger.info('Configuration:\n'+str(config))
 
-    config.meta = BuildMetaInfo(config)
+    config.meta = BuildMetaInfo(config, root_dir)
     config.branches = read_branches(root_dir)
     config.branches.update(config.meta, root_dir)
     return config

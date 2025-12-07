@@ -24,10 +24,11 @@ def get_args():
 def main():
     args = get_args()
 
-    config = configure(args)
-
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
+    config = configure(args)
+
+
     preprocess(root_dir, config)
     
     root = read(root_dir, config)

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from syrinx.node import ContentNode
 logger = logging.getLogger(__name__)
 
+
 def read_branches(root_dir: str) -> Branches:
     """Read branch information from branches.toml file.
     
@@ -146,15 +147,16 @@ class Branches:
         if branch == self.active:
             return
         
-        # Construct the file path relative to the repo root
-        # node.path is the directory path, node.name is the filename
-        file_path = join(node.path.lstrip('/'), node.name)
-        if file_path.startswith('./'):
-            file_path = file_path[2:]
+        # Construct full path: source_path is relative to content directory
+        # Build absolute path: root_dir/content/source_path
+        # Remove leading slash from source_path if present for proper joining
+        source_path_clean = node.source_path.lstrip('/')
+        file_path = join(node.meta.root_dir, 'content', source_path_clean)
+        print(f'{file_path} {self.changed_files}')
         
         # Check if the file is in the cached changed files
         if file_path in self.changed_files:
             logger.warning(
-                f"File '{node.name}' at '{node.path}' has uncommitted changes "
+                f"File '{file_path}' has uncommitted changes "
                 f"but references LastModifiedBranch '{branch}' while currently on branch '{self.active}'"
             )

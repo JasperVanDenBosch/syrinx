@@ -95,7 +95,7 @@ class ReadTests(TestCase):
         from syrinx.config import BuildMetaInfo
         config = Mock()
         config.environment = 'foo'
-        config.meta = BuildMetaInfo(config)
+        config.meta = BuildMetaInfo(config, '/pth')
         root = read('/pth', config)
         self.assertEqual(root.meta.environment, 'foo')
         self.assertEqual(root.meta.timestamp, datetime.now())

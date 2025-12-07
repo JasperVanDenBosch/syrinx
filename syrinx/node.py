@@ -14,18 +14,20 @@ class ContentNode:
     front: Dict[str, str]
     buildPage: bool
     path: str
-    meta: BuildMetaInfo
     config: SyrinxConfiguration
     isLeaf: bool
 
-    def __init__(self, meta: BuildMetaInfo, config: SyrinxConfiguration):
+    def __init__(self, config: SyrinxConfiguration):
         self.buildPage = False
         self.leaves = []
         self.branches = []
         self.front = {}
-        self.meta = meta
         self.config = config
         self.isLeaf = False
+
+    @property
+    def meta(self) -> BuildMetaInfo:
+        return self.config.meta
 
     @property
     def sequenceNumber(self) -> int:

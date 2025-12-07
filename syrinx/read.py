@@ -55,16 +55,14 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
 
 def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
 
-    meta = config.meta
     content_dir = join(root_dir, 'content')
 
     tree: Dict[str, ContentNode] = dict()
-    root = ContentNode(meta, config)
+    root = ContentNode(config)
     root.name = ''
-    root.meta = meta
     for (dirpath, _, fnames) in walk(content_dir):
 
-        indexNode = ContentNode(meta, config)
+        indexNode = ContentNode(config)
         indexNode.name = basename(dirpath)
         if dirpath == content_dir:
             indexNode = root
@@ -91,7 +89,7 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
                 node = indexNode
                 node.buildPage = True
             else:
-                node = ContentNode(meta, config)
+                node = ContentNode(config)
                 node.name = name
                 node.isLeaf = True
                 node.buildPage = True if config.leaf_pages else False

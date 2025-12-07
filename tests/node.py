@@ -6,7 +6,8 @@ class ContentNodeTests(TestCase):
 
     def test_follows_buildPage(self):
         from syrinx.node import ContentNode
-        node = ContentNode(None, None)
+        config = Mock()
+        node = ContentNode(config)
         node.name = 'foo_bar'
         node.front = dict()
         self.assertEqual(node.title, 'Foo Bar')
@@ -32,8 +33,7 @@ class ContentNodeTests(TestCase):
         config = Mock()
         config.sitemap = cfg
         config.domain = url
-        meta = Mock()
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.name = 'b'
         node.front = dict()
         node.buildPage = bld

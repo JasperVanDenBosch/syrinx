@@ -13,9 +13,8 @@ class ContentNodeLastModifiedTests(TestCase):
         """Test that direct LastModified entry is converted to datetime"""
         config = Mock()
         config.branches = Branches({})
-        meta = Mock()
         
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.front = {'LastModified': '2025-10-01T12:00:00'}
         
         result = node.lastModified
@@ -29,9 +28,8 @@ class ContentNodeLastModifiedTests(TestCase):
             'main': datetime(2025, 12, 6, 13, 15, 24, 42024, tzinfo=UTC),
         }
         config.branches = Branches(branches_dict)
-        meta = Mock()
         
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.front = {'LastModifiedBranch': 'main'}
         
         result = node.lastModified
@@ -46,9 +44,8 @@ class ContentNodeLastModifiedTests(TestCase):
             'feature-branch': datetime(2025, 11, 15, 10, 30, 0, tzinfo=UTC),
         }
         config.branches = Branches(branches_dict)
-        meta = Mock()
         
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.front = {'LastModifiedBranch': 'feature-branch'}
         
         result = node.lastModified
@@ -62,9 +59,8 @@ class ContentNodeLastModifiedTests(TestCase):
             'main': datetime(2025, 12, 6, 13, 15, 24, tzinfo=UTC),
         }
         config.branches = Branches(branches_dict)
-        meta = Mock()
         
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.front = {
             'LastModified': '2025-09-01T08:00:00',
             'LastModifiedBranch': 'main'
@@ -78,9 +74,8 @@ class ContentNodeLastModifiedTests(TestCase):
         """Test that None is returned when no entries present"""
         config = Mock()
         config.branches = Branches({})
-        meta = Mock()
         
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.front = {}
         
         self.assertIsNone(node.lastModified)
@@ -92,9 +87,8 @@ class ContentNodeLastModifiedTests(TestCase):
             'main': datetime(2025, 12, 6, 13, 15, 24, tzinfo=UTC),
         }
         config.branches = Branches(branches_dict)
-        meta = Mock()
         
-        node = ContentNode(meta, config)
+        node = ContentNode(config)
         node.front = {'LastModifiedBranch': 'nonexistent-branch'}
         
         with self.assertRaises(UnknownBranchError) as cm:

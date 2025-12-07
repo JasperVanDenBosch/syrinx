@@ -96,7 +96,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
         logger = logging.getLogger(__name__)
         logger.info('Configuration:\n'+str(config))
 
-    config.meta = BuildMetaInfo(config) ## but no logging?
+    config.meta = BuildMetaInfo(config)
     config.branches = read_branches(root_dir)
     config.branches.update(config.meta, root_dir)
     return config

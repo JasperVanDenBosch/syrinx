@@ -12,7 +12,6 @@ class ContentNode:
     branches: List[ContentNode]
     content_html: str
     front: Dict[str, str]
-    sequenceNumber: int
     buildPage: bool
     path: str
     meta: BuildMetaInfo
@@ -23,10 +22,17 @@ class ContentNode:
         self.buildPage = False
         self.leaves = []
         self.branches = []
-        self.sequenceNumber = SYS_MAX_SIZE
+        self.front = {}
         self.meta = meta
         self.config = config
         self.isLeaf = False
+
+    @property
+    def sequenceNumber(self) -> int:
+        if 'SequenceNumber' in self.front:
+            return self.front['SequenceNumber']
+        else:
+            return SYS_MAX_SIZE
 
     @property
     def title(self) -> str:

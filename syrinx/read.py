@@ -100,8 +100,6 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
             
             node.front = fm_dict
             node.content_html = markdown(md_content)
-            if 'SequenceNumber' in fm_dict:
-                node.sequenceNumber = fm_dict['SequenceNumber']
             rel_path = join(dirpath.replace(content_dir, ""), fname)
             logger.info(f'Read {rel_path}')
 

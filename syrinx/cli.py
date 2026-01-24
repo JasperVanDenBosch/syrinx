@@ -8,6 +8,7 @@ import logging
 
 
 def get_args():
+
     parser = ArgumentParser()
 
     parser.add_argument('root_dir', type=str, help='Location of root directory to build from')
@@ -17,6 +18,8 @@ def get_args():
                         help='Define build environment for customization, e.g. "production"')
     parser.add_argument('--leaf-pages', default=SUPPRESS, action='store_true',
                         help='Build pages for "leaf" (non-index) content nodes')
+    parser.add_argument("--dev", action="store_true",
+                        help="Run in development mode with live reload")
     parser.add_argument('-v', '--verbose', default=SUPPRESS, action='store_true', 
                         help='Print log messages during build')
     return parser.parse_args()
@@ -26,7 +29,14 @@ def main():
 
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
+
     config = configure(args)
+
+    if args.dev:
+        from syrinx.dev_server import DevServer
+        server = DevServer(root_dir, port=args.port)
+        server.start()
+        return
 
 
     preprocess(root_dir, config)

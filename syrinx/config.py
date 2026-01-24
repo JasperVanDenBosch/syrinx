@@ -1,8 +1,22 @@
 from __future__ import annotations
+import logging
 from typing import Optional, TYPE_CHECKING
 from os.path import isfile, join, abspath
+from datetime import datetime, UTC
+from importlib.metadata import version
+from syrinx.branches import read_branches
 if TYPE_CHECKING:
     from argparse import Namespace
+    from syrinx.branches import Branches
+
+
+class BuildMetaInfo:
+
+    def __init__(self, config: SyrinxConfiguration, root_dir: str) -> None:
+        self.environment = config.environment
+        self.timestamp = datetime.now(tz=UTC)
+        self.syrinx_version = version('syrinx')
+        self.root_dir = root_dir
 
 
 
@@ -14,6 +28,8 @@ class SyrinxConfiguration:
     sitemap: str
     urlformat: str
     verbose: bool
+    branches: Branches
+    meta: BuildMetaInfo
 
     def __str__(self) -> str:
         lines = []
@@ -38,6 +54,9 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     config.sitemap = 'opt-out'
     config.urlformat = 'filesystem'
     config.verbose = False
+
+
+
     root_dir = getattr(args, 'root_dir', '.')
     cfg_fpath = join(abspath(root_dir), 'syrinx.cfg')
     if isfile(cfg_fpath):
@@ -72,4 +91,13 @@ def configure(args: Namespace) -> SyrinxConfiguration:
     for key in ('clean', 'domain', 'verbose', 'environment', 'leaf_pages', 'urlformat'):
         if hasattr(args, key):
             setattr(config, key, getattr(args, key))
+
+    if config.verbose:
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        logger.info('Configuration:\n'+str(config))
+
+    config.meta = BuildMetaInfo(config, root_dir)
+    config.branches = read_branches(root_dir)
+    config.branches.update(config.meta, root_dir)
     return config

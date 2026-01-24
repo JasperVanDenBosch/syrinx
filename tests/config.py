@@ -1,7 +1,8 @@
 from __future__ import annotations
 from unittest import TestCase
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, Mock
 from argparse import Namespace
+from datetime import datetime, timezone
 
 
 class ConfigTests(TestCase):
@@ -13,11 +14,18 @@ class ConfigTests(TestCase):
     """
     
 
+    @patch('syrinx.config.read_branches')
     @patch('syrinx.config.isfile')
     @patch('syrinx.config.open', new_callable=mock_open)
-    def test_defaults(self, _, isfile):
+    def test_defaults(self, _, isfile, mock_read_branches):
         from syrinx.config import configure
+        from syrinx.branches import Branches
         isfile.return_value = False
+        # Mock read_branches to return a Branches object
+        mock_branches = Mock(spec=Branches)
+        mock_branches.inner = {}
+        mock_branches.update = Mock()
+        mock_read_branches.return_value = mock_branches
         ## if argument not supplied, the attribute is not set
         args = Namespace()
         config = configure(args)
@@ -29,11 +37,18 @@ class ConfigTests(TestCase):
         self.assertEqual(config.urlformat, 'filesystem')
         self.assertFalse(config.verbose)
 
+    @patch('syrinx.config.read_branches')
     @patch('syrinx.config.isfile')
     @patch('syrinx.config.open', new_callable=mock_open)
-    def test_file(self, mocked_open, isfile):
+    def test_file(self, mocked_open, isfile, mock_read_branches):
         from syrinx.config import configure
+        from syrinx.branches import Branches
         isfile.return_value = True
+        # Mock read_branches to return a Branches object
+        mock_branches = Mock(spec=Branches)
+        mock_branches.inner = {}
+        mock_branches.update = Mock()
+        mock_read_branches.return_value = mock_branches
         mocked_open().read.return_value = """
             clean = false
             domain = "some.where.bla"
@@ -51,11 +66,18 @@ class ConfigTests(TestCase):
         self.assertEqual(config.urlformat, 'clean')
         self.assertTrue(config.verbose)
 
+    @patch('syrinx.config.read_branches')
     @patch('syrinx.config.isfile')
     @patch('syrinx.config.open', new_callable=mock_open)
-    def test_cli(self, mocked_open, isfile):
+    def test_cli(self, mocked_open, isfile, mock_read_branches):
         from syrinx.config import configure
+        from syrinx.branches import Branches
         isfile.return_value = True
+        # Mock read_branches to return a Branches object
+        mock_branches = Mock(spec=Branches)
+        mock_branches.inner = {}
+        mock_branches.update = Mock()
+        mock_read_branches.return_value = mock_branches
         mocked_open().read.return_value = """
             clean = false
             domain = "some.where.bla"

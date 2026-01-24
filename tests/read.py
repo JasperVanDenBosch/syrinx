@@ -46,13 +46,14 @@ class ReadTests(TestCase):
             ('/pth/content/lorem', None, ['ipsum.md', 'index.md']),
         ]
         config = Mock()
+        config.leaf_pages = False
         from syrinx.read import read
         root = read('/pth', config)
         self.assertFalse(root.branches[0].leaves[0].buildPage)
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    def test_read_BuildPage_leaf(self, read_file, walk):
+    def test_read_BuildPage_leaf_w_leaf_pages(self, read_file, walk):
         """Set "BuildPage" to true for leaves if `config.leaf_pages == True`
         """
         read_file.return_value = dict(), ''
@@ -80,7 +81,7 @@ class ReadTests(TestCase):
 
     @patch('syrinx.read.walk')
     @patch('syrinx.read.read_file')
-    @patch('syrinx.node.datetime')
+    @patch('syrinx.config.datetime')
     def test_read_adds_build_info(self, datetime, read_file, walk):
         """
         """
@@ -91,8 +92,10 @@ class ReadTests(TestCase):
         ]
 
         from syrinx.read import read
+        from syrinx.config import BuildMetaInfo
         config = Mock()
         config.environment = 'foo'
+        config.meta = BuildMetaInfo(config, '/pth')
         root = read('/pth', config)
         self.assertEqual(root.meta.environment, 'foo')
         self.assertEqual(root.meta.timestamp, datetime.now())
@@ -188,3 +191,176 @@ class ReadTests(TestCase):
                          'https://loop.xyz/bar/boz/')
         self.assertEqual(root.branches[1].branches[0].address,
                          'https://loop.xyz/foo/bar/')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_name_root(self, read_file, walk):
+        """Root node should have empty string as name
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.name, '')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_name_branch(self, read_file, walk):
+        """Branch nodes should have name set to directory basename
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/lorem', None, ['index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.branches[0].name, 'lorem')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_name_leaf(self, read_file, walk):
+        """Leaf nodes should have name set to filename without extension
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['bar.md', 'index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.branches[0].leaves[0].name, 'bar')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_path_root(self, read_file, walk):
+        """Root node path should be empty string
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.path, '')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_path_branch(self, read_file, walk):
+        """Branch node path should be relative to content directory
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/lorem', None, ['index.md']),
+            ('/pth/content/lorem/ipsum', None, ['index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.branches[0].path, '/lorem')
+        self.assertEqual(root.branches[0].branches[0].path, '/lorem/ipsum')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_path_leaf(self, read_file, walk):
+        """Leaf node path should be relative to content directory
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['bar.md', 'index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.branches[0].leaves[0].path, '/foo')
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_isLeaf_root(self, read_file, walk):
+        """Root node should not be a leaf
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertFalse(root.isLeaf)
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_isLeaf_branch(self, read_file, walk):
+        """Branch nodes should not be leaves
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/lorem', None, ['index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertFalse(root.branches[0].isLeaf)
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_isLeaf_leaf(self, read_file, walk):
+        """Leaf nodes should have isLeaf set to True
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['bar.md', 'index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertTrue(root.branches[0].leaves[0].isLeaf)
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_sequenceNumber_default(self, read_file, walk):
+        """When no SequenceNumber in frontmatter, should use default (SYS_MAX_SIZE)
+        """
+        read_file.return_value = dict(), ''
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['bar.md', 'index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        from sys import maxsize as SYS_MAX_SIZE
+        root = read('/pth', config)
+        self.assertEqual(root.sequenceNumber, SYS_MAX_SIZE)
+        self.assertEqual(root.branches[0].sequenceNumber, SYS_MAX_SIZE)
+        self.assertEqual(root.branches[0].leaves[0].sequenceNumber, SYS_MAX_SIZE)
+
+    @patch('syrinx.read.walk')
+    @patch('syrinx.read.read_file')
+    def test_read_sequenceNumber_from_frontmatter(self, read_file, walk):
+        """When SequenceNumber in frontmatter, should use that value
+        """
+        read_file.side_effect = [
+            ({'SequenceNumber': 10}, ''),  # root index.md
+            ({'SequenceNumber': 5}, ''),   # foo/index.md
+            ({'SequenceNumber': 3}, ''),   # foo/bar.md
+        ]
+        walk.return_value = [
+            ('/pth/content', None, ['index.md']),
+            ('/pth/content/foo', None, ['bar.md', 'index.md']),
+        ]
+        config = Mock()
+        from syrinx.read import read
+        root = read('/pth', config)
+        self.assertEqual(root.sequenceNumber, 10)
+        self.assertEqual(root.branches[0].sequenceNumber, 5)
+        self.assertEqual(root.branches[0].leaves[0].sequenceNumber, 3)

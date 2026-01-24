@@ -24,15 +24,11 @@ def get_args():
 def main():
     args = get_args()
 
-    config = configure(args)
-
-    if config.verbose:
-        logging.basicConfig(level=logging.INFO)
-        logger = logging.getLogger(__name__)
-        logger.info('Configuration:\n'+str(config))
-
     root_dir = abspath(args.root_dir)
     assert isdir(root_dir)
+    config = configure(args)
+
+
     preprocess(root_dir, config)
     
     root = read(root_dir, config)

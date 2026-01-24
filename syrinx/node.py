@@ -1,18 +1,23 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Dict, Optional
 from sys import maxsize as SYS_MAX_SIZE
-from datetime import datetime, UTC
-from importlib.metadata import version
+from os.path import dirname, basename
+from datetime import datetime
 if TYPE_CHECKING:
-    from syrinx.config import SyrinxConfiguration
+    from syrinx.config import SyrinxConfiguration, BuildMetaInfo
 
 
-class BuildMetaInfo:
+def makeBranchNode(config: SyrinxConfiguration, name: str) -> ContentNode:
+    node = ContentNode(config)
+    node.name = name
+    node.isLeaf = False
+    return node
 
-    def __init__(self, config: SyrinxConfiguration) -> None:
-        self.environment = config.environment
-        self.timestamp = datetime.now(tz=UTC)
-        self.syrinx_version = version('syrinx')
+
+def makeLeafNode(config: SyrinxConfiguration) -> ContentNode:
+    node = ContentNode(config)
+    node.isLeaf = True
+    return node
 
 
 class ContentNode:
@@ -21,21 +26,51 @@ class ContentNode:
     branches: List[ContentNode]
     content_html: str
     front: Dict[str, str]
-    sequenceNumber: int
-    buildPage: bool
     path: str
-    meta: BuildMetaInfo
+    source_path: str
     config: SyrinxConfiguration
     isLeaf: bool
+    fpath: str
 
-    def __init__(self, meta: BuildMetaInfo, config: SyrinxConfiguration):
-        self.buildPage = False
+    def __init__(self, config: SyrinxConfiguration):
         self.leaves = []
         self.branches = []
-        self.sequenceNumber = SYS_MAX_SIZE
-        self.meta = meta
+        self.front = {}
         self.config = config
         self.isLeaf = False
+        self.source_path = ''
+
+    def setContent(self, fpath: str, front: Dict[str, str], html: str) -> None:
+        self.fpath = fpath
+        self.front = front
+        self.content_html = html
+        self.source_path = fpath
+        self.path = dirname(fpath)
+        if self.path == '/':
+            self.path = ''
+        if self.isLeaf:
+            fparts = basename(fpath).split('.')
+            self.name = fparts[0]
+
+    @property
+    def meta(self) -> BuildMetaInfo:
+        return self.config.meta
+
+    @property
+    def sequenceNumber(self) -> int:
+        if 'SequenceNumber' in self.front:
+            return self.front['SequenceNumber']
+        else:
+            return SYS_MAX_SIZE
+        
+    @property
+    def buildPage(self) -> bool:
+        if self.isLeaf and not self.config.leaf_pages:
+            return False
+        elif not self.source_path:
+            return False
+        else:
+            return True
 
     @property
     def title(self) -> str:
@@ -68,8 +103,21 @@ class ContentNode:
         return f'https://{self.config.domain}{self.path}{trail}'
 
     @property
-    def lastModified(self) -> Optional[str]:
-        return self.front.get('LastModified')
+    def lastModified(self) -> Optional[datetime]:
+        # First check for direct LastModified entry
+        if 'LastModified' in self.front:
+            # Convert string datetime to datetime object
+            return datetime.fromisoformat(self.front['LastModified'])
+        
+        # If not present, check for LastModifiedBranch entry
+        if 'LastModifiedBranch' in self.front:
+            branch_name = self.front['LastModifiedBranch']
+            # warn if modified, but on new branch
+            self.config.branches.warnIfModifiedNodeHasOutdatedBranch(self, branch_name)
+            # Return datetime object directly from branches
+            return self.config.branches.get_lastmodified(branch_name)
+
+        return None
     
     @property
     def includeInSitemap(self) -> bool:

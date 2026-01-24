@@ -6,7 +6,8 @@ class ContentNodeTests(TestCase):
 
     def test_follows_buildPage(self):
         from syrinx.node import ContentNode
-        node = ContentNode(None, None)
+        config = Mock()
+        node = ContentNode(config)
         node.name = 'foo_bar'
         node.front = dict()
         self.assertEqual(node.title, 'Foo Bar')
@@ -32,11 +33,12 @@ class ContentNodeTests(TestCase):
         config = Mock()
         config.sitemap = cfg
         config.domain = url
-        meta = Mock()
-        node = ContentNode(meta, config)
+        config.leaf_pages = False
+        node = ContentNode(config)
+        node.source_path = 'a'
         node.name = 'b'
         node.front = dict()
-        node.buildPage = bld
+        node.isLeaf = not bld
         node.path = ''
         if fm is not None:
             node.front['IncludeInSitemap'] = fm

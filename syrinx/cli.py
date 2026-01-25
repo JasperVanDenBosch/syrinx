@@ -7,11 +7,12 @@ from argparse import ArgumentParser, SUPPRESS
 
 
 def get_args():
-    """_summary_
+    """Use ArgumentParser to interpret CLI arguments and return an object with parsed settings.
 
 
     ```
-    syrinx
+    syrinx --help
+    syrinx build
     syrinx build --dir meta
     syrinx serve --dir meta
     ```

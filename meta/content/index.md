@@ -16,11 +16,8 @@ Syrinx is a super simple python package for generating a static website
 ```bash
 pip install syrinx
 touch content/index.md
-syrinx .
-python -m http.server -d dist
+syrinx serve
 ```
-
-Use `syrinx . --dev` to run a development server with live reloading. You can also use `syrinx . --port 8000` to specify a different port for the development server (8000 is the default).
 
 ## Conventions
 

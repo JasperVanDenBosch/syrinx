@@ -66,7 +66,7 @@ class RebuildHandler(FileSystemEventHandler):
         """
         try:
             print("[DEV] Rebuilding...")
-            run_pipeline(self.root_dir, self.args)
+            run_pipeline(self.args)
             print("[DEV] Build complete!")
             
             # Trigger browser reload if callback is set

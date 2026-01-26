@@ -6,6 +6,7 @@ detected. It includes an HTTP server to serve the built files.
 """
 
 import os
+from os.path import abspath
 from socketserver import TCPServer
 from watchdog.observers import Observer
 from syrinx.server.hot_reload_handler import HotReloadHandler
@@ -26,9 +27,9 @@ class DevServer:
         args: Command-line arguments for configuration.
         reload_version: Version counter for triggering reloads.
     """
-    def __init__(self, root_dir, port, args):
-        self.root_dir = os.path.abspath(root_dir)
-        self.port = port
+    def __init__(self, args):
+        self.root_dir = abspath(args.dir)
+        self.port = args.port
         self.args = args
         self.reload_version = 0
         

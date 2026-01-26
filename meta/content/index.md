@@ -1,6 +1,6 @@
 +++
 Description = "Simple, python-powered static site generator"
-LastModifiedBranch = "sitemap-inclusion-options"
+LastModifiedBranch = "hot-reload"
 +++
 
 # Syrinx 

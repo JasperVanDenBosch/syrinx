@@ -57,7 +57,7 @@ def configure(args: Namespace) -> SyrinxConfiguration:
 
 
 
-    root_dir = getattr(args, 'root_dir', '.')
+    root_dir = getattr(args, 'dir', '.')
     cfg_fpath = join(abspath(root_dir), 'syrinx.cfg')
     if isfile(cfg_fpath):
         with open(cfg_fpath) as fhandle:

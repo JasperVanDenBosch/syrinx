@@ -1,5 +1,5 @@
-from os.path import abspath, isdir
-from argparse import ArgumentParser, Namespace, SUPPRESS
+
+from argparse import ArgumentParser, SUPPRESS
 from syrinx.run import run_pipeline
 from syrinx.server.dev_server import DevServer
 
@@ -49,12 +49,9 @@ def get_args():
 def main():
     args = get_args()
 
-    root_dir = abspath(args.dir)
-    assert isdir(root_dir)
-
     if args.command == 'serve':
-        DevServer(root_dir, port=args.port, args=args).start()
+        DevServer(args).start()
         return
     
-    run_pipeline(root_dir, args)
+    run_pipeline(args)
 

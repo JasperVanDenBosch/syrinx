@@ -2,6 +2,7 @@ from syrinx.build import build
 from syrinx.read import read
 from syrinx.preprocess import preprocess
 from syrinx.config import configure
+from syrinx.server.dev_server import DevServer
 from os.path import abspath, isdir
 from argparse import ArgumentParser, Namespace, SUPPRESS
 
@@ -48,23 +49,16 @@ def get_args():
     return root_parser.parse_args()
 
 
-def run_build(root_dir, args=None):
+def run_build(root_dir: str, args: Namespace):
     """Execute the full build pipeline.
     
     Args:
         root_dir: Root directory to build from
-        args: Command-line arguments (optional, will create defaults if not provided)
+        args: Command-line arguments
     
     Returns:
         The root ContentNode
     """
-    if args is None:
-        # Create minimal args for programmatic usage (dev server, rebuild handler)
-        args = Namespace(
-            root_dir=root_dir,
-            clean=False,
-            environment='development'
-        )
     
     config = configure(args)
     preprocess(root_dir, config)
@@ -75,16 +69,12 @@ def run_build(root_dir, args=None):
 
 def main():
     args = get_args()
-    print(args)
 
     root_dir = abspath(args.dir)
     assert isdir(root_dir)
 
-
     if args.command == 'serve':
-        from syrinx.server.dev_server import DevServer
-        server = DevServer(root_dir, port=args.port, args=args)
-        server.start()
+        DevServer(root_dir, port=args.port, args=args).start()
         return
     
     run_build(root_dir, args)

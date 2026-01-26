@@ -21,7 +21,7 @@ class RebuildHandler(FileSystemEventHandler):
         build_delay: Minimum delay between builds in seconds.
         reload_callback: Callback function to trigger browser reload.
     """
-    def __init__(self, root_dir, watch_dir, reload_callback=None, args=None):
+    def __init__(self, root_dir, watch_dir, reload_callback, args):
         self.root_dir = root_dir
         self.watch_dir = watch_dir
         self.args = args

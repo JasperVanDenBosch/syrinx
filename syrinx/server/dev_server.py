@@ -8,7 +8,6 @@ detected. It includes an HTTP server to serve the built files.
 import os
 from socketserver import TCPServer
 from watchdog.observers import Observer
-from syrinx.cli import run_build
 from syrinx.server.hot_reload_handler import HotReloadHandler
 from syrinx.server.rebuild_handler import RebuildHandler
 
@@ -27,7 +26,7 @@ class DevServer:
         args: Command-line arguments for configuration.
         reload_version: Version counter for triggering reloads.
     """
-    def __init__(self, root_dir, port=8000, args=None):
+    def __init__(self, root_dir, port, args):
         self.root_dir = os.path.abspath(root_dir)
         self.port = port
         self.args = args
@@ -49,13 +48,14 @@ class DevServer:
         print(f"[DEV] Watching for changes in: {watch_dir}")
         print(f"[DEV] Building from: {self.root_dir}")
         
-        # Initial build
-        print("[DEV] Initial build...")
-        run_build(self.root_dir, self.args)
-        print("[DEV] Initial build complete!")
-        
-        # Setup file watcher with reload callback
+        # Setup rebuild handler
         event_handler = RebuildHandler(self.root_dir, watch_dir, self.trigger_reload, self.args)
+        
+        # Initial build through rebuild handler
+        print("[DEV] Initial build...")
+        event_handler.rebuild()
+        
+        # Setup file watcher
         observer = Observer()
         observer.schedule(event_handler, watch_dir, recursive=True)
         observer.start()

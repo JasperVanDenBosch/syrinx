@@ -3,9 +3,7 @@
 import time
 from pathlib import Path
 from watchdog.events import FileSystemEventHandler
-from syrinx.build import build
-from syrinx.read import read
-from syrinx.preprocess import preprocess
+from syrinx.cli import run_build
 
 
 class RebuildHandler(FileSystemEventHandler):
@@ -18,13 +16,15 @@ class RebuildHandler(FileSystemEventHandler):
     Attributes:
         root_dir: The root directory of the Syrinx project to build.
         watch_dir: The parent directory to watch for changes.
+        args: Command-line arguments for configuration.
         last_build_time: Timestamp of the last build to implement debouncing.
         build_delay: Minimum delay between builds in seconds.
         reload_callback: Callback function to trigger browser reload.
     """
-    def __init__(self, root_dir, watch_dir, reload_callback=None):
+    def __init__(self, root_dir, watch_dir, reload_callback=None, args=None):
         self.root_dir = root_dir
         self.watch_dir = watch_dir
+        self.args = args
         self.last_build_time = 0
         self.build_delay = 0.5  # seconds
         self.reload_callback = reload_callback
@@ -66,9 +66,7 @@ class RebuildHandler(FileSystemEventHandler):
         """
         try:
             print("[DEV] Rebuilding...")
-            preprocess(self.root_dir, clean=False)
-            root = read(self.root_dir)
-            build(root, self.root_dir)
+            run_build(self.root_dir, self.args)
             print("[DEV] Build complete!")
             
             # Trigger browser reload if callback is set

@@ -30,7 +30,7 @@ def get_args():
     base_parser.add_argument('-v', '--verbose', default=SUPPRESS, action='store_true', 
                         help='Print log messages during build')
 
-    # top level object
+    ## Top level parser object
     root_parser = ArgumentParser()
     sub_parsers = root_parser.add_subparsers(
         title='Subcommands ("syrinx . <command> --help" for help for the specific command)')

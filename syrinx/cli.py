@@ -1,6 +1,6 @@
 from os.path import abspath, isdir
 from argparse import ArgumentParser, Namespace, SUPPRESS
-from syrinx.run import run_build
+from syrinx.run import run_pipeline
 from syrinx.server.dev_server import DevServer
 
 
@@ -56,5 +56,5 @@ def main():
         DevServer(root_dir, port=args.port, args=args).start()
         return
     
-    run_build(root_dir, args)
+    run_pipeline(root_dir, args)
 

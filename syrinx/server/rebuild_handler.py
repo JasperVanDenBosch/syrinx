@@ -3,7 +3,7 @@
 import time
 from pathlib import Path
 from watchdog.events import FileSystemEventHandler
-from syrinx.run import run_build
+from syrinx.run import run_pipeline
 
 
 class RebuildHandler(FileSystemEventHandler):
@@ -66,7 +66,7 @@ class RebuildHandler(FileSystemEventHandler):
         """
         try:
             print("[DEV] Rebuilding...")
-            run_build(self.root_dir, self.args)
+            run_pipeline(self.root_dir, self.args)
             print("[DEV] Build complete!")
             
             # Trigger browser reload if callback is set

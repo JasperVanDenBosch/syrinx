@@ -5,7 +5,7 @@ from syrinx.preprocess import preprocess
 from syrinx.config import configure
 
 
-def run_build(root_dir: str, args: Namespace):
+def run_pipeline(root_dir: str, args: Namespace):
     """Execute the full build pipeline.
     
     Args:

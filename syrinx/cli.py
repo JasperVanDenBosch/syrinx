@@ -1,10 +1,7 @@
-from syrinx.build import build
-from syrinx.read import read
-from syrinx.preprocess import preprocess
-from syrinx.config import configure
-from syrinx.server.dev_server import DevServer
 from os.path import abspath, isdir
 from argparse import ArgumentParser, Namespace, SUPPRESS
+from syrinx.run import run_build
+from syrinx.server.dev_server import DevServer
 
 
 def get_args():
@@ -47,24 +44,6 @@ def get_args():
         help='Which port to run the server on')
 
     return root_parser.parse_args()
-
-
-def run_build(root_dir: str, args: Namespace):
-    """Execute the full build pipeline.
-    
-    Args:
-        root_dir: Root directory to build from
-        args: Command-line arguments
-    
-    Returns:
-        The root ContentNode
-    """
-    
-    config = configure(args)
-    preprocess(root_dir, config)
-    root = read(root_dir, config)
-    build(root, root_dir, config)
-    return root
 
 
 def main():

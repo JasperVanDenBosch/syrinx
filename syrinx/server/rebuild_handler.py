@@ -3,7 +3,7 @@
 import time
 from pathlib import Path
 from watchdog.events import FileSystemEventHandler
-from syrinx.cli import run_build
+from syrinx.run import run_build
 
 
 class RebuildHandler(FileSystemEventHandler):

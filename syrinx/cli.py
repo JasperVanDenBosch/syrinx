@@ -57,7 +57,7 @@ def main():
     config = configure(args)
 
     if args.command == 'serve':
-        from syrinx.dev_server import DevServer
+        from syrinx.server.dev_server import DevServer
         server = DevServer(root_dir, port=args.port)
         server.start()
         return

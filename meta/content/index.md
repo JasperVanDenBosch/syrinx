@@ -1,8 +1,9 @@
 +++
 Description = "Simple, python-powered static site generator"
-LastModifiedBranch = "hot-reload"
+LastModifiedBranch = "site-templates"
 +++
 
+![Line drawing of a singing bird with a pan flute for vocal chords](/assets/logo_syrinx.png "Syrinx Logo")
 # Syrinx 
 
 > *Spreadsheet to website*

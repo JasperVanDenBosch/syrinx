@@ -1,8 +1,8 @@
 +++
 Title = "Integrity"
-Description = "Honest and transparent"
 SequenceNumber = 2
 Icon = "shield-check"
 Image = "/assets/images/value-integrity.png"
 +++
-Integrity is at the core of our operations. We believe in honest communication, transparent processes, and building trust through consistent, ethical behavior.
+
+Integrity is at the heart of everything we do. We believe in transparency, honesty, and ethical practices that build trust with our clients, partners, and communities.

@@ -1,10 +1,10 @@
 +++
-Title = "Development"
-Description = "Custom development solutions"
+Title = "Product Development"
 SequenceNumber = 2
-Icon = "code"
+Icon = "rocket"
 Image = "/assets/images/service-development.png"
 +++
-Our development team builds custom solutions tailored to your specific requirements. From concept to deployment, we deliver robust, scalable applications that power your business.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum euismod nibh vel magna tempus.
+From concept to launch, our product development team brings your ideas to life. We combine technical expertise with user-centered design to create solutions that make an impact.
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.

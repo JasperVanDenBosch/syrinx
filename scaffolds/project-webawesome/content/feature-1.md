@@ -1,8 +1,8 @@
 +++
 Title = "Innovation"
-Description = "Cutting-edge solutions"
 SequenceNumber = 1
 Icon = "lightbulb"
 Image = "/assets/images/feature-innovation.png"
 +++
-We drive innovation through research and development, creating cutting-edge solutions that address real-world challenges. Our team works tirelessly to push boundaries and deliver results.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.

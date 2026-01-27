@@ -1,10 +1,10 @@
 +++
-Title = "Consulting"
-Description = "Strategic consulting services"
+Title = "Strategic Consulting"
 SequenceNumber = 1
-Icon = "comments"
+Icon = "compass"
 Image = "/assets/images/service-consulting.png"
 +++
-Our consulting services provide strategic guidance and expert advice to help you navigate complex challenges. We work closely with your team to develop tailored solutions that drive results.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum euismod nibh vel magna tempus.
+Our strategic consulting services help organizations navigate complex challenges and identify opportunities for growth. We work closely with your team to develop actionable strategies that drive results.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.

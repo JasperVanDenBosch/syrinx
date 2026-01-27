@@ -1,27 +1,24 @@
 +++
-Title = "Contact"
-Description = "Get in touch with us"
-SequenceNumber = 3
-Image = "/assets/images/contact-office.png"
+Title = "Contact Us"
+Description = "Get in touch with our team"
 +++
-# Contact Us
 
-We'd love to hear from you. Whether you have questions about our services, want to discuss a potential project, or simply want to say hello, we're here to help.
+## Let's Connect
 
-## Get In Touch
+We'd love to hear from you. Whether you have a question about our services, want to discuss a potential project, or just want to say hello, our team is here to help.
+
+### Contact Information
 
 **Email:** [[ scaffold.contact_email ]]
 
-**Address:**  
-123 Innovation Street  
-Tech District  
-City, Country 12345
+**Office Hours:** Monday - Friday, 9:00 AM - 5:00 PM
 
-## Office Hours
+### Send Us a Message
 
-Monday - Friday: 9:00 AM - 5:00 PM  
-Saturday - Sunday: Closed
+<div class="contact-form-placeholder">
+<p><em>Contact form coming soon. In the meantime, please reach out via email.</em></p>
+</div>
 
----
+### Location
 
-*Fill out the form below and we'll get back to you as soon as possible.*
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Visit us at our headquarters to meet the team and learn more about what we do.

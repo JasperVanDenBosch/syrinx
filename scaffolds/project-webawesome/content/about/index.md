@@ -1,15 +1,16 @@
 +++
 Title = "About Us"
-Description = "Learn more about our organization"
-SequenceNumber = 1
-Image = "/assets/images/about-team.png"
+Description = "Learn more about [[ scaffold.organization_name ]] and our mission"
 +++
-# About [[ scaffold.organization_name ]]
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum euismod nibh vel magna tempus, non ultrices nisi fringilla. Praesent ac sem vitae lectus cursus accumsan. Nullam auctor velit vel lectus faucibus, non tempor risus porttitor.
+## Who We Are
 
-Cras pharetra lorem vel odio tempor volutpat. Ut vehicula lorem eu augue laoreet, quis pharetra mauris ultricies. Sed in posuere nunc, nec mollis justo. Maecenas vel enim ac risus tristique congue.
+[[ scaffold.organization_name ]] is dedicated to [[ scaffold.tagline | lower ]]. Founded with a vision to make a meaningful impact, we bring together experts from diverse backgrounds to tackle complex challenges.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 ## Our Mission
 
-Donec gravida lorem at neque blandit, nec fermentum nisl porttitor. Suspendisse potenti. Nulla facilisi. Phasellus tincidunt lorem at erat commodo, eget sagittis justo lacinia.
+We believe in the power of collaboration and innovation to drive positive change. Our team is committed to delivering excellence in everything we do, guided by our core values.
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.

@@ -1,8 +1,8 @@
 +++
 Title = "Excellence"
-Description = "Commitment to quality"
 SequenceNumber = 1
-Icon = "star"
+Icon = "award"
 Image = "/assets/images/value-excellence.png"
 +++
-We strive for excellence in everything we do. Our commitment to quality ensures that every project, every interaction, and every outcome meets the highest standards.
+
+We strive for excellence in every project we undertake. Our commitment to quality ensures that we deliver results that exceed expectations and create lasting value for our partners.

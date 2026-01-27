@@ -4,24 +4,17 @@
 
 {# Hero Section #}
 <section class="hero">
-    <div class="hero-image">
-        <img src="/assets/images/hero.png" alt="[[ scaffold.project_name ]] - Team collaboration">
-    </div>
     <div class="hero-content wa-stack wa-gap-l wa-align-items-center">
-        <span class="hero-label">Welcome to [[ scaffold.project_name ]]</span>
-        <h1 class="hero-title">[[ scaffold.tagline ]]</h1>
-        <div class="hero-text">
-            {{ index.content_html|safe }}
-        </div>
+        <h1>{{ index.title }}</h1>
+        <p class="hero-tagline">[[ scaffold.tagline ]]</p>
+        {{ index.content_html|safe }}
         <div class="wa-cluster wa-gap-m">
-            <wa-button href="/about/" variant="primary" size="large">
-                Learn More
-                <wa-icon slot="suffix" name="arrow-right"></wa-icon>
-            </wa-button>
-            <wa-button href="/contact/" size="large" outline>
-                Get In Touch
-            </wa-button>
+            <wa-button href="/about/" variant="primary" size="large">Learn More</wa-button>
+            <wa-button href="/contact/" variant="primary" size="large" outline>Get in Touch</wa-button>
         </div>
+    </div>
+    <div class="hero-image">
+        <img src="/assets/images/hero.png" alt="Hero image" />
     </div>
 </section>
 
@@ -30,19 +23,22 @@
 <section class="features-section">
     <div class="section-content wa-stack wa-gap-xl">
         <div class="section-header wa-stack wa-gap-s wa-align-items-center">
-            <span class="section-label">Why Choose Us</span>
-            <h2 class="section-title">What We Offer</h2>
+            <span class="section-label">What We Do</span>
+            <h2>Our Key Features</h2>
         </div>
-        <div class="wa-grid wa-gap-xl" style="--min-column-size: 300px;">
+        <div class="wa-grid wa-gap-l" style="--min-column-size: 300px;">
             {% for item in index.leaves %}
             <wa-card appearance="outlined" class="feature-card">
-                <div slot="header" class="feature-header">
-                    <div class="feature-icon">
-                        <wa-icon name="{{ item.front.get('Icon', 'star') }}"></wa-icon>
-                    </div>
+                {% if item.front.get('Image') %}
+                <img slot="media" src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
+                {% endif %}
+                <div slot="header">
+                    {% if item.front.get('Icon') %}
+                    <wa-icon name="{{ item.front['Icon'] }}" class="feature-icon"></wa-icon>
+                    {% endif %}
                     <h3>{{ item.title }}</h3>
                 </div>
-                <p>{{ item.content_html|safe }}</p>
+                {{ item.content_html|safe }}
             </wa-card>
             {% endfor %}
         </div>
@@ -54,37 +50,8 @@
 <section class="cta-section">
     <div class="cta-content wa-stack wa-gap-l wa-align-items-center">
         <h2>Ready to Get Started?</h2>
-        <p>Contact us today to learn how we can help transform your ideas into reality.</p>
-        <wa-button href="/contact/" size="large">
-            Contact Us
-            <wa-icon slot="suffix" name="arrow-right"></wa-icon>
-        </wa-button>
-    </div>
-</section>
-
-{# Navigation to Other Pages #}
-<section class="pages-section">
-    <div class="section-content wa-stack wa-gap-xl">
-        <div class="section-header wa-stack wa-gap-s wa-align-items-center">
-            <span class="section-label">Explore</span>
-            <h2 class="section-title">Learn More About Us</h2>
-        </div>
-        <div class="wa-grid wa-gap-l" style="--min-column-size: 280px;">
-            {% for branch in root.branches %}
-            <wa-card appearance="filled" class="page-card">
-                <div slot="header">
-                    <h3>{{ branch.title }}</h3>
-                </div>
-                <p>{{ branch.front.get('Description', '') }}</p>
-                <div slot="footer">
-                    <wa-button href="{{ branch.path }}/" appearance="plain">
-                        Explore
-                        <wa-icon slot="suffix" name="arrow-right"></wa-icon>
-                    </wa-button>
-                </div>
-            </wa-card>
-            {% endfor %}
-        </div>
+        <p>Join us in driving innovation forward. Contact our team to learn how we can help.</p>
+        <wa-button href="/contact/" variant="primary" size="large">Contact Us</wa-button>
     </div>
 </section>
 

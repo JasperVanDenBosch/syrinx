@@ -1,6 +1,6 @@
 {
-  "name": "Project Website with Web Awesome",
-  "description": "A professional project/organization website using Web Awesome Pro components with teal/navy color scheme",
+  "name": "Project with Web Awesome",
+  "description": "A professional project/organization website using Web Awesome Pro components",
   "variables": [
     {
       "name": "organization_name",
@@ -23,9 +23,9 @@
       "default": "hello@example.com"
     },
     {
-      "name": "fa_kit_code",
-      "prompt": "Font Awesome kit code (Web Awesome Pro)",
-      "default": "0d7d37c081"
+      "name": "wa_kit_code",
+      "prompt": "Web Awesome kit code (from kit.webawesome.com)",
+      "default": "your-kit-code"
     }
   ]
 }

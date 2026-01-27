@@ -1,7 +1,6 @@
 +++
-Title = "[[ scaffold.title ]]"
-Description = "[[ scaffold.description ]]"
+Title = "[[ scaffold.project_name ]]"
+Description = "[[ scaffold.tagline ]]"
 +++
-Welcome to [[ scaffold.project_name ]] by [[ scaffold.organization_name ]]. [[ scaffold.tagline ]].
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+Welcome to [[ scaffold.project_name ]], where we transform ideas into reality. Our dedicated team works tirelessly to deliver innovative solutions that make a difference.

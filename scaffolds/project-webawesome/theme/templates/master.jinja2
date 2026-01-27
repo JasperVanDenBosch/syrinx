@@ -3,65 +3,69 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta 
-        syrinx-environment="{{ index.meta.environment }}" 
-        syrinx-timestamp="{{ index.meta.timestamp.isoformat() }}" 
+    <meta
+        syrinx-environment="{{ index.meta.environment }}"
+        syrinx-timestamp="{{ index.meta.timestamp.isoformat() }}"
         syrinx-version="{{ index.meta.syrinx_version }}"/>
     <link rel="canonical" href="{{ index.address }}">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <title>{{ index.title }} | [[ scaffold.project_name ]]</title>
-    <meta name="description" content="{{ index.front.get('Description', '') }}">
-    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0/dist/styles/webawesome.css" />
-    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0/dist/styles/themes/premium.css" />
-    <link rel="stylesheet" href="/assets/css/index.css" />
-    <script type="module" data-fa-kit-code="[[ scaffold.fa_kit_code ]]" src="https://early.webawesome.com/webawesome@3.0.0/dist/webawesome.loader.js" crossorigin="anonymous"></script>
+    <title>{{ index.title }} | [[ scaffold.organization_name ]]</title>
+    <script src="https://kit.webawesome.com/[[ scaffold.wa_kit_code ]].js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
+
 <wa-page mobile-breakpoint="768px">
 
-<header slot="header" class="wa-split wa-align-items-center site-header">
-    <a href="/" class="logo">
-        <span class="logo-text">[[ scaffold.organization_name ]]</span>
-        <span class="logo-tagline">[[ scaffold.project_name ]]</span>
-    </a>
-    <nav class="wa-cluster wa-gap-l main-nav">
-        <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/services/">Services</a>
-        <a href="/contact/">Contact</a>
-    </nav>
-</header>
+    <header slot="header" class="wa-split wa-align-items-center site-header">
+        <a href="/" class="logo">
+            <span class="logo-org">[[ scaffold.organization_name ]]</span>
+            <span class="logo-project">[[ scaffold.project_name ]]</span>
+        </a>
+        <nav class="wa-cluster wa-gap-l desktop-nav">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/services/">Services</a>
+            <a href="/contact/">Contact</a>
+        </nav>
+    </header>
 
-<main>
-{% block main %}
-{% endblock %}
-</main>
+    <main>
+    {% block main %}
+    {% endblock %}
+    </main>
 
-<footer slot="footer" class="site-footer">
-    <div class="footer-content wa-stack wa-gap-l">
-        <div class="wa-split footer-top">
-            <div class="footer-brand">
-                <span class="footer-logo">[[ scaffold.organization_name ]]</span>
-                <p class="footer-tagline">[[ scaffold.tagline ]]</p>
+    <footer slot="footer" class="site-footer">
+        <div class="footer-content wa-stack wa-gap-l">
+            <div class="wa-split footer-top">
+                <div class="footer-brand wa-stack wa-gap-s">
+                    <span class="footer-logo">[[ scaffold.organization_name ]]</span>
+                    <span class="footer-tagline">[[ scaffold.tagline ]]</span>
+                </div>
+                <nav class="wa-cluster wa-gap-l footer-nav">
+                    <a href="/">Home</a>
+                    <a href="/about/">About</a>
+                    <a href="/services/">Services</a>
+                    <a href="/contact/">Contact</a>
+                </nav>
             </div>
-            <nav class="wa-cluster wa-gap-l footer-nav">
-                <a href="/">Home</a>
-                <a href="/about/">About</a>
-                <a href="/services/">Services</a>
-                <a href="/contact/">Contact</a>
-            </nav>
-        </div>
-        <wa-divider></wa-divider>
-        <div class="wa-split footer-bottom">
-            <span>&copy; 2026 [[ scaffold.organization_name ]]. All rights reserved.</span>
-            <div class="wa-cluster wa-gap-m">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Use</a>
+            <wa-divider></wa-divider>
+            <div class="wa-split footer-bottom">
+                <span class="copyright">&copy; 2026 [[ scaffold.organization_name ]]. All rights reserved.</span>
+                <div class="wa-cluster wa-gap-l">
+                    <div class="wa-cluster wa-gap-m">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Use</a>
+                    </div>
+                    <a href="https://syrinx.site" class="powered-by">
+                        <wa-icon name="bolt"></wa-icon> Powered by Syrinx
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
 </wa-page>
+
 </body>
 </html>

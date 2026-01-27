@@ -1,0 +1,16 @@
+{
+  "name": "Blog with Web Awesome",
+  "description": "A blog site with Web Awesome icons",
+  "variables": [
+    {
+      "name": "name",
+      "prompt": "Author name",
+      "default": "Your Name"
+    },
+    {
+      "name": "fa_kit_code",
+      "prompt": "Font Awesome kit code (Web Awesome Pro)",
+      "default": "your-kit-code"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta syrinx-environment="production" syrinx-timestamp="2026-01-27T16:53:05.654672+00:00" />
+    <meta syrinx-environment="production" syrinx-timestamp="2026-01-27T17:19:06.039217+00:00" />
     
     <meta name="description" content="Simple, python-powered static site generator">
     <link rel="canonical" href="https://syrinx.site">
@@ -28,13 +28,12 @@
 <blockquote>
 <p><em>Spreadsheet to website</em></p>
 </blockquote>
-<p>Syrinx is a super simple python package for generating a static website</p>
+<p>Syrinx is a super simple (~800 lines) python package for generating a static website</p>
 <ul>
 <li><a href="https://github.com/JasperVanDenBosch/syrinx">github</a></li>
 </ul>
 <h2>Example</h2>
-<p><code>bash
-pip install syrinx
+<p><code>pip install syrinx
 touch content/index.md
 syrinx serve</code></p>
 <h2>Conventions</h2>
@@ -51,13 +50,13 @@ syrinx serve</code></p>
 </ul>
 </li>
 </ol>
-<h3>Templating and style</h3>
+<h2>Templating and style</h2>
 <ol>
 <li>Templates are written in <em>jinja2</em> and go into the <code>theme/templates/</code> directory.</li>
 <li>The default template used is <code>page.jinja2</code>. If a template is found matching the name of the node (e.g. <code>foo.jinja2</code>), or <code>root.jinja2</code> for the top-most page, this takes precedence.</li>
 <li>CSS, images and other assets go into <code>theme/assets/</code>.</li>
 </ol>
-<h3>Table Data</h3>
+<h2>Table Data</h2>
 <p>Syrinx can generate content (markdown) files from CSV tables in the <code>data/</code> directory.</p>
 <ol>
 <li>The archetype file used will be based on the filename of the data file.</li>
@@ -66,10 +65,20 @@ syrinx serve</code></p>
 <li>The first column is used as name for the content item.</li>
 <li>Each column will be converted to a variable in the front matter </li>
 </ol>
-<h3>Configuration</h3>
+<h2>Configuration</h2>
 <p>You can configure syrinx behavior with a <code>syrinx.cfg</code> file in the project root directory, 
 or use commandline arguments (which will override any settings in the configuration file).
 For options, run <code>syrinx -h</code>.</p>
+<h2>Sites built with Syrinx</h2>
+<p>Check out some of the projects that were built with Syrinx:</p>
+<ul>
+<li><a href="https://eegmanylabs.org">#EEGManyLabs</a></li>
+<li><a href="https://eeg100.org">100 Years of EEG</a></li>
+<li><a href="https://jaspervandenbosch.com">Jasper's Blog</a></li>
+<li><a href="https://syrinx.site">this page</a></li>
+</ul>
+<!-- to add when ready: electrotime -->
+<!-- to add when ready: cost action -->
 </article>
 
 

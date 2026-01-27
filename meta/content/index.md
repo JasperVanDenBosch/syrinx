@@ -8,13 +8,13 @@ LastModifiedBranch = "site-templates"
 
 > *Spreadsheet to website*
 
-Syrinx is a super simple python package for generating a static website
+Syrinx is a super simple (~800 lines) python package for generating a static website
 
 * [github](https://github.com/JasperVanDenBosch/syrinx)
 
 ## Example
 
-```bash
+```
 pip install syrinx
 touch content/index.md
 syrinx serve
@@ -36,14 +36,14 @@ Organize your content with some standard structure and syrinx will interpret it.
     - `LastModified`: Date and time when the content was last changed. If listed, this will be used in the sitemap as `<lastmod>` element.
 
 
-### Templating and style
+## Templating and style
 
 1. Templates are written in *jinja2* and go into the `theme/templates/` directory.
 2. The default template used is `page.jinja2`. If a template is found matching the name of the node (e.g. `foo.jinja2`), or `root.jinja2` for the top-most page, this takes precedence.
 3. CSS, images and other assets go into `theme/assets/`.
 
 
-### Table Data
+## Table Data
 
 Syrinx can generate content (markdown) files from CSV tables in the `data/` directory.
 
@@ -53,8 +53,21 @@ Syrinx can generate content (markdown) files from CSV tables in the `data/` dire
 4. The first column is used as name for the content item.
 5. Each column will be converted to a variable in the front matter 
 
-### Configuration
+## Configuration
 
 You can configure syrinx behavior with a `syrinx.cfg` file in the project root directory, 
 or use commandline arguments (which will override any settings in the configuration file).
 For options, run `syrinx -h`.
+
+
+## Sites built with Syrinx
+
+Check out some of the projects that were built with Syrinx:
+
+- [#EEGManyLabs](https://eegmanylabs.org)
+- [100 Years of EEG](https://eeg100.org)
+- [Jasper's Blog](https://jaspervandenbosch.com)
+- [this page](https://syrinx.site)
+
+<!-- to add when ready: electrotime -->
+<!-- to add when ready: cost action -->

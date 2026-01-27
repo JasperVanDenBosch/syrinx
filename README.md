@@ -1,5 +1,8 @@
 # Syrinx
 
+<img src="http://syrinx.site/assets/logo_syrinx.png" width="70" alt="logo of singing bird with pan flute as vocal chords">
+
+
 > *Spreadsheet to website*
 
 [website](https://syrinx.site)

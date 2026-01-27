@@ -1,1 +1,1 @@
-syrinx~={{ syrinx_version }}
+syrinx~=[[ scaffold.syrinx_version ]]

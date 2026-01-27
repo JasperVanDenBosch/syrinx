@@ -1,6 +1,8 @@
 +++
+Title = "[[ scaffold.title ]]"
+Description = "[[ scaffold.description ]]"
 +++
-# Hi, I'm Jane.
+# Hi, I'm [[ scaffold.name ]].
 
 ## Blog
 

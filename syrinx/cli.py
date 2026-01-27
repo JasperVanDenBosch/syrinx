@@ -1,6 +1,7 @@
 
 from argparse import ArgumentParser, SUPPRESS
 from syrinx.run import run_pipeline
+from syrinx.scaffold import generate_scaffold
 from syrinx.server.dev_server import DevServer
 
 
@@ -13,6 +14,7 @@ def get_args():
     syrinx build
     syrinx build --dir meta
     syrinx serve --dir meta
+    syrinx new --dir my_site
     ```
     """
 
@@ -42,6 +44,14 @@ def get_args():
     serve_parser.set_defaults(command='serve')
     serve_parser.add_argument('-p', '--port', type=int, default=8000, 
         help='Which port to run the server on')
+    
+    ## This adds the "new" sub-command
+    new_parser = sub_parsers.add_parser('new', help='Generate starter site', parents=[base_parser])
+    new_parser.set_defaults(command='new')
+    new_parser.add_argument('-s', '--scaffold', type=str, default='blog-webawesome', 
+        help='Which site scaffold to use to initialize your site')
+    new_parser.add_argument('-y', '--yes', action='store_true', default=False, 
+        help='Do not prompt for values, just use defaults')
 
     return root_parser.parse_args()
 
@@ -51,6 +61,10 @@ def main():
 
     if args.command == 'serve':
         DevServer(args).start()
+        return
+    
+    if args.command == 'new':
+        generate_scaffold(args)
         return
     
     run_pipeline(args)

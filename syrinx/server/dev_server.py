@@ -67,9 +67,8 @@ class DevServer:
         # Store original directory to restore later
         original_dir = os.getcwd()
         
-        # Configure the handler class attributes
-        HotReloadHandler.dev_server = self
-        HotReloadHandler.dist_dir = dist_dir
+        # Initialize the handler class with all required properties
+        HotReloadHandler.initialize(self, dist_dir)
         
         try:
             with TCPServer(("", self.port), HotReloadHandler) as httpd:

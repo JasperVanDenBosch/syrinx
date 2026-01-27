@@ -1,8 +1,11 @@
 """HTTP handler for development server with live reload functionality."""
-
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional
 import os
 import json
 from http.server import SimpleHTTPRequestHandler
+if TYPE_CHECKING:
+    from syrinx.server.dev_server import DevServer
 
 
 class HotReloadHandler(SimpleHTTPRequestHandler):
@@ -15,20 +18,34 @@ class HotReloadHandler(SimpleHTTPRequestHandler):
     Attributes:
         dev_server: Reference to the DevServer instance for reload version.
         dist_dir: Directory to serve files from.
+        reload_script_content: JavaScript content for live reload functionality.
     """
     
-    dev_server: 'DevServer' = None  # type: ignore
-    dist_dir: str = None  # type: ignore
-    reload_script_content: str = None  # type: ignore
+    dev_server: DevServer
+    dist_dir: str
+    reload_script_content: str
+    
+    @classmethod
+    def initialize(cls, dev_server: DevServer, dist_dir: str):
+        """Initialize class-level properties before server starts.
+        
+        This method must be called before the TCPServer starts accepting
+        requests to ensure all class properties are properly initialized.
+        
+        Args:
+            dev_server: Reference to the DevServer instance.
+            dist_dir: Directory to serve files from.
+        """
+        cls.dev_server = dev_server
+        cls.dist_dir = dist_dir
+        
+        # Load reload script once during class initialization
+        reload_js_path = os.path.join(os.path.dirname(__file__), 'reload_outdated.js')
+        with open(reload_js_path, 'r', encoding='utf-8') as f:
+            cls.reload_script_content = f.read()
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=self.dist_dir, **kwargs)
-        
-        # Read reload script once during initialization
-        if self.reload_script_content is None:
-            reload_js_path = os.path.join(os.path.dirname(__file__), 'reload_outdated.js')
-            with open(reload_js_path, 'r', encoding='utf-8') as f:
-                HotReloadHandler.reload_script_content = f.read()
         
     def do_GET(self):
         """Handle GET requests with reload script injection for HTML files."""

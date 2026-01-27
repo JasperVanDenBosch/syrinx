@@ -1,0 +1,101 @@
+{% extends 'master.jinja2' %}
+
+{% block main %}
+
+{# Breadcrumb Navigation #}
+<nav class="breadcrumb-nav">
+    <wa-breadcrumb>
+        <wa-breadcrumb-item href="/">Home</wa-breadcrumb-item>
+        <wa-breadcrumb-item>{{ index.title }}</wa-breadcrumb-item>
+    </wa-breadcrumb>
+</nav>
+
+{# Page Header #}
+<section class="page-header">
+    <div class="page-header-content wa-stack wa-gap-m">
+        <span class="section-label">{{ index.front.get('Description', '') }}</span>
+        <h1 class="page-title">{{ index.title }}</h1>
+    </div>
+    {% if index.front.get('Image') %}
+    <div class="page-header-image">
+        <img src="{{ index.front.get('Image') }}" alt="{{ index.title }}">
+    </div>
+    {% endif %}
+</section>
+
+{# Main Content #}
+<article class="page-content wa-stack wa-gap-xl">
+    <div class="content-body">
+        {{ index.content_html|safe }}
+    </div>
+
+    {# Render leaves as cards if present #}
+    {% if index.leaves %}
+    <section class="cards-section">
+        <div class="wa-grid wa-gap-xl" style="--min-column-size: 300px;">
+            {% for item in index.leaves %}
+            <wa-card appearance="outlined" class="content-card">
+                <div slot="header" class="card-header">
+                    {% if item.front.get('Icon') %}
+                    <div class="card-icon">
+                        <wa-icon name="{{ item.front.get('Icon') }}"></wa-icon>
+                    </div>
+                    {% endif %}
+                    <h3>{{ item.title }}</h3>
+                </div>
+                <div class="card-content">
+                    {{ item.content_html|safe }}
+                </div>
+            </wa-card>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</article>
+
+{# Contact Form Placeholder (only on contact page) #}
+{% if index.name == 'contact' %}
+<section class="contact-form-section">
+    <div class="form-container wa-stack wa-gap-l">
+        <h2>Send Us a Message</h2>
+        <form class="contact-form wa-stack wa-gap-m">
+            <div class="wa-grid wa-gap-m" style="--min-column-size: 200px;">
+                <wa-input label="Name" placeholder="Your name" required>
+                    <wa-icon slot="prefix" name="user"></wa-icon>
+                </wa-input>
+                <wa-input label="Email" type="email" placeholder="your.email@example.com" required>
+                    <wa-icon slot="prefix" name="envelope"></wa-icon>
+                </wa-input>
+            </div>
+            <wa-input label="Subject" placeholder="Subject of your message">
+                <wa-icon slot="prefix" name="pen"></wa-icon>
+            </wa-input>
+            <wa-textarea label="Message" placeholder="Your message..." rows="5" required></wa-textarea>
+            <div>
+                <wa-button type="submit" variant="primary" size="large">
+                    Send Message
+                    <wa-icon slot="suffix" name="paper-plane"></wa-icon>
+                </wa-button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endif %}
+
+{# Back to Home CTA #}
+<section class="page-cta">
+    <div class="wa-cluster wa-gap-m">
+        <wa-button href="/" appearance="plain">
+            <wa-icon slot="prefix" name="arrow-left"></wa-icon>
+            Back to Home
+        </wa-button>
+        {% if index.name != 'contact' %}
+        <wa-button href="/contact/" variant="primary">
+            Contact Us
+            <wa-icon slot="suffix" name="arrow-right"></wa-icon>
+        </wa-button>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

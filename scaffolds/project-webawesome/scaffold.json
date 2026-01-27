@@ -1,0 +1,31 @@
+{
+  "name": "Project Website with Web Awesome",
+  "description": "A professional project/organization website using Web Awesome Pro components with teal/navy color scheme",
+  "variables": [
+    {
+      "name": "organization_name",
+      "prompt": "Organization or company name",
+      "default": "Acme Corp"
+    },
+    {
+      "name": "project_name",
+      "prompt": "Project or initiative name",
+      "default": "Innovation Hub"
+    },
+    {
+      "name": "tagline",
+      "prompt": "Mission statement or tagline",
+      "default": "Driving innovation forward"
+    },
+    {
+      "name": "contact_email",
+      "prompt": "Contact email address",
+      "default": "hello@example.com"
+    },
+    {
+      "name": "fa_kit_code",
+      "prompt": "Font Awesome kit code (Web Awesome Pro)",
+      "default": "0d7d37c081"
+    }
+  ]
+}

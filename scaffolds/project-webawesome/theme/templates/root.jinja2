@@ -2,24 +2,23 @@
 
 {% block main %}
 
-{# Hero Section #}
-<section class="hero">
-    <div class="hero-content wa-stack wa-gap-l wa-align-items-center">
-        <h1>{{ index.title }}</h1>
-        <p class="hero-tagline">[[ scaffold.tagline ]]</p>
-        {{ index.content_html|safe }}
-        <div class="wa-cluster wa-gap-m">
-            <wa-button href="/about/" variant="primary" size="large">Learn More</wa-button>
-            <wa-button href="/contact/" variant="primary" size="large" outline>Get in Touch</wa-button>
+{# Hero Section - Dark Background #}
+<section class="hero-wrapper">
+    <div class="hero">
+        <div class="hero-content wa-stack wa-gap-l">
+            <h1>{{ index.title }}</h1>
+            <p class="hero-tagline">[[ scaffold.tagline ]]</p>
+            {{ index.content_html|safe }}
         </div>
-    </div>
-    <div class="hero-image">
-        <img src="/assets/images/hero.png" alt="Hero image" />
+        <div class="hero-image">
+            <img src="/assets/images/hero.png" alt="Hero image" />
+        </div>
     </div>
 </section>
 
-{# Features Section #}
-{% if index.leaves %}
+{# Features Section - from features/ branch #}
+{% set features_branch = index.branches|selectattr('name', 'equalto', 'features')|first %}
+{% if features_branch and features_branch.leaves %}
 <section class="features-section">
     <div class="section-content wa-stack wa-gap-xl">
         <div class="section-header wa-stack wa-gap-s wa-align-items-center">
@@ -27,7 +26,7 @@
             <h2>Our Key Features</h2>
         </div>
         <div class="wa-grid wa-gap-l" style="--min-column-size: 300px;">
-            {% for item in index.leaves %}
+            {% for item in features_branch.leaves %}
             <wa-card appearance="outlined" class="feature-card">
                 {% if item.front.get('Image') %}
                 <img slot="media" src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
@@ -46,12 +45,55 @@
 </section>
 {% endif %}
 
+{# Latest News Section - from news/ branch #}
+{% set news_branch = index.branches|selectattr('name', 'equalto', 'news')|first %}
+{% if news_branch and news_branch.leaves %}
+<section class="news-section">
+    <div class="news-content wa-stack wa-gap-xl">
+        <div class="section-header wa-stack wa-gap-s wa-align-items-center">
+            <span class="section-label">Stay Updated</span>
+            <h2>Latest News</h2>
+        </div>
+        <div class="news-grid">
+            {% for item in news_branch.leaves %}
+            <article class="news-card">
+                {% if item.front.get('Image') %}
+                <div class="news-card-image">
+                    <img src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
+                </div>
+                {% endif %}
+                <div class="news-card-content wa-stack wa-gap-s">
+                    <span class="news-date">{{ item.front.get('Date', '') }}</span>
+                    <h3>{{ item.title }}</h3>
+                    {{ item.content_html|safe }}
+                    <a href="#" class="news-link">Read more <wa-icon name="arrow-right"></wa-icon></a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
 {# CTA Section #}
 <section class="cta-section">
     <div class="cta-content wa-stack wa-gap-l wa-align-items-center">
         <h2>Ready to Get Started?</h2>
         <p>Join us in driving innovation forward. Contact our team to learn how we can help.</p>
         <wa-button href="/contact/" variant="primary" size="large">Contact Us</wa-button>
+    </div>
+</section>
+
+{# Newsletter Section #}
+<section class="newsletter-section">
+    <div class="newsletter-content wa-stack wa-gap-l wa-align-items-center">
+        <span class="section-label">Stay Informed</span>
+        <h2>Subscribe to Our Newsletter</h2>
+        <p>Get the latest updates, news, and insights delivered directly to your inbox.</p>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Newsletter signup coming soon!');">
+            <wa-input type="email" placeholder="Enter your email address" required></wa-input>
+            <wa-button type="submit" variant="primary">Subscribe</wa-button>
+        </form>
     </div>
 </section>
 

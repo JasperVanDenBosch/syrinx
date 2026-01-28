@@ -20,6 +20,13 @@ html, body {
     margin: 0;
 }
 
+/* Make main content area full-width (override wa-page default padding) */
+main {
+    padding: 0 !important;
+    margin: 0;
+    width: 100%;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     color: var(--color-primary-teal);
@@ -174,6 +181,7 @@ h3 {
 .features-section {
     padding: var(--wa-space-3xl) var(--wa-space-xl);
     background-color: var(--color-light-gray);
+    width: 100%;
 }
 
 .features-section .features-content {
@@ -190,6 +198,7 @@ h3 {
 .cards-section {
     padding: var(--wa-space-3xl) var(--wa-space-xl);
     background-color: var(--color-section-alt);
+    width: 100%;
 }
 
 .cards-section .wa-grid,
@@ -254,6 +263,7 @@ h3 {
 .news-section {
     background-color: var(--color-dark-navy);
     padding: var(--wa-space-3xl) var(--wa-space-xl);
+    width: 100%;
 }
 
 .news-content {
@@ -338,6 +348,7 @@ h3 {
     background-color: var(--color-dark-navy);
     padding: var(--wa-space-3xl) var(--wa-space-xl);
     text-align: center;
+    width: 100%;
 }
 
 .cta-section h2 {
@@ -357,6 +368,7 @@ h3 {
     background-color: var(--color-light-gray);
     padding: var(--wa-space-3xl) var(--wa-space-xl);
     text-align: center;
+    width: 100%;
 }
 
 .newsletter-content {
@@ -396,23 +408,35 @@ h3 {
 }
 
 /* Page Content */
-.page-content {
+
+/* Page Header - Full width dark background */
+.page-header-wrapper {
+    background-color: var(--color-dark-navy);
+    width: 100%;
+    padding: var(--wa-space-3xl) var(--wa-space-xl);
+}
+
+.page-header-content {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: var(--wa-space-2xl) var(--wa-space-xl);
 }
 
-.page-header {
-    text-align: center;
-    padding-bottom: var(--wa-space-xl);
-    border-bottom: 1px solid var(--wa-color-surface-lowered);
+.page-header-content h1 {
+    color: var(--color-primary-teal);
+    margin: 0;
 }
 
-.page-description {
+.page-header-wrapper .page-description {
     font-size: 1.25rem;
-    color: var(--color-medium-gray);
+    color: rgba(255, 255, 255, 0.8);
     max-width: 600px;
-    margin: 0 auto;
+}
+
+/* Page Body - Full width light background */
+.page-body-wrapper {
+    background-color: white;
+    width: 100%;
+    padding: var(--wa-space-2xl) var(--wa-space-xl);
 }
 
 .page-body {

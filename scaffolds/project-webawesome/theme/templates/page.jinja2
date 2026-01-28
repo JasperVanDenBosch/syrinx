@@ -2,22 +2,24 @@
 
 {% block main %}
 
-<article class="page-content wa-stack wa-gap-xl">
-
-    {# Page Header #}
-    <header class="page-header wa-stack wa-gap-s">
+{# Page Header - Full width background #}
+<section class="page-header-wrapper">
+    <header class="page-header-content wa-stack wa-gap-s">
         <h1>{{ index.title }}</h1>
         {% if index.front.get('Description') %}
         <p class="page-description">{{ index.front['Description'] }}</p>
         {% endif %}
     </header>
+</section>
 
-    {# Main Content #}
+{# Main Content #}
+{% if index.content_html.strip() %}
+<section class="page-body-wrapper">
     <div class="page-body">
         {{ index.content_html|safe }}
     </div>
-
-</article>
+</section>
+{% endif %}
 
 {# Render leaves as cards - full width section #}
 {% if index.leaves %}

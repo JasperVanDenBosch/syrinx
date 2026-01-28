@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=62.6"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -18,13 +18,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-dependencies = [
-    "jinja2 >= 3.1",
-    "markdown >= 3.5.1",
-    "PyYAML~=6.0.2",
-    "pandas",
-    "gitpython"
-]
+dynamic = ["dependencies"]
+
 
 [project.scripts]
 syrinx = "syrinx.cli:main"
@@ -35,6 +30,9 @@ Issues = "https://github.com/ilogue/syrinx/issues"
 
 [tool.setuptools]
 packages = ["syrinx"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [tool.pytest.ini_options]
 testpaths = [

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" class="wa-theme-mellow wa-palette-vogue wa-brand-cyan wa-cloak">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta 
+        syrinx-environment="{{ index.meta.environment }}" 
+        syrinx-timestamp="{{ index.meta.timestamp.isoformat() }}" 
+        syrinx-version="{{ index.meta.syrinx_version }}"/>
+    <link rel="canonical" href="{{ index.address }}">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <title>{{ index.title }}</title>
+    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-beta.4/dist/styles/webawesome.css" />
+    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-beta.4/dist/styles/themes/mellow.css" />
+    <script type="module" data-fa-kit-code="[[ scaffold.fa_kit_code ]]" src="https://early.webawesome.com/webawesome@3.0.0-beta.4/dist/webawesome.loader.js"  crossorigin="anonymous"></script>
+
+</head>
+<body>
+<wa-page>
+
+<header slot="header" class="wa-split">
+    <a href="#">{{ index.config.domain }}</a>
+    <div></div>
+</header>
+
+<main>
+{% block main %}
+{% endblock %}
+</main>
+
+<footer slot="footer">
+    <div class="wa-cluster">
+        <span>&copy; 2026 Jane Doe</span>
+        <span>Powered by <a href="https://syrinx.site">Syrinx</a></span>
+    </div>
+</footer>
+
+{# Styles that apply to the html defined in this template #}
+<style>
+  [slot='footer'] {
+    {# --wa-color-text-link: var(--wa-color-text-quiet); #}
+    --wa-link-decoration-default: underline color-mix(in oklab, var(--wa-color-text-link) 70%, transparent) dotted;
+    background-color: var(--wa-color-surface-lowered);
+    font-size: var(--wa-font-size-s);
+    span {
+        font-size: var(--wa-font-size-s);
+        color: var(--wa-color-text-quiet);
+    }
+  }
+</style>
+
+</wa-page>
+
+{# Styles for wa related element that are re-used across pages #}
+<style>
+  [slot='main-header'] {
+    justify-content: flex-end;
+  }
+
+  article {
+    max-width: 80ch;
+    margin: 0 auto;
+  }
+</style>
+
+</body>
+

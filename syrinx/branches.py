@@ -4,6 +4,7 @@ from os.path import isfile, join, abspath
 from datetime import datetime
 import logging
 from git import Repo, InvalidGitRepositoryError
+from git import BadName
 from syrinx.exceptions import UnknownBranchError
 if TYPE_CHECKING:
     from syrinx.config import BuildMetaInfo
@@ -119,7 +120,7 @@ class Branches:
                 # Unable to get changed files (e.g., in tests with mocked repo)
                 self.changed_files = set()
             
-        except (InvalidGitRepositoryError, ValueError, TypeError):
+        except (InvalidGitRepositoryError, ValueError, TypeError, BadName):
             # Not a git repository or unable to determine branch
             return
         self.active = branch_name

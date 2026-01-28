@@ -1,0 +1,17 @@
+{% macro newsletter(branch) %}
+{% if branch %}
+<section class="newsletter-section">
+    <div class="newsletter-content wa-stack wa-gap-l wa-align-items-center">
+        {% if branch.front.get('Label') %}
+        <span class="section-label">{{ branch.front['Label'] }}</span>
+        {% endif %}
+        <h2>{{ branch.title }}</h2>
+        {{ branch.content_html|safe }}
+        <form class="newsletter-form" onsubmit="event.preventDefault();">
+            <wa-input type="email" placeholder="Enter your email address" required></wa-input>
+            <wa-button type="submit" variant="primary">Subscribe</wa-button>
+        </form>
+    </div>
+</section>
+{% endif %}
+{% endmacro %}

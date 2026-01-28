@@ -1,0 +1,35 @@
+{% extends 'master.jinja2' %}
+
+{% block main %}
+
+{# Page Header - Full width background #}
+<section class="page-header-wrapper">
+    <header class="page-header-content wa-stack wa-gap-s">
+        <h1>{{ index.title }}</h1>
+        {% if index.front.get('Description') %}
+        <p class="page-description">{{ index.front['Description'] }}</p>
+        {% endif %}
+    </header>
+</section>
+
+{# Main Content #}
+{% if index.content_html.strip() %}
+<section class="page-body-wrapper">
+    <div class="page-body">
+        {{ index.content_html|safe }}
+    </div>
+</section>
+{% endif %}
+
+{# Render leaves as cards - full width section #}
+{% if index.leaves %}
+<section class="cards-section">
+    <div class="cards-container wa-grid wa-gap-l" style="--min-column-size: 300px;">
+        {% for item in index.leaves %}
+        {% include '_feature_card.jinja2' %}
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

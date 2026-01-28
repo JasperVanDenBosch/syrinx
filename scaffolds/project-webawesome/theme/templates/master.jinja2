@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="wa-theme-premium wa-palette-vogue wa-brand-cyan wa-cloak">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        syrinx-environment="{{ index.meta.environment }}"
+        syrinx-timestamp="{{ index.meta.timestamp.isoformat() }}"
+        syrinx-version="{{ index.meta.syrinx_version }}"/>
+    <link rel="canonical" href="{{ index.address }}">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <title>{{ index.title }} | [[ scaffold.organization_name ]]</title>
+    <script src="https://kit.webawesome.com/[[ scaffold.wa_kit_code ]].js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+<wa-page mobile-breakpoint="768px">
+
+    <header slot="header" class="wa-split wa-align-items-center site-header">
+        <a href="/" class="logo">
+            <span class="logo-org">[[ scaffold.organization_name ]]</span>
+            <span class="logo-project">[[ scaffold.project_name ]]</span>
+        </a>
+        <nav class="wa-cluster wa-gap-l desktop-nav">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/services/">Services</a>
+            <a href="/contact/">Contact</a>
+        </nav>
+        <button class="mobile-menu-toggle" aria-label="Open menu" onclick="document.getElementById('mobile-nav-drawer').open = true">
+            <wa-icon name="bars"></wa-icon>
+        </button>
+    </header>
+
+    <wa-drawer id="mobile-nav-drawer" placement="end" class="mobile-nav-drawer">
+        <div slot="label">Menu</div>
+        <nav class="mobile-nav wa-stack wa-gap-m">
+            <a href="/" onclick="document.getElementById('mobile-nav-drawer').open = false">Home</a>
+            <a href="/about/" onclick="document.getElementById('mobile-nav-drawer').open = false">About</a>
+            <a href="/services/" onclick="document.getElementById('mobile-nav-drawer').open = false">Services</a>
+            <a href="/contact/" onclick="document.getElementById('mobile-nav-drawer').open = false">Contact</a>
+        </nav>
+    </wa-drawer>
+
+    <main>
+    {% block main %}
+    {% endblock %}
+    </main>
+
+    <footer slot="footer" class="site-footer">
+        <div class="footer-content wa-stack wa-gap-xl">
+            <div class="footer-main">
+                <div class="footer-brand wa-stack wa-gap-s">
+                    <span class="footer-logo">[[ scaffold.organization_name ]]</span>
+                    <span class="footer-tagline">[[ scaffold.tagline ]]</span>
+                    <p class="footer-mission">Empowering innovation through technology and collaboration.</p>
+                </div>
+                <div class="footer-nav-columns">
+                    <div class="footer-nav-column">
+                        <h4>Program</h4>
+                        <nav class="wa-stack wa-gap-s">
+                            <a href="/about/" class="footer-nav-item">About Us</a>
+                            <a href="/services/" class="footer-nav-item">Our Services</a>
+                            <a href="#" class="footer-nav-item">Partners</a>
+                            <a href="#" class="footer-nav-item">Success Stories</a>
+                        </nav>
+                    </div>
+                    <div class="footer-nav-column">
+                        <h4>Services</h4>
+                        <nav class="wa-stack wa-gap-s">
+                            <a href="#" class="footer-nav-item">Consulting</a>
+                            <a href="#" class="footer-nav-item">Development</a>
+                            <a href="#" class="footer-nav-item">Training</a>
+                            <a href="#" class="footer-nav-item">Support</a>
+                        </nav>
+                    </div>
+                    <div class="footer-nav-column">
+                        <h4>Resources</h4>
+                        <nav class="wa-stack wa-gap-s">
+                            <a href="#" class="footer-nav-item">Documentation</a>
+                            <a href="#" class="footer-nav-item">Blog</a>
+                            <a href="#" class="footer-nav-item">Events</a>
+                            <a href="#" class="footer-nav-item">FAQs</a>
+                        </nav>
+                    </div>
+                    <div class="footer-nav-column">
+                        <h4>Contact</h4>
+                        <nav class="wa-stack wa-gap-s">
+                            <a href="/contact/" class="footer-nav-item">Get in Touch</a>
+                            <a href="#" class="footer-nav-item">Locations</a>
+                            <a href="#" class="footer-nav-item">Careers</a>
+                            <a href="#" class="footer-nav-item">Press</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <wa-divider></wa-divider>
+            <div class="wa-split footer-bottom">
+                <span class="copyright">&copy; 2026 [[ scaffold.organization_name ]]. All rights reserved.</span>
+                <div class="wa-cluster wa-gap-l">
+                    <div class="wa-cluster wa-gap-m">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Use</a>
+                    </div>
+                    <a href="https://syrinx.site" class="powered-by">
+                        <wa-icon name="bolt"></wa-icon> Powered by Syrinx
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</wa-page>
+
+</body>
+</html>

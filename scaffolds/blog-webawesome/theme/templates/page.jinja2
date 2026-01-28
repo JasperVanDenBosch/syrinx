@@ -1,0 +1,26 @@
+{% extends 'master.jinja2' %}
+
+{% block main %}
+
+<article id="{{ index.name }}" class="wa-stack">
+
+    <wa-format-date 
+        date="{{ index.front['Date'] }}"
+        month="long" day="numeric" year="numeric"
+        ></wa-format-date>
+    {{ index.content_html|safe }}
+
+</article>
+
+<style>
+article img {
+    display: block;
+    box-shadow: 5px 5px lightgray;
+    border: 1px solid gray;
+    width: 400px;
+    margin: 1em auto;
+    opacity: 80%;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% macro cta(branch) %}
+{% if branch %}
+<section class="cta-section">
+    <div class="cta-content wa-stack wa-gap-l wa-align-items-center">
+        <h2>{{ branch.title }}</h2>
+        {{ branch.content_html|safe }}
+        {% if branch.front.get('ButtonText') %}
+        <wa-button href="{{ branch.front.get('ButtonLink', '#') }}" variant="primary" size="large">
+            {{ branch.front['ButtonText'] }}
+        </wa-button>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+{% endmacro %}

@@ -1,0 +1,31 @@
+{
+  "name": "Project with Web Awesome",
+  "description": "A professional project/organization website using Web Awesome Pro components",
+  "variables": [
+    {
+      "name": "organization_name",
+      "prompt": "Organization or company name",
+      "default": "Acme Corp"
+    },
+    {
+      "name": "project_name",
+      "prompt": "Project or initiative name",
+      "default": "Innovation Hub"
+    },
+    {
+      "name": "tagline",
+      "prompt": "Mission statement or tagline",
+      "default": "Driving innovation forward"
+    },
+    {
+      "name": "contact_email",
+      "prompt": "Contact email address",
+      "default": "hello@example.com"
+    },
+    {
+      "name": "wa_kit_code",
+      "prompt": "Web Awesome kit code (from kit.webawesome.com)",
+      "default": "your-kit-code"
+    }
+  ]
+}

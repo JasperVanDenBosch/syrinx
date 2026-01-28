@@ -1,0 +1,34 @@
+{% extends 'master.jinja2' %}
+{% from '_section.jinja2' import section %}
+{% from '_cta.jinja2' import cta %}
+{% from '_newsletter.jinja2' import newsletter %}
+
+{% block main %}
+
+{# Hero Section #}
+<section class="hero-wrapper">
+    <div class="hero">
+        <div class="hero-content wa-stack wa-gap-l">
+            <h1>{{ index.title }}</h1>
+            <p class="hero-tagline">[[ scaffold.tagline ]]</p>
+            {{ index.content_html|safe }}
+        </div>
+        <div class="hero-image">
+            <img src="/assets/images/hero.png" alt="Hero image" />
+        </div>
+    </div>
+</section>
+
+{# Render branch sections by looping #}
+{% for branch in index.branches %}
+    {% if branch.name == 'cta' %}
+        {{ cta(branch) }}
+    {% elif branch.name == 'newsletter' %}
+        {{ newsletter(branch) }}
+    {% elif not branch.front.get('BuildPage', true) %}
+        {# Non-page branches (features, news) render as sections #}
+        {{ section(branch) }}
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

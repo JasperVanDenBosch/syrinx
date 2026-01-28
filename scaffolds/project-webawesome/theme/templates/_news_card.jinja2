@@ -1,0 +1,19 @@
+<article class="news-card">
+    {% if item.front.get('Image') %}
+    <div class="news-card-image">
+        <img src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
+    </div>
+    {% endif %}
+    <div class="news-card-content wa-stack wa-gap-s">
+        {% if item.front.get('Date') %}
+        <span class="news-date">{{ item.front['Date'] }}</span>
+        {% endif %}
+        <h3>{{ item.title }}</h3>
+        {{ item.content_html|safe }}
+        {% if item.address %}
+        <a href="{{ item.address }}" class="news-link">
+            {{ item.front.get('LinkText', 'Read more') }} <wa-icon name="arrow-right"></wa-icon>
+        </a>
+        {% endif %}
+    </div>
+</article>

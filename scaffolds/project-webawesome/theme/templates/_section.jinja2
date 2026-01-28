@@ -1,0 +1,23 @@
+{% macro section(branch) %}
+{% if branch and branch.leaves %}
+<section class="{{ branch.name }}-section">
+    <div class="{{ branch.name }}-content wa-stack wa-gap-xl">
+        <div class="section-header wa-stack wa-gap-s wa-align-items-center">
+            {% if branch.front.get('Label') %}
+            <span class="section-label">{{ branch.front['Label'] }}</span>
+            {% endif %}
+            <h2>{{ branch.front.get('Heading', branch.title) }}</h2>
+        </div>
+        <div class="{{ branch.name }}-grid">
+            {% for item in branch.leaves %}
+                {% if branch.name == 'news' %}
+                    {% include '_news_card.jinja2' %}
+                {% else %}
+                    {% include '_feature_card.jinja2' %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endmacro %}

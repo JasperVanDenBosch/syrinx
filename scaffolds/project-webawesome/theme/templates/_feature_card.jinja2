@@ -1,0 +1,12 @@
+<wa-card appearance="outlined" class="feature-card">
+    {% if item.front.get('Image') %}
+    <img slot="media" src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
+    {% endif %}
+    <div slot="header">
+        {% if item.front.get('Icon') %}
+        <wa-icon name="{{ item.front['Icon'] }}" class="feature-icon"></wa-icon>
+        {% endif %}
+        <h3>{{ item.title }}</h3>
+    </div>
+    {{ item.content_html|safe }}
+</wa-card>

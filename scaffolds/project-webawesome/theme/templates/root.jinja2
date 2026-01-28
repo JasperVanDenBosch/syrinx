@@ -1,8 +1,11 @@
 {% extends 'master.jinja2' %}
+{% from '_section.jinja2' import section %}
+{% from '_cta.jinja2' import cta %}
+{% from '_newsletter.jinja2' import newsletter %}
 
 {% block main %}
 
-{# Hero Section - Dark Background #}
+{# Hero Section #}
 <section class="hero-wrapper">
     <div class="hero">
         <div class="hero-content wa-stack wa-gap-l">
@@ -16,85 +19,16 @@
     </div>
 </section>
 
-{# Features Section - from features/ branch #}
-{% set features_branch = index.branches|selectattr('name', 'equalto', 'features')|first %}
-{% if features_branch and features_branch.leaves %}
-<section class="features-section">
-    <div class="section-content wa-stack wa-gap-xl">
-        <div class="section-header wa-stack wa-gap-s wa-align-items-center">
-            <span class="section-label">What We Do</span>
-            <h2>Our Key Features</h2>
-        </div>
-        <div class="wa-grid wa-gap-l" style="--min-column-size: 300px;">
-            {% for item in features_branch.leaves %}
-            <wa-card appearance="outlined" class="feature-card">
-                {% if item.front.get('Image') %}
-                <img slot="media" src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
-                {% endif %}
-                <div slot="header">
-                    {% if item.front.get('Icon') %}
-                    <wa-icon name="{{ item.front['Icon'] }}" class="feature-icon"></wa-icon>
-                    {% endif %}
-                    <h3>{{ item.title }}</h3>
-                </div>
-                {{ item.content_html|safe }}
-            </wa-card>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-{# Latest News Section - from news/ branch #}
-{% set news_branch = index.branches|selectattr('name', 'equalto', 'news')|first %}
-{% if news_branch and news_branch.leaves %}
-<section class="news-section">
-    <div class="news-content wa-stack wa-gap-xl">
-        <div class="section-header wa-stack wa-gap-s wa-align-items-center">
-            <span class="section-label">Stay Updated</span>
-            <h2>Latest News</h2>
-        </div>
-        <div class="news-grid">
-            {% for item in news_branch.leaves %}
-            <article class="news-card">
-                {% if item.front.get('Image') %}
-                <div class="news-card-image">
-                    <img src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
-                </div>
-                {% endif %}
-                <div class="news-card-content wa-stack wa-gap-s">
-                    <span class="news-date">{{ item.front.get('Date', '') }}</span>
-                    <h3>{{ item.title }}</h3>
-                    {{ item.content_html|safe }}
-                    <a href="#" class="news-link">Read more <wa-icon name="arrow-right"></wa-icon></a>
-                </div>
-            </article>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-{# CTA Section #}
-<section class="cta-section">
-    <div class="cta-content wa-stack wa-gap-l wa-align-items-center">
-        <h2>Ready to Get Started?</h2>
-        <p>Join us in driving innovation forward. Contact our team to learn how we can help.</p>
-        <wa-button href="/contact/" variant="primary" size="large">Contact Us</wa-button>
-    </div>
-</section>
-
-{# Newsletter Section #}
-<section class="newsletter-section">
-    <div class="newsletter-content wa-stack wa-gap-l wa-align-items-center">
-        <span class="section-label">Stay Informed</span>
-        <h2>Subscribe to Our Newsletter</h2>
-        <p>Get the latest updates, news, and insights delivered directly to your inbox.</p>
-        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Newsletter signup coming soon!');">
-            <wa-input type="email" placeholder="Enter your email address" required></wa-input>
-            <wa-button type="submit" variant="primary">Subscribe</wa-button>
-        </form>
-    </div>
-</section>
+{# Render branch sections by looping #}
+{% for branch in index.branches %}
+    {% if branch.name == 'cta' %}
+        {{ cta(branch) }}
+    {% elif branch.name == 'newsletter' %}
+        {{ newsletter(branch) }}
+    {% elif not branch.front.get('BuildPage', true) %}
+        {# Non-page branches (features, news) render as sections #}
+        {{ section(branch) }}
+    {% endif %}
+{% endfor %}
 
 {% endblock %}

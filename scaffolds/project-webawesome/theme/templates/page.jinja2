@@ -24,18 +24,7 @@
 <section class="cards-section">
     <div class="cards-container wa-grid wa-gap-l" style="--min-column-size: 300px;">
         {% for item in index.leaves %}
-        <wa-card appearance="outlined" class="content-card">
-            {% if item.front.get('Image') %}
-            <img slot="media" src="{{ item.front['Image'] }}" alt="{{ item.title }}" />
-            {% endif %}
-            <div slot="header">
-                {% if item.front.get('Icon') %}
-                <wa-icon name="{{ item.front['Icon'] }}" class="card-icon"></wa-icon>
-                {% endif %}
-                <h3>{{ item.title }}</h3>
-            </div>
-            {{ item.content_html|safe }}
-        </wa-card>
+        {% include '_feature_card.jinja2' %}
         {% endfor %}
     </div>
 </section>

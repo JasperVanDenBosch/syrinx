@@ -176,9 +176,15 @@ h3 {
     background-color: var(--color-light-gray);
 }
 
-.features-section .section-content {
+.features-section .features-content {
     max-width: var(--content-max-width);
     margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--wa-space-l);
 }
 
 .cards-section {

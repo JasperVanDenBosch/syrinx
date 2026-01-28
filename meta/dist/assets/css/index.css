@@ -1,104 +1,438 @@
+/* Variables */
+:root {
+    --accent: #3d8b5f;
+    --accent-dark: #2d6847;
+    --accent-light: #e8f5ed;
+    --text: #2c3e50;
+    --text-muted: #5a6c7d;
+    --bg: #ffffff;
+    --bg-alt: #f8fafa;
+    --bg-code: #f5f7f7;
+    --border: #e1e8ec;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --content-width: 780px;
+    --toc-width: 200px;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    background-color: #F7F7F7;
-    font-family: "Public Sans", sans-serif;
-    font-weight: 300;
+    background-color: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
 }
 
-
-/* these sometimes appear in html from markdown */
-hr {
-    display: none;
-}
-
-code {
-    white-space: pre;
-}
-
-/* temp style */
+/* Layout */
 #body-container {
-    margin-top: 100px;
-    min-height: calc(100vh - 80px); /* push footer down. 80px = header+footer */
-    overflow: hidden; /* prevents child elements' margins from pushing this around  */
+    min-height: calc(100vh - 60px);
+    padding-left: calc(var(--toc-width) + 40px);
 }
+
 div#content {
-    width: 90%;
-    margin: auto;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 24px 60px;
 }
-nav#menu {
-    min-height: 40px;
-    width:100%;
-    padding: 8px;
-    overflow: visible; /* if the floating menu wraps around, extend this nav */
-    z-index: 1;     /* always on top */
-    position: fixed;  /* attached to the top */
-    top: 0;
-    font-size: 18px;
-    font-weight: normal;
-    background-color: #F7F7F7;;
-}
-nav#menu a {
-    color: #666666;
-    text-decoration: none;
-}
-nav#menu a:hover {
-    color: black;
-}
-nav#menu ul {
-	float: right;
-	margin: 0;
-	padding: 8px 8px 0 0;
-	list-style-type: none;
-}
-nav#menu li {
-	display: inline;
-	margin: 0 1em 0 0;
-}
-
-
-/* footer */
-footer {
-    height: 30px;
-    overflow: hidden;
-    background-color: rgb(46, 46, 46);
-    color: rgb(131, 140, 149);
-    font-size: 12px;
-    font-weight: normal;
-    padding: 5px 4em;
-    text-align: left;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
-/* 
-    INDEX
-*/
 
 article {
-    max-width: 600px;
-    padding: 20px;
+    padding: 0;
 }
 
-.section-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 300px);
-    grid-auto-rows: auto;
-    column-gap: 10px;
-    row-gap: 10px;
+/* Table of Contents */
+#toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--toc-width);
+    height: 100vh;
+    padding: 24px 16px;
+    background: var(--bg-alt);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
 }
 
+#toc-header {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
 
+#toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#toc-list li {
+    margin: 0;
+}
+
+#toc-list a {
+    display: block;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+#toc-list a:hover {
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+#toc-list a.active {
+    color: var(--accent);
+    background: var(--accent-light);
+    font-weight: 500;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 60px 0 40px;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, var(--accent-light) 0%, var(--bg) 100%);
+    margin-left: calc(-24px - var(--toc-width) - 40px);
+    margin-right: -24px;
+    padding-left: calc(var(--toc-width) + 64px);
+    padding-right: 24px;
+}
+
+/* Logo */
+img[alt="Line drawing of a singing bird with a pan flute for vocal chords"] {
+    width: 140px;
+    display: block;
+    margin: 0 auto 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    opacity: 0.9;
+    filter: drop-shadow(0 2px 8px var(--shadow));
+}
+
+/* Typography */
 h1 {
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-size: 3rem;
+    margin: 0 0 12px;
+    color: var(--text);
 }
 
+h2 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 3rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-light);
+    color: var(--text);
+}
+
+h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+
+p {
+    margin: 1em 0;
+}
+
+/* Tagline */
+blockquote {
+    margin: 0 0 24px;
+    padding: 0;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+blockquote p {
+    margin: 0;
+}
+
+/* Links */
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline;
+}
+
+/* GitHub button */
+article > ul:first-of-type {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    text-align: center;
+}
+
+article > ul:first-of-type li {
+    display: inline-block;
+}
+
+article > ul:first-of-type a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--accent);
+    color: white;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+article > ul:first-of-type a:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+article > ul:first-of-type a::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z'/%3E%3C/svg%3E");
+    background-size: contain;
+}
+
+/* Lists */
+ul, ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+/* Inline code */
+code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.875em;
+    background-color: var(--bg-code);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+/* Code blocks */
+pre {
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    box-shadow: 0 2px 12px var(--shadow);
+}
+
+pre code {
+    background: none;
+    padding: 1em 1.25em;
+    border: none;
+    font-size: 0.875em;
+    display: block;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.95em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px var(--shadow);
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75em 1em;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    font-weight: 600;
+    background-color: var(--bg-alt);
+    color: var(--text);
+}
+
+tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+    background-color: var(--accent-light);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Horizontal rule */
+hr {
+    border: none;
+    border-top: 2px solid var(--border);
+    margin: 3rem 0;
+}
+
+/* Images */
 img {
-    width: 100px;
-    margin: auto;
-    border: 1px solid lightgray;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Showcase Cards */
+article > h2:last-of-type + ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 1.5rem;
+}
+
+article > h2:last-of-type + ul li {
+    margin: 0;
+}
+
+article > h2:last-of-type + ul a {
+    display: block;
+    padding: 20px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+article > h2:last-of-type + ul a:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Footer */
+footer {
+    background-color: var(--text);
+    color: var(--bg-alt);
+    padding: 20px 24px;
+    margin-left: var(--toc-width);
+}
+
+.footer-content {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+footer a {
+    color: var(--bg-alt);
+    opacity: 0.8;
+}
+
+footer a:hover {
+    opacity: 1;
+    text-decoration: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    #toc {
+        display: none;
+    }
+
+    #body-container {
+        padding-left: 0;
+    }
+
+    footer {
+        margin-left: 0;
+    }
+
+    .hero {
+        margin-left: -24px;
+        padding-left: 24px;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+
+    article > h2:last-of-type + ul {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    div#content {
+        padding: 0 16px 40px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    img[alt="Line drawing of a singing bird with a pan flute for vocal chords"] {
+        width: 100px;
+    }
+
+    .hero {
+        padding: 40px 0 30px;
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    pre {
+        border-radius: 0;
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+
+    table {
+        font-size: 0.85em;
+    }
+
+    th, td {
+        padding: 0.5em 0.75em;
+    }
 }

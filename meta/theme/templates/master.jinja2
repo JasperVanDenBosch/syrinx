@@ -10,21 +10,77 @@
     <meta name="description" content="{{ index.front['Description'] }}">
     <link rel="canonical" href="{{ index.address }}">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link rel="stylesheet" href="/assets/css/index.css">
-
     <title>Syrinx</title>
 </head>
 <body>
 
+<nav id="toc">
+    <div id="toc-header">Contents</div>
+    <ul id="toc-list"></ul>
+</nav>
 
-<div id="body-container">{# pushes down the footer when there is little content #}
+<div id="body-container">
 <div id="content">
 {% block main %}{% endblock %}
 </div>
-</div><footer>
-    <span id="copyright-reference">&copy; 2025 syrinx developers</span>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <span>&copy; 2025 Syrinx developers</span>
+        <a href="https://github.com/JasperVanDenBosch/syrinx">GitHub</a>
+    </div>
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    hljs.highlightAll();
+
+    // Generate TOC from h2 elements
+    document.addEventListener('DOMContentLoaded', function() {
+        const tocList = document.getElementById('toc-list');
+        const headings = document.querySelectorAll('article h2');
+
+        headings.forEach(function(heading, index) {
+            // Add ID if not present
+            if (!heading.id) {
+                heading.id = 'section-' + index;
+            }
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + heading.id;
+            a.textContent = heading.textContent;
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+
+        // Highlight current section on scroll
+        const observerOptions = {
+            rootMargin: '-20% 0px -80% 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                const id = entry.target.id;
+                const tocLink = tocList.querySelector('a[href="#' + id + '"]');
+                if (tocLink) {
+                    if (entry.isIntersecting) {
+                        tocList.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+                        tocLink.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        headings.forEach(function(heading) {
+            observer.observe(heading);
+        });
+    });
+</script>
 
 </body>
 </html>

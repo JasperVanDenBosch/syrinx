@@ -3,20 +3,22 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta syrinx-environment="production" syrinx-timestamp="2026-01-27T17:19:06.039217+00:00" />
+    <meta syrinx-environment="production" syrinx-timestamp="2026-01-28T20:30:55.233637+00:00" />
     
     <meta name="description" content="Simple, python-powered static site generator">
     <link rel="canonical" href="https://syrinx.site">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/shoelace-autoloader.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link rel="stylesheet" href="/assets/css/index.css">
-
     <title>Syrinx</title>
 </head>
 <body>
 
+<nav id="toc">
+    <div id="toc-header">Contents</div>
+    <ul id="toc-list"></ul>
+</nav>
 
 <div id="body-container">
 <div id="content">
@@ -28,79 +30,337 @@
 <blockquote>
 <p><em>Spreadsheet to website</em></p>
 </blockquote>
-<p>Syrinx is a super simple (~800 lines) python package for generating a static website</p>
+<p>Syrinx is a simple Python static site generator that converts markdown content into HTML websites.</p>
 <ul>
-<li><a href="https://github.com/JasperVanDenBosch/syrinx">github</a></li>
+<li><a href="https://github.com/JasperVanDenBosch/syrinx">GitHub</a></li>
 </ul>
-<h2>Example</h2>
-<p><code>pip install syrinx
-touch content/index.md
-syrinx serve</code></p>
-<h2>Conventions</h2>
-<p>Organize your content with some standard structure and syrinx will interpret it.</p>
-<h3>Content</h3>
+<h2>Quick Start</h2>
+<pre><code class="language-bash">pip install syrinx
+syrinx new --scaffold blog-webawesome
+syrinx serve
+</code></pre>
+<p>Or start from scratch:</p>
+<pre><code class="language-bash">pip install syrinx
+mkdir content
+echo &quot;# Hello World&quot; &gt; content/index.md
+syrinx serve
+</code></pre>
+<p>Visit <code>http://localhost:8000</code> to see your site.</p>
+<h2>How It Works</h2>
+<p>Syrinx follows a three-stage pipeline:</p>
 <ol>
-<li>a <code>content/</code> directory with markdown file <code>index.md</code></li>
-<li>Frontmatter: Markdown files start with a standard header or <em>"frontmatter"</em> that is surrounded by either dashes <code>---</code> for YAML or pluses <code>+++</code> for TOML. </li>
-<li>in content directories other than root, <code>index.md</code> is optional. Leaving it out signifies that you do not want a separate page build for this branch.</li>
-<li>Special frontmatter entries:<ul>
-<li><code>SequenceNumber</code>: Used by templates to order child items in menu's and lists.</li>
-<li><code>Archetype</code>: The name of the template used to import these table data</li>
-<li><code>LastModified</code>: Date and time when the content was last changed. If listed, this will be used in the sitemap as <code>&lt;lastmod&gt;</code> element.</li>
+<li><strong>Preprocess</strong>: Generate markdown from TSV data files (optional)</li>
+<li><strong>Read</strong>: Parse the <code>content/</code> directory into a tree of nodes</li>
+<li><strong>Build</strong>: Render nodes to HTML using Jinja2 templates</li>
+</ol>
+<p>Your project structure:</p>
+<pre><code>my-site/
+├── syrinx.cfg          # Configuration (optional)
+├── content/
+│   └── index.md        # Your markdown content
+├── data/               # TSV files for content generation (optional)
+├── theme/
+│   ├── templates/      # Jinja2 templates
+│   └── assets/         # CSS, images, fonts
+└── dist/               # Generated output
+</code></pre>
+<h2>Content</h2>
+<h3>Branches and Leaves</h3>
+<p>Syrinx organizes content as a tree:</p>
+<ul>
+<li><strong>Branch</strong>: A directory containing <code>index.md</code> — becomes a section page</li>
+<li><strong>Leaf</strong>: A non-index markdown file — becomes a child page (only built with <code>leaf_pages = true</code>)</li>
 </ul>
-</li>
-</ol>
-<h2>Templating and style</h2>
+<p>If a directory has no <code>index.md</code>, it won't generate a page but its children are still processed.</p>
+<h3>Frontmatter</h3>
+<p>Markdown files start with frontmatter in YAML (surrounded by <code>---</code>) or TOML (surrounded by <code>+++</code>):</p>
+<pre><code class="language-toml">+++
+Title = &quot;My Page&quot;
+SequenceNumber = 1
+LastModified = 2025-01-15
+IncludeInSitemap = true
++++
+
+# Page content here...
+</code></pre>
+<p><strong>Frontmatter fields:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Title</code></td>
+<td>Page title (defaults to first heading)</td>
+</tr>
+<tr>
+<td><code>SequenceNumber</code></td>
+<td>Controls ordering in menus and lists</td>
+</tr>
+<tr>
+<td><code>LastModified</code></td>
+<td>Date for sitemap <code>&lt;lastmod&gt;</code> element</td>
+</tr>
+<tr>
+<td><code>LastModifiedBranch</code></td>
+<td>Git branch to track for last-modified date</td>
+</tr>
+<tr>
+<td><code>IncludeInSitemap</code></td>
+<td>Explicit sitemap inclusion (<code>true</code>/<code>false</code>)</td>
+</tr>
+<tr>
+<td><code>Archetype</code></td>
+<td>Template name for TSV data import</td>
+</tr>
+</tbody>
+</table>
+<h2>Templates</h2>
+<p>Templates use <a href="https://jinja.palletsprojects.com/">Jinja2</a> and live in <code>theme/templates/</code>.</p>
+<h3>Template Selection</h3>
+<p>Syrinx tries templates in this order:</p>
 <ol>
-<li>Templates are written in <em>jinja2</em> and go into the <code>theme/templates/</code> directory.</li>
-<li>The default template used is <code>page.jinja2</code>. If a template is found matching the name of the node (e.g. <code>foo.jinja2</code>), or <code>root.jinja2</code> for the top-most page, this takes precedence.</li>
-<li>CSS, images and other assets go into <code>theme/assets/</code>.</li>
+<li><code>{node_name}.jinja2</code> — named after the content file/directory</li>
+<li><code>root.jinja2</code> — for the top-level page only</li>
+<li><code>leaf.jinja2</code> — for leaf nodes</li>
+<li><code>page.jinja2</code> — default fallback</li>
 </ol>
-<h2>Table Data</h2>
-<p>Syrinx can generate content (markdown) files from CSV tables in the <code>data/</code> directory.</p>
-<ol>
-<li>The archetype file used will be based on the filename of the data file.</li>
-<li>Each row is considered one record.</li>
-<li>The header (1st) row will be used as keys.</li>
-<li>The first column is used as name for the content item.</li>
-<li>Each column will be converted to a variable in the front matter </li>
-</ol>
+<h3>Available Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index</code></td>
+<td>The current node being rendered</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td>The root node of the content tree</td>
+</tr>
+</tbody>
+</table>
+<h3>Node Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>Page title</td>
+</tr>
+<tr>
+<td><code>content_html</code></td>
+<td>Rendered markdown content</td>
+</tr>
+<tr>
+<td><code>branches</code></td>
+<td>Child branch nodes</td>
+</tr>
+<tr>
+<td><code>leaves</code></td>
+<td>Child leaf nodes</td>
+</tr>
+<tr>
+<td><code>front</code></td>
+<td>Frontmatter dictionary</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>Filesystem path</td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td>URL path</td>
+</tr>
+</tbody>
+</table>
 <h2>Configuration</h2>
-<p>You can configure syrinx behavior with a <code>syrinx.cfg</code> file in the project root directory, 
-or use commandline arguments (which will override any settings in the configuration file).
-For options, run <code>syrinx -h</code>.</p>
-<h2>Sites built with Syrinx</h2>
-<p>Check out some of the projects that were built with Syrinx:</p>
+<p>Create <code>syrinx.cfg</code> in your project root:</p>
+<pre><code class="language-ini">domain = &quot;example.com&quot;
+sitemap = &quot;opt-out&quot;
+urlformat = &quot;filesystem&quot;
+leaf_pages = false
+clean = true
+environment = &quot;production&quot;
+verbose = false
+</code></pre>
+<p><strong>Options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>domain</code></td>
+<td>string</td>
+<td>Domain for canonical URLs and sitemap</td>
+</tr>
+<tr>
+<td><code>sitemap</code></td>
+<td><code>opt-in</code>, <code>opt-out</code></td>
+<td>Default sitemap inclusion behavior</td>
+</tr>
+<tr>
+<td><code>urlformat</code></td>
+<td><code>filesystem</code>, <code>mkdocs</code>, <code>clean</code></td>
+<td>URL structure style</td>
+</tr>
+<tr>
+<td><code>leaf_pages</code></td>
+<td><code>true</code>, <code>false</code></td>
+<td>Whether to build pages for leaves</td>
+</tr>
+<tr>
+<td><code>clean</code></td>
+<td><code>true</code>, <code>false</code></td>
+<td>Clean <code>dist/</code> before building</td>
+</tr>
+<tr>
+<td><code>environment</code></td>
+<td>string</td>
+<td>Environment name (available in templates)</td>
+</tr>
+<tr>
+<td><code>verbose</code></td>
+<td><code>true</code>, <code>false</code></td>
+<td>Enable detailed logging</td>
+</tr>
+</tbody>
+</table>
+<h3>CLI Commands</h3>
+<pre><code class="language-bash">syrinx build                    # Build site to dist/
+syrinx build --clean            # Clean dist/ first
+syrinx build --leaf-pages       # Include leaf pages
+
+syrinx serve                    # Dev server on port 8000
+syrinx serve --port 3000        # Custom port
+
+syrinx new --scaffold NAME      # Create new site from template
+</code></pre>
+<p>All config file options can be overridden via CLI flags. Run <code>syrinx &lt;command&gt; --help</code> for details.</p>
+<h2>Advanced</h2>
+<h3>Generating Content from Data</h3>
+<p>Syrinx can generate markdown files from TSV spreadsheets — useful for sites with many similar pages (team members, products, blog posts, etc.).</p>
+<p><strong>Setup:</strong></p>
+<ol>
+<li>Create a TSV file in <code>data/</code> (e.g., <code>data/people.tsv</code>)</li>
+<li>Create a matching archetype template in <code>archetypes/</code> (e.g., <code>archetypes/people.md</code>)</li>
+<li>Run <code>syrinx build</code> — markdown files are generated in <code>content/{name}/</code> before the HTML build</li>
+</ol>
+<p>The archetype filename must match the TSV filename (without extension). Archetypes use Jinja2 syntax for templating.</p>
+<p><strong>Example TSV</strong> (<code>data/people.tsv</code>):</p>
+<pre><code>PersonId    FullName    Role    Image
+jsmith  Jane Smith  Lead    jane.jpg
+bjones  Bob Jones   Developer   bob.jpg
+</code></pre>
+<p><strong>Example archetype</strong> (<code>archetypes/people.md</code>):</p>
+<pre><code class="language-jinja">+++
+Title = &quot;{{ FullName }}&quot;
+SequenceNumber = {{ SequenceNumber }}
+Image = &quot;{{ Image }}&quot;
++++
+
+{{ FullName }} is a {{ Role }} on the team.
+</code></pre>
+<p><strong>Generated output</strong> (<code>content/people/jsmith.md</code>):</p>
+<pre><code class="language-toml">+++
+Title = &quot;Jane Smith&quot;
+SequenceNumber = 0
+Image = &quot;jane.jpg&quot;
++++
+
+Jane Smith is a Lead on the team.
+</code></pre>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>First column becomes the output filename (e.g., <code>jsmith</code> → <code>jsmith.md</code>)</li>
+<li>Column headers become Jinja2 template variables</li>
+<li><code>SequenceNumber</code> is auto-generated if not in your TSV</li>
+<li>With <code>clean = true</code>, stale generated files are removed on each build</li>
+</ul>
+<h3>Git Integration</h3>
+<p>If you set <code>LastModifiedBranch</code> in frontmatter, Syrinx will track the last commit date on that branch for the content file, automatically updating <code>LastModified</code> for your sitemap.</p>
+<h2>Sites Built with Syrinx</h2>
 <ul>
 <li><a href="https://eegmanylabs.org">#EEGManyLabs</a></li>
 <li><a href="https://eeg100.org">100 Years of EEG</a></li>
 <li><a href="https://jaspervandenbosch.com">Jasper's Blog</a></li>
-<li><a href="https://syrinx.site">this page</a></li>
+<li><a href="https://syrinx.site">This page</a></li>
 </ul>
-<!-- to add when ready: electrotime -->
-<!-- to add when ready: cost action -->
 </article>
 
 
 </div>
-</div><footer>
-    <span id="copyright-reference">&copy; 2025 syrinx developers</span>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <span>&copy; 2025 Syrinx developers</span>
+        <a href="https://github.com/JasperVanDenBosch/syrinx">GitHub</a>
+    </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    hljs.highlightAll();
 
-<script type="module">
-  import { registerIconLibrary } from 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/utilities/icon-library.js';
+    // Generate TOC from h2 elements
+    document.addEventListener('DOMContentLoaded', function() {
+        const tocList = document.getElementById('toc-list');
+        const headings = document.querySelectorAll('article h2');
 
-  registerIconLibrary('fa', {
-    resolver: name => {
-      const filename = name.replace(/^fa[rbs]-/, '');
-      let folder = 'regular';
-      if (name.substring(0, 4) === 'fas-') folder = 'solid';
-      if (name.substring(0, 4) === 'fab-') folder = 'brands';
-      return `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/svgs/${folder}/${filename}.svg`;
-    },
-    mutator: svg => svg.setAttribute('fill', 'currentColor')
-  });
+        headings.forEach(function(heading, index) {
+            // Add ID if not present
+            if (!heading.id) {
+                heading.id = 'section-' + index;
+            }
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + heading.id;
+            a.textContent = heading.textContent;
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+
+        // Highlight current section on scroll
+        const observerOptions = {
+            rootMargin: '-20% 0px -80% 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                const id = entry.target.id;
+                const tocLink = tocList.querySelector('a[href="#' + id + '"]');
+                if (tocLink) {
+                    if (entry.isIntersecting) {
+                        tocList.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+                        tocLink.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        headings.forEach(function(heading) {
+            observer.observe(heading);
+        });
+    });
 </script>
 
 </body>

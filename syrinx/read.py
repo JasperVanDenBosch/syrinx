@@ -41,7 +41,7 @@ def read_file(fpath: str) -> Tuple[Dict, str]:
     formats = [('+++', read_toml), ('---', read_yaml)]
     for marker, parser in formats:
         marker_lines = [l for (l, line) in enumerate(lines) if line.strip() == marker]
-        if len(marker_lines) == 2:
+        if len(marker_lines) >= 2:
             fm_string = ''.join(lines[1:marker_lines[1]])
             fm_dict = parser(fm_string)
             md_content = ''.join(lines[marker_lines[1]+1:])
@@ -88,7 +88,7 @@ def read(root_dir: str, config: SyrinxConfiguration) -> ContentNode:
                 node = makeLeafNode(config)
                 indexNode.leaves.append(node)
 
-            node.setContent(fpath.replace(content_dir, ''), fm_dict, markdown(md_content))
+            node.setContent(fpath.replace(content_dir, ''), fm_dict, markdown(md_content, extensions=['fenced_code', 'tables']))
             logger.info(f'Read {node.source_path}')
 
     reorder_children(root)

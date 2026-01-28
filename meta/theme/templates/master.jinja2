@@ -10,9 +10,7 @@
     <meta name="description" content="{{ index.front['Description'] }}">
     <link rel="canonical" href="{{ index.address }}">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/shoelace-autoloader.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400">
     <link rel="stylesheet" href="/assets/css/index.css">
 
     <title>Syrinx</title>
@@ -27,22 +25,6 @@
 </div><footer>
     <span id="copyright-reference">&copy; 2025 syrinx developers</span>
 </footer>
-
-{# shoelace snippet to add font awesome #}
-<script type="module">
-  import { registerIconLibrary } from 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/utilities/icon-library.js';
-
-  registerIconLibrary('fa', {
-    resolver: name => {
-      const filename = name.replace(/^fa[rbs]-/, '');
-      let folder = 'regular';
-      if (name.substring(0, 4) === 'fas-') folder = 'solid';
-      if (name.substring(0, 4) === 'fab-') folder = 'brands';
-      return `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/svgs/${folder}/${filename}.svg`;
-    },
-    mutator: svg => svg.setAttribute('fill', 'currentColor')
-  });
-</script>
 
 </body>
 </html>

@@ -28,8 +28,7 @@ syrinx = "syrinx.cli:main"
 Homepage = "https://github.com/ilogue/syrinx"
 Issues = "https://github.com/ilogue/syrinx/issues"
 
-[tool.setuptools]
-packages = ["syrinx"]
+[tool.setuptools.packages.find]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}

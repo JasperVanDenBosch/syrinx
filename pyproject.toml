@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "syrinx"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   {name="Jasper van den Bosch"},
   {name="Dan Brady"},
@@ -28,8 +28,7 @@ syrinx = "syrinx.cli:main"
 Homepage = "https://github.com/ilogue/syrinx"
 Issues = "https://github.com/ilogue/syrinx/issues"
 
-[tool.setuptools]
-packages = ["syrinx"]
+[tool.setuptools.packages.find]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}

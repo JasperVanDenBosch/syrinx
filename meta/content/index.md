@@ -232,4 +232,5 @@ If you set `LastModifiedBranch` in frontmatter, Syrinx will track the last commi
 - [#EEGManyLabs](https://eegmanylabs.org)
 - [100 Years of EEG](https://eeg100.org)
 - [Jasper's Blog](https://jaspervandenbosch.com)
+- [ElectroTime](https://electrotime.org)
 - [This page](https://syrinx.site)

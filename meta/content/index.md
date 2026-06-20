@@ -1,6 +1,6 @@
 +++
 Description = "Simple, python-powered static site generator"
-LastModifiedBranch = "site-templates"
+LastModifiedBranch = "trigger-sitemap-update-electrotime"
 +++
 
 ![Line drawing of a singing bird with a pan flute for vocal chords](/assets/logo_syrinx.png "Syrinx Logo")
